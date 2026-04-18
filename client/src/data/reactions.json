@@ -1,0 +1,62 @@
+{
+  "reactions": [
+    {
+      "id": "zone-b-neutralization",
+      "phase": 1,
+      "zone": "B",
+      "name": "Acid-Base Neutralization",
+      "successMessage": "The solution settles into a safe neutral band with a clean readout.",
+      "availableChemicals": ["water", "acid", "base"],
+      "defaultSequence": ["water", "acid", "base"],
+      "idealTemperatureRange": {
+        "min": 18,
+        "max": 30
+      },
+      "failureModes": [
+        {
+          "id": "wrong-order",
+          "severity": "high",
+          "trigger": "Base is added before dilution stabilizes the acid.",
+          "result": "Exothermic splash risk",
+          "playerMessage": "Base hit the mix too early. Dilute first, then neutralize."
+        },
+        {
+          "id": "temperature-drift",
+          "severity": "medium",
+          "trigger": "The bench climbs outside the safe temperature band.",
+          "result": "Unstable heat profile",
+          "playerMessage": "The reaction is drifting thermally. Reset closer to room temperature."
+        }
+      ]
+    },
+    {
+      "id": "zone-c-precipitation",
+      "phase": 2,
+      "zone": "C",
+      "name": "Salt Precipitation",
+      "successMessage": "Solid crystals form cleanly and the solution clears.",
+      "availableChemicals": ["solution-a", "solution-b", "indicator"],
+      "defaultSequence": ["solution-a", "solution-b", "indicator"],
+      "idealTemperatureRange": {
+        "min": 20,
+        "max": 28
+      },
+      "failureModes": [
+        {
+          "id": "wrong-order",
+          "severity": "medium",
+          "trigger": "Indicator is added before the base solutions combine.",
+          "result": "Clouded sample",
+          "playerMessage": "The indicator contaminated the readout. Mix both base solutions first."
+        },
+        {
+          "id": "temperature-drift",
+          "severity": "low",
+          "trigger": "The sample cools too far below the target band.",
+          "result": "Slow crystal formation",
+          "playerMessage": "The sample is too cold. Bring it back toward room temperature."
+        }
+      ]
+    }
+  ]
+}

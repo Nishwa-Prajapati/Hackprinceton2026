@@ -1,0 +1,14 @@
+{
+  "name": "lab-zero",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "build": "npm run build --workspace client",
+    "start": "npm run start --workspace server"
+  }
+}
