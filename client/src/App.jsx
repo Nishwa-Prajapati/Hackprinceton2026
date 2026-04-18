@@ -1,183 +1,90 @@
-import { useEffect, useState } from "react";
-import LabScene from "./core/LabScene";
-import zoneDefinitions from "./zones";
-import localReactions from "./data/reactions.json";
-import { evaluateReaction } from "./engine/reactionEngine";
-import { summarizeMistake } from "./engine/mistakeEngine";
-import { buildNarration } from "./systems/narrationSystem";
-import { getScaleLabel } from "./systems/scaleSystem";
-import { zoomPresets } from "./systems/zoomSystem";
-import ControlPanel from "./ui/ControlPanel";
-import StatusOverlay from "./ui/StatusOverlay";
-import PhasePanel from "./ui/PhasePanel";
+import { useEffect, useRef, useState } from 'react';
+import { LabEngine } from './lab/LabEngine';
 
-const PHASE = 1;
-const STORAGE_KEY = "lab-zero-progress";
-
-function App() {
-  const [reactions, setReactions] = useState(localReactions.reactions);
-  const [activeZone, setActiveZone] = useState("B");
-  const [selectedReactionId, setSelectedReactionId] = useState(
-    localReactions.reactions[0]?.id ?? ""
-  );
-  const [temperature, setTemperature] = useState(24);
-  const [sequence, setSequence] = useState(["water", "acid", "base"]);
-  const [zoomPreset, setZoomPreset] = useState("zone");
-  const [narrationEnabled, setNarrationEnabled] = useState(true);
-  const [result, setResult] = useState(null);
-  const [progress, setProgress] = useState(() => {
-    const saved = window.localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : { completedReactionIds: [] };
-  });
+export default function App() {
+  const canvasRef  = useRef(null);
+  const engineRef  = useRef(null);
+  const [loaded, setLoaded]     = useState(false);
+  const [hintVisible, setHint]  = useState(true);   // "Scroll to explore" hint
 
   useEffect(() => {
-    async function loadReactions() {
-      try {
-        const response = await fetch("/api/reactions");
-        if (!response.ok) {
-          throw new Error("Failed to load reactions");
-        }
+    const engine = new LabEngine();
+    engineRef.current = engine;
+    engine.init(canvasRef.current);
+    setLoaded(true);
 
-        const payload = await response.json();
-        const nextReactions = payload.reactions ?? [];
-        if (nextReactions.length > 0) {
-          setReactions(nextReactions);
-          setSelectedReactionId(nextReactions[0].id);
-        }
-      } catch (error) {
-        console.warn("Using local reactions fallback", error);
-      }
-    }
-
-    loadReactions();
+    // Fade hint out after 4 s
+    const timer = setTimeout(() => setHint(false), 4000);
+    return () => { clearTimeout(timer); engine.dispose(); };
   }, []);
 
-  useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  }, [progress]);
-
-  useEffect(() => {
-    const nextReaction = reactions.find((reaction) => reaction.zone === activeZone);
-    if (nextReaction) {
-      setSelectedReactionId(nextReaction.id);
-      setSequence(nextReaction.defaultSequence);
-      setTemperature(nextReaction.idealTemperatureRange.min + 4);
-    } else {
-      setSelectedReactionId("");
-      setResult(null);
-    }
-  }, [activeZone, reactions]);
-
-  const availableReactions = reactions.filter((reaction) => reaction.zone === activeZone);
-  const selectedReaction =
-    availableReactions.find((reaction) => reaction.id === selectedReactionId) ??
-    availableReactions[0] ??
-    null;
-
-  useEffect(() => {
-    if (!selectedReaction) {
-      return;
-    }
-
-    setSequence(selectedReaction.defaultSequence);
-    setTemperature(selectedReaction.idealTemperatureRange.min + 4);
-  }, [selectedReaction]);
-
-  function handleSequenceChange(stepIndex, value) {
-    setSequence((current) => {
-      const next = [...current];
-      next[stepIndex] = value;
-      return next;
-    });
-  }
-
-  function handleAttempt() {
-    if (!selectedReaction) {
-      return;
-    }
-
-    const engineResult = evaluateReaction(selectedReaction, {
-      sequence,
-      temperature
-    });
-    const mistakeSummary = summarizeMistake(engineResult);
-    const narration = buildNarration({
-      activeZone,
-      narrationEnabled,
-      reaction: selectedReaction,
-      result: engineResult
-    });
-
-    const finalResult = {
-      ...engineResult,
-      mistakeSummary,
-      narration
-    };
-
-    setResult(finalResult);
-
-    if (finalResult.status === "success") {
-      setProgress((current) => ({
-        completedReactionIds: Array.from(
-          new Set([...current.completedReactionIds, selectedReaction.id])
-        )
-      }));
-    }
-  }
-
   return (
-    <div className="app-shell">
-      <header className="hero">
-        <div>
-          <p className="eyebrow">Phase {PHASE} foundation</p>
-          <h1>Lab Zero</h1>
-          <p className="hero-copy">
-            A simple 3D chemistry lab MVP with one playable Zone B reaction and room
-            to expand through the next hackathon phases.
+    <>
+      {/* Three.js canvas ─ full-screen, behind everything */}
+      <canvas
+        ref={canvasRef}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', display: 'block' }}
+      />
+
+      {/* Loading overlay */}
+      {!loaded && (
+        <div style={{
+          position: 'fixed', inset: 0,
+          background: '#0d0d1a',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexDirection: 'column', gap: 12, zIndex: 10,
+        }}>
+          <h1 style={{ fontFamily: 'monospace', fontSize: '3rem', color: '#FF8C00', letterSpacing: '0.2em' }}>
+            LabZero
+          </h1>
+          <p style={{ fontFamily: 'monospace', color: '#00D4FF', fontSize: '0.9rem' }}>
+            Initialising lab...
           </p>
         </div>
-        <div className="hero-badges">
-          <span>Scale: {getScaleLabel(zoomPreset)}</span>
-          <span>Completed: {progress.completedReactionIds.length}</span>
-          <span>Phase target: Zone B</span>
+      )}
+
+      {/* "Scroll to explore" hint ─ fades out after 4 s */}
+      <div style={{
+        position: 'fixed',
+        bottom: 32,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: 6,
+        pointerEvents: 'none',
+        zIndex: 5,
+        opacity: hintVisible ? 1 : 0,
+        transition: 'opacity 1.2s ease',
+      }}>
+        <span style={{
+          fontFamily: 'monospace',
+          fontSize: '0.85rem',
+          color: '#00D4FF',
+          letterSpacing: '0.12em',
+          textShadow: '0 0 12px #00D4FF88',
+        }}>
+          Scroll to explore
+        </span>
+        {/* Animated chevrons */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          {[0, 1, 2].map(i => (
+            <svg key={i} width="18" height="10" viewBox="0 0 18 10" fill="none"
+              style={{ opacity: 0.5 + i * 0.2, animation: `chevronBounce 1.4s ease-in-out ${i * 0.18}s infinite` }}>
+              <polyline points="1,1 9,9 17,1" stroke="#00D4FF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          ))}
         </div>
-      </header>
+      </div>
 
-      <main className="main-grid">
-        <section className="scene-panel">
-          <LabScene activeZone={activeZone} zoomPreset={zoomPreset} zones={zoneDefinitions} />
-          <StatusOverlay
-            activeZone={activeZone}
-            result={result}
-            selectedReaction={selectedReaction}
-          />
-        </section>
-
-        <aside className="sidebar">
-          <ControlPanel
-            activeZone={activeZone}
-            availableZones={zoneDefinitions}
-            onAttempt={handleAttempt}
-            onSequenceChange={handleSequenceChange}
-            reactions={availableReactions}
-            selectedReaction={selectedReaction}
-            selectedReactionId={selectedReactionId}
-            sequence={sequence}
-            setActiveZone={setActiveZone}
-            setNarrationEnabled={setNarrationEnabled}
-            setSelectedReactionId={setSelectedReactionId}
-            setTemperature={setTemperature}
-            setZoomPreset={setZoomPreset}
-            temperature={temperature}
-            zoomPreset={zoomPreset}
-            zoomPresets={zoomPresets}
-            narrationEnabled={narrationEnabled}
-          />
-          <PhasePanel progress={progress} result={result} />
-        </aside>
-      </main>
-    </div>
+      {/* Chevron keyframe ─ injected once */}
+      <style>{`
+        @keyframes chevronBounce {
+          0%, 100% { transform: translateY(0);   opacity: 0.55; }
+          50%       { transform: translateY(4px); opacity: 1;    }
+        }
+      `}</style>
+    </>
   );
 }
-
-export default App;

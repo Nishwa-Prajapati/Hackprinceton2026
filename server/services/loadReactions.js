@@ -1,6 +1,6 @@
 import { readFile } from "fs/promises";
 
-const reactionsFile = new URL("../../../client/src/data/reactions.json", import.meta.url);
+const reactionsFile = new URL("../../client/src/data/reactions.json", import.meta.url);
 
 export async function loadReactions() {
   const raw = await readFile(reactionsFile, "utf8");

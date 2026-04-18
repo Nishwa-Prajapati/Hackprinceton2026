@@ -11,7 +11,6 @@ export function evaluateReaction(reaction, attempt) {
     const wrongOrderFailure = reaction.failureModes.find(
       (failureMode) => failureMode.id === "wrong-order"
     );
-
     return {
       status: "failure",
       headline: wrongOrderFailure?.result ?? "Sequence mismatch",
@@ -24,7 +23,6 @@ export function evaluateReaction(reaction, attempt) {
     const temperatureFailure = reaction.failureModes.find(
       (failureMode) => failureMode.id === "temperature-drift"
     );
-
     return {
       status: "failure",
       headline: temperatureFailure?.result ?? "Temperature drift detected",
@@ -41,4 +39,14 @@ export function evaluateReaction(reaction, attempt) {
     details: reaction.successMessage,
     severity: "none"
   };
+}
+
+export function summarizeMistake(result) {
+  if (result.status === "success") {
+    return "Clean run. Capture this pattern as the Phase 1 baseline.";
+  }
+  if (result.severity === "high") {
+    return "High-risk mistake. Reset the station before another attempt.";
+  }
+  return "Recoverable mistake. Adjust the order or temperature and try again.";
 }
