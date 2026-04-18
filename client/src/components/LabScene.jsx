@@ -54,6 +54,9 @@ const BENCH_DEFINITIONS = [
   }
 ];
 
+const DESK_CAMERA_OFFSET = new THREE.Vector3(0, 1.38, 1.28);
+const DESK_LOOK_OFFSET = new THREE.Vector3(0, 1.08, 0);
+
 function createRoom(scene) {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(ROOM.width, ROOM.depth),
@@ -182,15 +185,22 @@ function disposeScene(scene) {
   });
 }
 
-const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
+const LabScene = forwardRef(function LabScene(
+  { onDeskModeChange, onFocusChange },
+  ref
+) {
   const mountRef = useRef(null);
   const focusEntranceRef = useRef(() => {});
+  const exitDeskRef = useRef(() => {});
 
   useImperativeHandle(
     ref,
     () => ({
       focusEntrance() {
         focusEntranceRef.current();
+      },
+      exitDesk() {
+        exitDeskRef.current();
       }
     }),
     []
@@ -246,9 +256,15 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
       moved: false,
       movedDistance: 0
     };
+    const walkPose = {
+      position: ENTRANCE_ZONE.position.clone(),
+      lookAt: ENTRANCE_ZONE.lookAt.clone(),
+      label: ENTRANCE_ZONE.label
+    };
 
     let hoveredZoneId = null;
     let activeZoneId = null;
+    let isDeskMode = false;
     let animationFrame = 0;
     let activeAnimation = null;
 
@@ -287,6 +303,51 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
       renderer.domElement.style.cursor = hoveredZoneId ? "pointer" : "grab";
     }
 
+    function setDeskMode(nextDeskMode) {
+      isDeskMode = nextDeskMode;
+      onDeskModeChange?.(nextDeskMode);
+    }
+
+    function updateWalkPose() {
+      walkPose.position.copy(controller.targetPosition);
+      walkPose.lookAt.copy(controller.targetLookAt);
+      walkPose.label = activeZoneId ? zones.get(activeZoneId)?.label ?? "Walk Mode" : "Entrance";
+    }
+
+    function getDeskZone(zoneId) {
+      const bench = benchMap.get(zoneId);
+      const baseZone = zones.get(zoneId);
+
+      if (!bench || !baseZone) {
+        return null;
+      }
+
+      return {
+        label: baseZone.label,
+        position: bench.group.position.clone().add(DESK_CAMERA_OFFSET),
+        lookAt: bench.group.position.clone().add(DESK_LOOK_OFFSET)
+      };
+    }
+
+    function exitDeskMode() {
+      if (!isDeskMode) {
+        return;
+      }
+
+      stopAnimation(activeAnimation);
+      controller.endDrag();
+      setDeskMode(false);
+      onFocusChange?.(walkPose.label);
+
+      activeAnimation = animateCameraTo(controller, walkPose, {
+        duration: 1.15,
+        onComplete: () => {
+          controller.syncAnglesFromLookTarget();
+          activeAnimation = null;
+        }
+      });
+    }
+
     function goToZone(zoneId) {
       const zone = zones.get(zoneId);
       if (!zone) {
@@ -295,6 +356,10 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
 
       stopAnimation(activeAnimation);
       controller.endDrag();
+
+      if (zoneId !== "entrance" && !isDeskMode) {
+        updateWalkPose();
+      }
 
       activeZoneId = zoneId === "entrance" ? null : zoneId;
       syncBenchVisuals();
@@ -306,9 +371,12 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
         }
       }
 
-      onFocusChange?.(zone.label);
+      const targetZone = zoneId === "entrance" ? zone : getDeskZone(zoneId) ?? zone;
+      const nextDeskMode = zoneId !== "entrance";
+      setDeskMode(nextDeskMode);
+      onFocusChange?.(targetZone.label);
 
-      activeAnimation = animateCameraTo(controller, zone, {
+      activeAnimation = animateCameraTo(controller, targetZone, {
         duration: 1.35,
         onComplete: () => {
           controller.syncAnglesFromLookTarget();
@@ -318,9 +386,14 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
     }
 
     focusEntranceRef.current = () => {
+      setDeskMode(false);
       goToZone("entrance");
     };
+    exitDeskRef.current = () => {
+      exitDeskMode();
+    };
     onFocusChange?.(ENTRANCE_ZONE.label);
+    onDeskModeChange?.(false);
 
     function updateHoverFromEvent(event) {
       const hit = intersectInteractiveObjects(
@@ -339,16 +412,22 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
 
     function handlePointerDown(event) {
       renderer.domElement.setPointerCapture(event.pointerId);
-      controller.beginDrag(event.clientX, event.clientY);
+      if (!isDeskMode) {
+        controller.beginDrag(event.clientX, event.clientY);
+        renderer.domElement.style.cursor = "grabbing";
+      } else {
+        renderer.domElement.style.cursor = hoveredZoneId ? "pointer" : "default";
+      }
       pointerState.moved = false;
       pointerState.movedDistance = 0;
-      renderer.domElement.style.cursor = "grabbing";
     }
 
     function handlePointerMove(event) {
-      pointerState.movedDistance += controller.drag(event.clientX, event.clientY);
-      if (pointerState.movedDistance > 8) {
-        pointerState.moved = true;
+      if (!isDeskMode) {
+        pointerState.movedDistance += controller.drag(event.clientX, event.clientY);
+        if (pointerState.movedDistance > 8) {
+          pointerState.moved = true;
+        }
       }
 
       updateHoverFromEvent(event);
@@ -379,7 +458,9 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
 
     function handleWheel(event) {
       event.preventDefault();
-      controller.handleWheel(event.deltaY);
+      if (!isDeskMode) {
+        controller.handleWheel(event.deltaY);
+      }
     }
 
     function handleResize() {
@@ -431,7 +512,7 @@ const LabScene = forwardRef(function LabScene({ onFocusChange }, ref) {
         mountNode.removeChild(renderer.domElement);
       }
     };
-  }, [onFocusChange]);
+  }, [onDeskModeChange, onFocusChange]);
 
   return <div className="scene-canvas" ref={mountRef} />;
 });

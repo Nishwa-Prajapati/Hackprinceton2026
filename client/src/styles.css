@@ -48,6 +48,58 @@ button {
   height: calc(100vh - 40px);
 }
 
+.entry-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top, rgba(214, 228, 242, 0.88), transparent 34%),
+    linear-gradient(180deg, #dbe4ee 0%, #c8d3df 100%);
+}
+
+.entry-card {
+  width: min(440px, 100%);
+  padding: 36px 30px;
+  border-radius: 28px;
+  text-align: center;
+  background: rgba(250, 252, 255, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.92);
+  box-shadow:
+    0 28px 70px rgba(56, 73, 94, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.entry-eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #4a6d92;
+}
+
+.entry-card h1 {
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  line-height: 1;
+  color: #122033;
+}
+
+.entry-button {
+  margin-top: 22px;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 22px;
+  background: linear-gradient(135deg, #27405c, #4d6f92);
+  color: #f7fbff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 14px 30px rgba(39, 64, 92, 0.22);
+}
+
 .hud-card,
 .scene-actions,
 .instruction-bar {
