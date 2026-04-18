@@ -4,6 +4,8 @@ import { LabControls } from './LabControls.js';
 import { labState } from './LabState.js';
 import { createBench } from './BenchBuilder.js';
 import { intersectObjects } from '../utils/raycaster.js';
+import periodicTableFrame from '../assets/periodic-table-frame.png';
+import rightWallPoster from '../assets/right-wall-poster.png';
 
 RectAreaLightUniformsLib.init();
 
@@ -419,6 +421,8 @@ export class LabEngine {
   }
 
   _buildPeripheralProps() {
+    const textureLoader = new THREE.TextureLoader();
+
     const createChartTexture = (title, lines, accent = '#00D4FF') => {
       const cv = document.createElement('canvas');
       cv.width = 640;
@@ -445,43 +449,12 @@ export class LabEngine {
       return tex;
     };
 
-    const periodicTableTexture = (() => {
-      const cv = document.createElement('canvas');
-      cv.width = 700;
-      cv.height = 420;
-      const ctx = cv.getContext('2d');
-      ctx.fillStyle = '#f3f0e7';
-      ctx.fillRect(0, 0, cv.width, cv.height);
-      ctx.strokeStyle = '#5d6470';
-      ctx.lineWidth = 10;
-      ctx.strokeRect(8, 8, cv.width - 16, cv.height - 16);
-      ctx.fillStyle = '#1f2530';
-      ctx.font = '700 34px Arial';
-      ctx.fillText('Periodic Table Snapshot', 26, 46);
-      const cols = 10;
-      const startX = 28;
-      const startY = 76;
-      const cellW = 60;
-      const cellH = 74;
-      const entries = ['H','He','Li','Be','B','C','N','O','F','Ne','Na','Mg','Al','Si','P','S','Cl','Ar','K','Ca','Fe','Cu','Zn','Ag','I','Au','Pb','U'];
-      entries.forEach((symbol, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        const x = startX + col * (cellW + 6);
-        const y = startY + row * (cellH + 6);
-        ctx.fillStyle = row % 2 === 0 ? '#dbf7ff' : '#ffe8cf';
-        ctx.fillRect(x, y, cellW, cellH);
-        ctx.strokeStyle = '#7b808b';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(x, y, cellW, cellH);
-        ctx.fillStyle = '#1f2530';
-        ctx.font = '700 24px Arial';
-        ctx.fillText(symbol, x + 16, y + 42);
-      });
-      const tex = new THREE.CanvasTexture(cv);
-      tex.colorSpace = THREE.SRGBColorSpace;
-      return tex;
-    })();
+    const periodicTableTexture = textureLoader.load(periodicTableFrame);
+    periodicTableTexture.colorSpace = THREE.SRGBColorSpace;
+    periodicTableTexture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+    const rightWallPosterTexture = textureLoader.load(rightWallPoster);
+    rightWallPosterTexture.colorSpace = THREE.SRGBColorSpace;
+    rightWallPosterTexture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
     const frameMat = new THREE.MeshStandardMaterial({ color: '#67707c', roughness: 0.4, metalness: 0.35 });
     const addFramedPanel = ({ texture, position, rotationY = 0, width = 3.6, height = 2.2 }) => {
@@ -500,6 +473,39 @@ export class LabEngine {
       return art;
     };
 
+    const addArtworkPanel = ({ texture, position, rotationY = 0, width = 5.1, height = 3.4 }) => {
+      const group = new THREE.Group();
+      group.position.copy(position);
+      group.rotation.y = rotationY;
+
+      const backing = new THREE.Mesh(
+        new THREE.BoxGeometry(width + 0.1, height + 0.1, 0.04),
+        new THREE.MeshStandardMaterial({ color: '#f2eee5', roughness: 0.72, metalness: 0.02 })
+      );
+      group.add(backing);
+
+      const art = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        new THREE.MeshBasicMaterial({ map: texture })
+      );
+      art.position.z = 0.03;
+      group.add(art);
+
+      this.scene.add(group);
+      return art;
+    };
+
+    const addWallPoster = ({ texture, position, rotationY = 0, width = 3.6, height = 2.0 }) => {
+      const poster = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        new THREE.MeshBasicMaterial({ map: texture })
+      );
+      poster.position.copy(position);
+      poster.rotation.y = rotationY;
+      this.scene.add(poster);
+      return poster;
+    };
+
     addFramedPanel({
       texture: createChartTexture('Reaction Safety', [
         'Add acid to water, never reverse',
@@ -513,25 +519,20 @@ export class LabEngine {
       height: 2.0,
     });
 
-    addFramedPanel({
-      texture: createChartTexture('Core Equations', [
-        'HCl + NaOH -> NaCl + H2O',
-        'Zn + CuSO4 -> ZnSO4 + Cu',
-        '2Na + 2H2O -> 2NaOH + H2',
-        'Indicators reveal hidden change',
-      ]),
+    addWallPoster({
+      texture: rightWallPosterTexture,
       position: new THREE.Vector3(9.7, 2.5, -1.5),
       rotationY: -Math.PI / 2,
-      width: 3.2,
-      height: 2.0,
+      width: 3.7,
+      height: 2.08,
     });
 
-    const periodicPanel = addFramedPanel({
+    const periodicPanel = addArtworkPanel({
       texture: periodicTableTexture,
       position: new THREE.Vector3(0, 2.65, -13.84),
       rotationY: 0,
-      width: 5.2,
-      height: 2.7,
+      width: 5.05,
+      height: 3.36,
     });
     periodicPanel.userData.periodicTable = true;
     this._periodicTarget = periodicPanel;
@@ -615,10 +616,190 @@ export class LabEngine {
       color: '#e8f7ff', transparent: true, opacity: 0.5, transmission: 0.9, roughness: 0.08, thickness: 0.12,
     });
     const whiteCoatMat = new THREE.MeshStandardMaterial({ color: '#f3f5f8', roughness: 0.72 });
+    const gloveMat = new THREE.MeshPhysicalMaterial({
+      color: '#f8fcff',
+      transparent: true,
+      opacity: 0.72,
+      transmission: 0.35,
+      roughness: 0.2,
+      thickness: 0.06,
+    });
     const scrubMat = new THREE.MeshStandardMaterial({ color: '#9fd8ea', roughness: 0.68 });
     const shoeMat = new THREE.MeshStandardMaterial({ color: '#343b46', roughness: 0.5 });
     const skinMat = new THREE.MeshStandardMaterial({ color: '#d9b29c', roughness: 0.75 });
     const hairMat = new THREE.MeshStandardMaterial({ color: '#25303a', roughness: 0.7 });
+    const accessoryMetalMat = new THREE.MeshStandardMaterial({ color: '#768090', roughness: 0.34, metalness: 0.72 });
+
+    const addWallGearRack = ({ x, z, rotationY }) => {
+      const group = new THREE.Group();
+      group.position.set(x, 0, z);
+      group.rotation.y = rotationY;
+
+      const mountPanel = new THREE.Mesh(
+        new THREE.BoxGeometry(2.38, 0.62, 0.05),
+        new THREE.MeshStandardMaterial({ color: '#5b6470', roughness: 0.44, metalness: 0.4 })
+      );
+      mountPanel.position.set(0, 2.08, -0.015);
+      group.add(mountPanel);
+
+      const backRail = new THREE.Mesh(
+        new THREE.BoxGeometry(2.1, 0.22, 0.08),
+        accessoryMetalMat
+      );
+      backRail.position.set(0, 2.18, 0);
+      group.add(backRail);
+
+      [-0.62, 0, 0.62].forEach((hookX, index) => {
+        const mount = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.04, 0.04, 0.08, 12),
+          accessoryMetalMat
+        );
+        mount.rotation.z = Math.PI / 2;
+        mount.position.set(hookX, 2.18, 0.04);
+        group.add(mount);
+
+        const hookStem = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.015, 0.015, 0.18, 10),
+          accessoryMetalMat
+        );
+        hookStem.position.set(hookX, 2.08, 0.12);
+        group.add(hookStem);
+
+        const hookTip = new THREE.Mesh(
+          new THREE.TorusGeometry(0.04, 0.012, 8, 16, Math.PI),
+          accessoryMetalMat
+        );
+        hookTip.position.set(hookX, 2.01, 0.12);
+        hookTip.rotation.z = Math.PI;
+        group.add(hookTip);
+
+        if (index !== 1) {
+          const coat = new THREE.Group();
+          coat.position.set(hookX + (index === 0 ? -0.04 : 0.04), 1.52, 0.18);
+
+          const torso = new THREE.Mesh(
+            new THREE.BoxGeometry(0.58, 0.82, 0.14),
+            whiteCoatMat
+          );
+          torso.position.y = 0.05;
+          coat.add(torso);
+
+          const skirt = new THREE.Mesh(
+            new THREE.BoxGeometry(0.66, 0.56, 0.12),
+            whiteCoatMat
+          );
+          skirt.position.set(0, -0.48, 0.01);
+          skirt.rotation.z = index === 0 ? 0.06 : -0.06;
+          coat.add(skirt);
+
+          const lapelLeft = new THREE.Mesh(
+            new THREE.BoxGeometry(0.14, 0.42, 0.02),
+            new THREE.MeshStandardMaterial({ color: '#e7edf3', roughness: 0.6 })
+          );
+          lapelLeft.position.set(-0.08, 0.12, 0.07);
+          lapelLeft.rotation.z = 0.36;
+          coat.add(lapelLeft);
+
+          const lapelRight = lapelLeft.clone();
+          lapelRight.position.x = 0.08;
+          lapelRight.rotation.z = -0.36;
+          coat.add(lapelRight);
+
+          const sleeveLeft = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.08, 0.06, 0.64, 12),
+            whiteCoatMat
+          );
+          sleeveLeft.position.set(-0.36, -0.02, 0);
+          sleeveLeft.rotation.z = 0.78;
+          coat.add(sleeveLeft);
+
+          const sleeveRight = sleeveLeft.clone();
+          sleeveRight.position.x = 0.36;
+          sleeveRight.rotation.z = -0.78;
+          coat.add(sleeveRight);
+
+          const hanger = new THREE.Mesh(
+            new THREE.TorusGeometry(0.1, 0.01, 6, 18, Math.PI),
+            accessoryMetalMat
+          );
+          hanger.position.set(0, 0.55, 0.02);
+          hanger.rotation.z = Math.PI;
+          coat.add(hanger);
+
+          group.add(coat);
+        }
+      });
+
+      const addGlovePair = ({ px, py, pz, tilt = 0 }) => {
+        const gloveGroup = new THREE.Group();
+        gloveGroup.position.set(px, py, pz);
+        gloveGroup.rotation.z = tilt;
+
+        const addGlove = offsetX => {
+          const glove = new THREE.Group();
+          glove.position.x = offsetX;
+
+          const cuff = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.052, 0.062, 0.16, 12),
+            gloveMat
+          );
+          cuff.rotation.z = Math.PI / 2;
+          glove.add(cuff);
+
+          const palm = new THREE.Mesh(
+            new THREE.SphereGeometry(0.098, 16, 14),
+            gloveMat
+          );
+          palm.scale.set(0.75, 1, 0.4);
+          palm.position.set(0.08, -0.01, 0);
+          glove.add(palm);
+
+          [-0.05, -0.015, 0.02, 0.055].forEach((fingerY, idx) => {
+            const finger = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.014, 0.011, 0.15 - idx * 0.01, 10),
+              gloveMat
+            );
+            finger.rotation.z = Math.PI / 2;
+            finger.position.set(0.16, fingerY, 0);
+            glove.add(finger);
+          });
+
+          const thumb = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.014, 0.011, 0.11, 10),
+            gloveMat
+          );
+          thumb.rotation.z = 0.9;
+          thumb.position.set(0.1, -0.08, 0);
+          glove.add(thumb);
+
+          glove.rotation.z = offsetX < 0 ? -0.18 : 0.14;
+          gloveGroup.add(glove);
+        };
+
+        addGlove(-0.08);
+        addGlove(0.08);
+        group.add(gloveGroup);
+      };
+
+      addGlovePair({ px: -0.98, py: 1.64, pz: 0.16, tilt: -0.08 });
+      addGlovePair({ px: 0.98, py: 1.72, pz: 0.16, tilt: 0.1 });
+
+      const safetyCard = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.42, 0.26),
+        new THREE.MeshBasicMaterial({ color: '#eef7ff' })
+      );
+      safetyCard.position.set(0, 1.7, 0.045);
+      group.add(safetyCard);
+
+      const cardStrip = new THREE.Mesh(
+        new THREE.BoxGeometry(0.38, 0.035, 0.01),
+        new THREE.MeshStandardMaterial({ color: '#00D4FF', emissive: '#00D4FF', emissiveIntensity: 0.4 })
+      );
+      cardStrip.position.set(0, 1.78, 0.05);
+      group.add(cardStrip);
+
+      this.scene.add(group);
+    };
 
     const addSideStation = ({ x, z, rotY, personOffsetX = 0 }) => {
       const group = new THREE.Group();
@@ -697,12 +878,15 @@ export class LabEngine {
 
     addSideStation({ x: -8.55, z: 10.8, rotY: Math.PI / 2, personOffsetX: 0.22 });
     addSideStation({ x: 8.55, z: -8.8, rotY: -Math.PI / 2, personOffsetX: -0.16 });
+    addWallGearRack({ x: 9.72, z: 6.7, rotationY: -Math.PI / 2 });
   }
 
   // ─── RAYCASTING ──────────────────────────────────────────────────────────────
 
   _setupRaycasting(canvas) {
     this._clickHandler = e => {
+      if (this.controls?.shouldIgnoreClick?.()) return;
+
       const periodicHit = this._periodicTarget
         ? intersectObjects(e, canvas, this.camera, [this._periodicTarget])
         : null;
@@ -723,6 +907,23 @@ export class LabEngine {
     canvas.addEventListener('click', this._clickHandler);
 
     this._mousemoveHandler = e => {
+      if (this.controls?.isDraggingLook?.()) {
+        if (this._hoveredBenchId) {
+          this._benchMap.get(this._hoveredBenchId)?.setHovered(false);
+          this._hoveredBenchId = null;
+        }
+        if (this._hoveredItemObj) {
+          this._benchMap.get(this._hoveredItemObj.userData.benchId)?.setHoveredObject(null);
+          this._hoveredItemObj = null;
+        }
+        canvas.style.cursor = 'grabbing';
+        if (this._tooltipEl) {
+          this._tooltipEl.style.opacity = '0';
+          this._tooltipEl.style.visibility = 'hidden';
+        }
+        return;
+      }
+
       const itemHit  = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
       const benchHit = itemHit ? null : intersectObjects(e, canvas, this.camera, this._benchClickTargets);
       const periodicHit = itemHit || benchHit || !this._periodicTarget
@@ -780,9 +981,10 @@ export class LabEngine {
 
   animate() {
     this._animFrameId = requestAnimationFrame(() => this.animate());
-    const elapsed = this._clock.getElapsedTime();
+    const delta = this._clock.getDelta();
+    const elapsed = this._clock.elapsedTime;
 
-    this.controls.update();
+    this.controls.update(delta);
     this.camera.lookAt(this.controls.lookTarget);
 
     // Cabinet LED proximity pulse
