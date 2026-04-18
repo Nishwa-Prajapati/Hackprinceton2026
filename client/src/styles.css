@@ -8,14 +8,23 @@
   padding: 0;
 }
 
+html,
 body {
-  background: #000;
-  color: #fff;
+  background: #2a2a35;
+  color: #eef5fb;
   font-family: 'Share Tech Mono', monospace;
   overflow: hidden;
 }
 
+html,
+body,
 #root {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+html,
+body {
+  overscroll-behavior: none;
 }

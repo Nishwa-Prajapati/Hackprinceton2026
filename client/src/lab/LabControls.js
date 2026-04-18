@@ -43,6 +43,8 @@ export class LabControls {
     // ── Cabinet state ─────────────────────────────────────────────────────────
     this._locked      = false;   // true while cabinet tween is active
     this._activeCab   = null;
+    this._benchFocused = false;
+    this._uiLocked    = false;
 
     // ── Touch tracking ────────────────────────────────────────────────────────
     this._touchLastY  = 0;
@@ -73,7 +75,7 @@ export class LabControls {
 
   // Called every frame from LabEngine.animate()
   update() {
-    if (this._locked) return;
+    if (this._locked || this._benchFocused || this._uiLocked) return;
 
     // Momentum decay — 0.88 gives ~0.6s coast at 60 fps (iOS feel)
     this._velocity *= 0.88;
@@ -117,15 +119,16 @@ export class LabControls {
     });
   }
 
-  // Tween camera back to scroll-path position
+  // Tween camera back to scroll-path position (used by cabinet close AND bench exit)
   returnToLab() {
     const { pos, look } = this._pathAt(this._targetProg);
+    this._benchFocused = false;
 
     gsap.to(this.camera.position, {
       x: pos.x, y: pos.y, z: pos.z,
-      duration: 0.85, ease: 'power2.inOut',
+      duration: 0.44, ease: 'power3.out',
       onComplete: () => {
-        this._progress  = this._targetProg; // sync so update() won't jump
+        this._progress  = this._targetProg;
         this._velocity  = 0;
         this._locked    = false;
         this._activeCab = null;
@@ -133,7 +136,60 @@ export class LabControls {
     });
     gsap.to(this.lookTarget, {
       x: look.x, y: look.y, z: look.z,
-      duration: 0.85, ease: 'power2.inOut',
+      duration: 0.44, ease: 'power3.out',
+    });
+  }
+
+  // Focus on a bench — takes { position, lookAt } (THREE.Vector3s)
+  focusBench(focusZone) {
+    this._velocity = 0;
+    this._locked   = true;
+    this._benchFocused = true;
+
+    gsap.to(this.camera.position, {
+      x: focusZone.position.x, y: focusZone.position.y, z: focusZone.position.z,
+      duration: 0.5, ease: 'power3.out',
+    });
+    gsap.to(this.lookTarget, {
+      x: focusZone.lookAt.x, y: focusZone.lookAt.y, z: focusZone.lookAt.z,
+      duration: 0.5, ease: 'power3.out',
+      onComplete: () => {
+        this._locked = false;
+      },
+    });
+  }
+
+  // Alias — mirrors returnToLab but semantically for bench exit
+  exitBench() {
+    this._benchFocused = false;
+    this.returnToLab();
+  }
+
+  setUiLocked(locked) {
+    this._uiLocked = locked;
+    this._velocity = 0;
+  }
+
+  // Camera fly-in after the gate opens — stop closer to table 1, not table 2
+  flyIn(onComplete) {
+    const startProgress = 0.22;
+    const { pos, look } = this._pathAt(startProgress);
+    this._locked = true;
+
+    gsap.to(this.camera.position, {
+      x: pos.x, y: pos.y, z: pos.z,
+      duration: 2.15, ease: 'power2.inOut',
+      onComplete: () => {
+        this._targetProg = startProgress;
+        this._progress   = startProgress;
+        this._velocity   = 0;
+        this._locked     = false;
+        onComplete?.();
+      },
+    });
+    gsap.to(this.lookTarget, {
+      x: look.x, y: look.y, z: look.z,
+      duration: 2.15, ease: 'power2.inOut',
     });
   }
 
@@ -159,7 +215,7 @@ export class LabControls {
   // ── Event handlers ────────────────────────────────────────────────────────────
 
   _handleWheel(e) {
-    if (this._locked) return;
+    if (this._locked || this._uiLocked) return;
 
     // Normalise across deltaMode (trackpad fires Mode 0/pixels, mouse may fire Mode 1/lines)
     let delta = e.deltaY;
@@ -178,7 +234,7 @@ export class LabControls {
   }
 
   _handleTouchMove(e) {
-    if (this._locked) return;
+    if (this._locked || this._uiLocked) return;
 
     const deltaY     = this._touchLastY - e.touches[0].clientY; // inverted: swipe up = forward
     this._touchLastY = e.touches[0].clientY;
