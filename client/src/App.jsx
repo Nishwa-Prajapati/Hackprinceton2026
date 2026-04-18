@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LabEngine } from './lab/LabEngine';
 import { labState } from './lab/LabState';
 import EntryScreen from './components/EntryScreen';
+import periodicTablePopup from './assets/periodic-table-popup.png';
 
 const UI_EDGE = 'max(20px, env(safe-area-inset-left), env(safe-area-inset-right))';
 const UI_TOP = 'max(20px, env(safe-area-inset-top))';
@@ -133,16 +134,19 @@ export default function App() {
           style={{ position: 'fixed', inset: 0, zIndex: 25, background: 'rgba(10, 14, 20, 0.78)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'min(5vw, 40px)' }}
         >
           <div style={{
-            width: 'min(92vw, 980px)',
+            width: 'min(94vw, 1240px)',
+            maxWidth: '94vw',
             maxHeight: '90vh',
-            background: 'linear-gradient(180deg, #f5f2e9 0%, #ece7da 100%)',
+            background: 'linear-gradient(180deg, rgba(23, 28, 38, 0.96) 0%, rgba(13, 17, 26, 0.96) 100%)',
             border: '1px solid rgba(0,212,255,0.32)',
             boxShadow: '0 0 40px rgba(0,212,255,0.12), 0 18px 80px rgba(0,0,0,0.45)',
             padding: '20px',
-            overflow: 'auto',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <div style={{ fontFamily: 'monospace', fontSize: '1rem', letterSpacing: '0.14em', color: '#1c2832', textTransform: 'uppercase' }}>Interactive Periodic Table</div>
+              <div style={{ fontFamily: 'monospace', fontSize: '1rem', letterSpacing: '0.14em', color: '#dff7ff', textTransform: 'uppercase' }}>Periodic Table</div>
               <button
                 onClick={() => labState.emit('periodic:closed', {})}
                 style={{ background: 'rgba(255,140,0,0.12)', border: '1px solid #FF8C00', color: '#FF8C00', fontFamily: 'monospace', fontSize: '0.8rem', letterSpacing: '0.08em', padding: '8px 18px', cursor: 'pointer' }}
@@ -150,36 +154,20 @@ export default function App() {
                 ← Back to Lab
               </button>
             </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(10, minmax(0, 1fr))',
-              gap: '8px',
-            }}>
-              {[
-                ['H','#97e7ff'],['He','#ffd8e7'],['Li','#f8e190'],['Be','#c7f4c8'],['B','#ffcda9'],['C','#cfe6ff'],['N','#b8f1ff'],['O','#ffb9d8'],['F','#d7ffc1'],['Ne','#f6d2ff'],
-                ['Na','#f8e190'],['Mg','#c7f4c8'],['Al','#d6deea'],['Si','#ffd8b3'],['P','#ffe2a5'],['S','#fff2a8'],['Cl','#d7ffc1'],['Ar','#f6d2ff'],['K','#f8e190'],['Ca','#c7f4c8'],
-                ['Fe','#f0c2ad'],['Cu','#ffd2a3'],['Zn','#dce5ef'],['Ag','#ebedf0'],['I','#c8f8c6'],['Au','#ffe089'],['Pb','#d8cfff'],['U','#ffc9b5']
-              ].map(([symbol, bg]) => (
-                <div key={symbol} style={{
-                  background: bg,
-                  border: '1px solid rgba(28,40,50,0.18)',
-                  minHeight: '72px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  fontSize: '1.15rem',
-                  color: '#1f2530',
-                  boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.3)',
-                }}>
-                  {symbol}
-                </div>
-              ))}
-            </div>
-            <div style={{ marginTop: '16px', fontFamily: 'monospace', fontSize: '0.72rem', color: '#3d4650', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Press ESC or use Back to return to the lab
-            </div>
+            <img
+              src={periodicTablePopup}
+              alt="Periodic table expanded view"
+              style={{
+                display: 'block',
+                width: '100%',
+                maxWidth: '100%',
+                maxHeight: 'calc(90vh - 98px)',
+                height: 'auto',
+                objectFit: 'contain',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 0 36px rgba(255, 98, 213, 0.08)',
+              }}
+            />
           </div>
         </div>
       )}
@@ -193,10 +181,10 @@ export default function App() {
         transition: 'opacity 1.2s ease',
         padding: '0 16px',
         textAlign: 'center',
-        maxWidth: 'min(92vw, 34rem)',
+        maxWidth: 'min(92vw, 40rem)',
       }}>
         <span style={{ fontFamily: 'monospace', fontSize: '0.82rem', color: '#00D4FF', letterSpacing: '0.12em', textShadow: '0 0 12px #00D4FF88' }}>
-          Click any experiment table or its label to focus it
+          Drag to look around • W A S D or arrow keys to move • Scroll to glide forward or back
         </span>
         {[0,1,2].map(i => (
           <svg key={i} width="18" height="10" viewBox="0 0 18 10" fill="none"
