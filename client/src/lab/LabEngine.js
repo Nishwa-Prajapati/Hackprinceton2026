@@ -6,6 +6,7 @@ import { createBench } from './BenchBuilder.js';
 import { intersectObjects } from '../utils/raycaster.js';
 import periodicTableFrame from '../assets/periodic-table-frame.png';
 import rightWallPoster from '../assets/right-wall-poster.png';
+import rightWallCoats from '../assets/right-wall-coats.png';
 
 RectAreaLightUniformsLib.init();
 
@@ -455,6 +456,9 @@ export class LabEngine {
     const rightWallPosterTexture = textureLoader.load(rightWallPoster);
     rightWallPosterTexture.colorSpace = THREE.SRGBColorSpace;
     rightWallPosterTexture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+    const rightWallCoatsTexture = textureLoader.load(rightWallCoats);
+    rightWallCoatsTexture.colorSpace = THREE.SRGBColorSpace;
+    rightWallCoatsTexture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
 
     const frameMat = new THREE.MeshStandardMaterial({ color: '#67707c', roughness: 0.4, metalness: 0.35 });
     const addFramedPanel = ({ texture, position, rotationY = 0, width = 3.6, height = 2.2 }) => {
@@ -504,6 +508,45 @@ export class LabEngine {
       poster.rotation.y = rotationY;
       this.scene.add(poster);
       return poster;
+    };
+
+    const addFloorCoatStandImage = ({ texture, position, rotationY = 0, width = 1.72, height = 2.58 }) => {
+      const group = new THREE.Group();
+      group.position.copy(position);
+      group.rotation.y = rotationY;
+
+      const coatStandMat = new THREE.MeshStandardMaterial({
+        map: texture,
+        transparent: true,
+        alphaTest: 0.08,
+        side: THREE.DoubleSide,
+        roughness: 0.82,
+        metalness: 0.02,
+      });
+
+      const floorShadow = new THREE.Mesh(
+        new THREE.CircleGeometry(0.36, 32),
+        new THREE.MeshBasicMaterial({
+          color: '#000000',
+          transparent: true,
+          opacity: 0.16,
+          depthWrite: false,
+        })
+      );
+      floorShadow.rotation.x = -Math.PI / 2;
+      floorShadow.position.set(0.04, 0.003, 0.08);
+      floorShadow.scale.set(1.08, 0.64, 1);
+      group.add(floorShadow);
+
+      const coatStand = new THREE.Mesh(
+        new THREE.PlaneGeometry(width, height),
+        coatStandMat
+      );
+      coatStand.position.set(0, height * 0.5, 0);
+      group.add(coatStand);
+
+      this.scene.add(group);
+      return group;
     };
 
     addFramedPanel({
@@ -616,190 +659,10 @@ export class LabEngine {
       color: '#e8f7ff', transparent: true, opacity: 0.5, transmission: 0.9, roughness: 0.08, thickness: 0.12,
     });
     const whiteCoatMat = new THREE.MeshStandardMaterial({ color: '#f3f5f8', roughness: 0.72 });
-    const gloveMat = new THREE.MeshPhysicalMaterial({
-      color: '#f8fcff',
-      transparent: true,
-      opacity: 0.72,
-      transmission: 0.35,
-      roughness: 0.2,
-      thickness: 0.06,
-    });
     const scrubMat = new THREE.MeshStandardMaterial({ color: '#9fd8ea', roughness: 0.68 });
     const shoeMat = new THREE.MeshStandardMaterial({ color: '#343b46', roughness: 0.5 });
     const skinMat = new THREE.MeshStandardMaterial({ color: '#d9b29c', roughness: 0.75 });
     const hairMat = new THREE.MeshStandardMaterial({ color: '#25303a', roughness: 0.7 });
-    const accessoryMetalMat = new THREE.MeshStandardMaterial({ color: '#768090', roughness: 0.34, metalness: 0.72 });
-
-    const addWallGearRack = ({ x, z, rotationY }) => {
-      const group = new THREE.Group();
-      group.position.set(x, 0, z);
-      group.rotation.y = rotationY;
-
-      const mountPanel = new THREE.Mesh(
-        new THREE.BoxGeometry(2.38, 0.62, 0.05),
-        new THREE.MeshStandardMaterial({ color: '#5b6470', roughness: 0.44, metalness: 0.4 })
-      );
-      mountPanel.position.set(0, 2.08, -0.015);
-      group.add(mountPanel);
-
-      const backRail = new THREE.Mesh(
-        new THREE.BoxGeometry(2.1, 0.22, 0.08),
-        accessoryMetalMat
-      );
-      backRail.position.set(0, 2.18, 0);
-      group.add(backRail);
-
-      [-0.62, 0, 0.62].forEach((hookX, index) => {
-        const mount = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.04, 0.04, 0.08, 12),
-          accessoryMetalMat
-        );
-        mount.rotation.z = Math.PI / 2;
-        mount.position.set(hookX, 2.18, 0.04);
-        group.add(mount);
-
-        const hookStem = new THREE.Mesh(
-          new THREE.CylinderGeometry(0.015, 0.015, 0.18, 10),
-          accessoryMetalMat
-        );
-        hookStem.position.set(hookX, 2.08, 0.12);
-        group.add(hookStem);
-
-        const hookTip = new THREE.Mesh(
-          new THREE.TorusGeometry(0.04, 0.012, 8, 16, Math.PI),
-          accessoryMetalMat
-        );
-        hookTip.position.set(hookX, 2.01, 0.12);
-        hookTip.rotation.z = Math.PI;
-        group.add(hookTip);
-
-        if (index !== 1) {
-          const coat = new THREE.Group();
-          coat.position.set(hookX + (index === 0 ? -0.04 : 0.04), 1.52, 0.18);
-
-          const torso = new THREE.Mesh(
-            new THREE.BoxGeometry(0.58, 0.82, 0.14),
-            whiteCoatMat
-          );
-          torso.position.y = 0.05;
-          coat.add(torso);
-
-          const skirt = new THREE.Mesh(
-            new THREE.BoxGeometry(0.66, 0.56, 0.12),
-            whiteCoatMat
-          );
-          skirt.position.set(0, -0.48, 0.01);
-          skirt.rotation.z = index === 0 ? 0.06 : -0.06;
-          coat.add(skirt);
-
-          const lapelLeft = new THREE.Mesh(
-            new THREE.BoxGeometry(0.14, 0.42, 0.02),
-            new THREE.MeshStandardMaterial({ color: '#e7edf3', roughness: 0.6 })
-          );
-          lapelLeft.position.set(-0.08, 0.12, 0.07);
-          lapelLeft.rotation.z = 0.36;
-          coat.add(lapelLeft);
-
-          const lapelRight = lapelLeft.clone();
-          lapelRight.position.x = 0.08;
-          lapelRight.rotation.z = -0.36;
-          coat.add(lapelRight);
-
-          const sleeveLeft = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.08, 0.06, 0.64, 12),
-            whiteCoatMat
-          );
-          sleeveLeft.position.set(-0.36, -0.02, 0);
-          sleeveLeft.rotation.z = 0.78;
-          coat.add(sleeveLeft);
-
-          const sleeveRight = sleeveLeft.clone();
-          sleeveRight.position.x = 0.36;
-          sleeveRight.rotation.z = -0.78;
-          coat.add(sleeveRight);
-
-          const hanger = new THREE.Mesh(
-            new THREE.TorusGeometry(0.1, 0.01, 6, 18, Math.PI),
-            accessoryMetalMat
-          );
-          hanger.position.set(0, 0.55, 0.02);
-          hanger.rotation.z = Math.PI;
-          coat.add(hanger);
-
-          group.add(coat);
-        }
-      });
-
-      const addGlovePair = ({ px, py, pz, tilt = 0 }) => {
-        const gloveGroup = new THREE.Group();
-        gloveGroup.position.set(px, py, pz);
-        gloveGroup.rotation.z = tilt;
-
-        const addGlove = offsetX => {
-          const glove = new THREE.Group();
-          glove.position.x = offsetX;
-
-          const cuff = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.052, 0.062, 0.16, 12),
-            gloveMat
-          );
-          cuff.rotation.z = Math.PI / 2;
-          glove.add(cuff);
-
-          const palm = new THREE.Mesh(
-            new THREE.SphereGeometry(0.098, 16, 14),
-            gloveMat
-          );
-          palm.scale.set(0.75, 1, 0.4);
-          palm.position.set(0.08, -0.01, 0);
-          glove.add(palm);
-
-          [-0.05, -0.015, 0.02, 0.055].forEach((fingerY, idx) => {
-            const finger = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.014, 0.011, 0.15 - idx * 0.01, 10),
-              gloveMat
-            );
-            finger.rotation.z = Math.PI / 2;
-            finger.position.set(0.16, fingerY, 0);
-            glove.add(finger);
-          });
-
-          const thumb = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.014, 0.011, 0.11, 10),
-            gloveMat
-          );
-          thumb.rotation.z = 0.9;
-          thumb.position.set(0.1, -0.08, 0);
-          glove.add(thumb);
-
-          glove.rotation.z = offsetX < 0 ? -0.18 : 0.14;
-          gloveGroup.add(glove);
-        };
-
-        addGlove(-0.08);
-        addGlove(0.08);
-        group.add(gloveGroup);
-      };
-
-      addGlovePair({ px: -0.98, py: 1.64, pz: 0.16, tilt: -0.08 });
-      addGlovePair({ px: 0.98, py: 1.72, pz: 0.16, tilt: 0.1 });
-
-      const safetyCard = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.42, 0.26),
-        new THREE.MeshBasicMaterial({ color: '#eef7ff' })
-      );
-      safetyCard.position.set(0, 1.7, 0.045);
-      group.add(safetyCard);
-
-      const cardStrip = new THREE.Mesh(
-        new THREE.BoxGeometry(0.38, 0.035, 0.01),
-        new THREE.MeshStandardMaterial({ color: '#00D4FF', emissive: '#00D4FF', emissiveIntensity: 0.4 })
-      );
-      cardStrip.position.set(0, 1.78, 0.05);
-      group.add(cardStrip);
-
-      this.scene.add(group);
-    };
 
     const addSideStation = ({ x, z, rotY, personOffsetX = 0 }) => {
       const group = new THREE.Group();
@@ -878,7 +741,13 @@ export class LabEngine {
 
     addSideStation({ x: -8.55, z: 10.8, rotY: Math.PI / 2, personOffsetX: 0.22 });
     addSideStation({ x: 8.55, z: -8.8, rotY: -Math.PI / 2, personOffsetX: -0.16 });
-    addWallGearRack({ x: 9.72, z: 6.7, rotationY: -Math.PI / 2 });
+    addFloorCoatStandImage({
+      texture: rightWallCoatsTexture,
+      position: new THREE.Vector3(7.92, 0, 4.35),
+      rotationY: -Math.PI / 2 + 0.52,
+      width: 1.9,
+      height: 2.86,
+    });
   }
 
   // ─── RAYCASTING ──────────────────────────────────────────────────────────────
