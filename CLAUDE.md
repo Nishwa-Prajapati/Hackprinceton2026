@@ -19,13 +19,23 @@ and build a shareable portfolio of everything they learned.
 
 ## Visual Style (Critical — Never Deviate)
 
-Reference: sci-fi modern chemistry lab aesthetic.
-- **Color palette:** Dark grey (#1a1a2e) base, orange accents (#FF8C00), cyan glows (#00D4FF), white bench surfaces (#E8E8E8)
-- **Lighting:** Overhead fluorescent panel lights, cyan hexagonal ceiling accent lights, warm orange trim lighting on bench edges
-- **Benches:** Grey/white surface tops with orange trim edges, blue diagonal hazard stripes on bases
-- **Cabinets:** Wall-mounted, dark grey with glowing blue/cyan LED edge strips and small digital display screens
-- **Floor:** Light grey/white with subtle reflections
-- **Overall feel:** Clean, futuristic, slightly intimidating but exciting — like a real research facility
+Reference: bright sci-fi research facility aesthetic with clean visible materials.
+- **Color palette:** medium dark grey background (#2a2a35), light warm grey reflective floor (#e8e6e0), medium grey walls (#b0aeb8), ceiling grey (#3a3a45), bench tops (#ddd9d0), bench body dark grey (#3a3a4a), orange trim (#FF8C00), cyan/pink glow accents
+- **Lighting:** bright overhead fluorescent panels, clean sci-fi reflections, cyan accent glows, subtle magenta/cyan bloom on featured edges
+- **Benches:** light lab-grade tops with dark bases, orange trim, visible but not heavy industrial contrast
+- **Cabinets:** lighter visible grey bodies, sci-fi door detailing, cyan LED strips, small digital panels
+- **Floor:** clean polished lab floor with subtle reflectivity
+- **Overall feel:** bright, premium, futuristic research lab — real facility energy, never cave-like or crushed into near-black
+
+## Current Visual Overhaul Scope
+
+Keep the existing Three.js scene structure, GSAP movement, cabinet click logic, and general camera flow.
+
+Current visual priority:
+- Replace the opening screen with a full-screen sci-fi gate door
+- Put the LabZero logo directly on the gate in a liquid chrome bubble style
+- Change the lab from dark navy to the brighter grey research-facility palette above
+- Preserve interaction architecture; do not rebuild the app from scratch just to change visuals
 
 ---
 

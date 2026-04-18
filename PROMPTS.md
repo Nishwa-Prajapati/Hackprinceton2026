@@ -5,6 +5,44 @@ Read this file top to bottom before starting.
 Run ONE prompt at a time. Wait for it to finish and verify it works before moving to the next.
 Never skip a prompt. Never combine two prompts into one.
 
+## Current Override — Visual Overhaul Pass
+
+The prompt sequence below documents how the skeleton was built. For the current state of the project, use this as the active visual-overhaul brief:
+
+```
+Complete visual overhaul based on the latest LabZero art direction. Do all of this in one pass.
+
+Keep all existing Three.js structure, GSAP camera/navigation behavior, cabinet click logic, and overall interaction flow.
+Do not rebuild the project from scratch.
+
+OPENING SCREEN (Entry Gate):
+- Full screen gate door made of two large sci-fi metal panels that split at center
+- Light grey metal panels with hex mesh texture, circuit-line detailing, center handle bars, cyan/pink glow trim
+- LabZero logo placed directly on the doors in a liquid chrome bubble style with blue/cyan/pink-purple iridescence and strong glow
+- Small cyan-lit access panel on the right side of the frame
+- Bottom text: "PRESS ENTER TO ACCESS" with slow cyan pulse
+- On Enter: doors split apart left/right with a hydraulic feel and the camera flies forward into the lab
+
+LAB COLOR THEME:
+- Background: #2a2a35
+- Floor: #e8e6e0 with a clean slightly reflective lab finish
+- Walls: #b0aeb8
+- Ceiling: #3a3a45
+- Bench surfaces: #ddd9d0
+- Bench body: #3a3a4a
+- Bench trim: #FF8C00
+- Cabinet bodies: #4a4a5a
+- Overall feel: bright clean sci-fi research facility, never cave-like
+
+LOGO STYLE:
+- Liquid chrome bubble aesthetic
+- Deep blue to cyan to pink-purple iridescent gradient
+- Strong glow/bloom around letters
+- Can be done with a high quality image treatment or layered CSS text effect
+
+Only change the opening gate screen, the visual palette/material styling, and the logo treatment unless a tiny supporting code change is required.
+```
+
 ---
 
 ## Before You Start — Setup Checklist
