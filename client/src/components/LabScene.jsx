@@ -190,6 +190,7 @@ const LabScene = forwardRef(function LabScene(
   ref
 ) {
   const mountRef = useRef(null);
+  const tooltipRef = useRef(null);
   const focusEntranceRef = useRef(() => {});
   const exitDeskRef = useRef(() => {});
 
@@ -249,6 +250,7 @@ const LabScene = forwardRef(function LabScene(
     });
 
     const interactiveObjects = [];
+    const hoverObjects = [];
     const benchMap = new Map();
     const markerMap = new Map();
     const zones = new Map([["entrance", ENTRANCE_ZONE]]);
@@ -263,6 +265,7 @@ const LabScene = forwardRef(function LabScene(
     };
 
     let hoveredZoneId = null;
+    let hoveredBenchObject = null;
     let activeZoneId = null;
     let isDeskMode = false;
     let animationFrame = 0;
@@ -273,6 +276,10 @@ const LabScene = forwardRef(function LabScene(
       scene.add(bench.group);
       benchMap.set(benchDefinition.id, bench);
       zones.set(benchDefinition.id, bench.focusZone);
+      bench.hoverTargets.forEach((hoverTarget) => {
+        hoverTarget.userData.zoneId = benchDefinition.id;
+      });
+      hoverObjects.push(...bench.hoverTargets);
 
       const marker = createMarker({
         id: benchDefinition.id,
@@ -289,6 +296,35 @@ const LabScene = forwardRef(function LabScene(
       markerMap.set(benchDefinition.id, marker);
     });
 
+    function hideTooltip() {
+      const tooltip = tooltipRef.current;
+      if (!tooltip) {
+        return;
+      }
+
+      tooltip.style.opacity = "0";
+      tooltip.style.visibility = "hidden";
+      tooltip.style.transform = "translate(-9999px, -9999px)";
+    }
+
+    function setHoveredBenchObject(nextHoveredObject) {
+      if (hoveredBenchObject?.userData?.hoverKey === nextHoveredObject?.userData?.hoverKey) {
+        return;
+      }
+
+      if (hoveredBenchObject) {
+        const previousBench = benchMap.get(hoveredBenchObject.userData.zoneId);
+        previousBench?.setHoveredObject(null);
+      }
+
+      hoveredBenchObject = nextHoveredObject;
+
+      if (hoveredBenchObject) {
+        const nextBench = benchMap.get(hoveredBenchObject.userData.zoneId);
+        nextBench?.setHoveredObject(hoveredBenchObject.userData.hoverKey);
+      }
+    }
+
     function syncBenchVisuals() {
       benchMap.forEach((bench, zoneId) => {
         bench.setHovered(zoneId === hoveredZoneId);
@@ -300,7 +336,8 @@ const LabScene = forwardRef(function LabScene(
         marker.setActive(zoneId === activeZoneId);
       });
 
-      renderer.domElement.style.cursor = hoveredZoneId ? "pointer" : "grab";
+      const hasObjectHover = Boolean(hoveredZoneId || hoveredBenchObject);
+      renderer.domElement.style.cursor = hasObjectHover ? "pointer" : "grab";
     }
 
     function setDeskMode(nextDeskMode) {
@@ -396,17 +433,42 @@ const LabScene = forwardRef(function LabScene(
     onDeskModeChange?.(false);
 
     function updateHoverFromEvent(event) {
-      const hit = intersectInteractiveObjects(
+      // Marker raycasts preserve existing zone behavior, while bench-object raycasts
+      // drive tooltip/highlight only and do not touch camera or navigation logic.
+      const markerHit = intersectInteractiveObjects(
         event,
         renderer.domElement,
         camera,
         interactiveObjects
       );
-      const nextZoneId = hit?.object?.userData?.zoneId ?? null;
+      const nextZoneId = markerHit?.object?.userData?.zoneId ?? null;
+
+      const benchHit = nextZoneId
+        ? null
+        : intersectInteractiveObjects(event, renderer.domElement, camera, hoverObjects);
+      const tooltip = tooltipRef.current;
 
       if (nextZoneId !== hoveredZoneId) {
         hoveredZoneId = nextZoneId;
         syncBenchVisuals();
+      }
+
+      setHoveredBenchObject(benchHit?.object ?? null);
+      syncBenchVisuals();
+
+      if (tooltip && benchHit?.object?.userData?.hoverName) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+
+        tooltip.textContent = benchHit.object.userData.hoverName;
+        tooltip.style.visibility = "visible";
+        tooltip.style.opacity = "1";
+        // Keep the tooltip slightly offset from the pointer so the hovered object
+        // remains visible while the existing raycast hover logic continues to drive it.
+        tooltip.style.transform = `translate(${x + 16}px, ${y + 20}px)`;
+      } else {
+        hideTooltip();
       }
     }
 
@@ -416,7 +478,8 @@ const LabScene = forwardRef(function LabScene(
         controller.beginDrag(event.clientX, event.clientY);
         renderer.domElement.style.cursor = "grabbing";
       } else {
-        renderer.domElement.style.cursor = hoveredZoneId ? "pointer" : "default";
+        renderer.domElement.style.cursor =
+          hoveredZoneId || hoveredBenchObject ? "pointer" : "default";
       }
       pointerState.moved = false;
       pointerState.movedDistance = 0;
@@ -447,13 +510,16 @@ const LabScene = forwardRef(function LabScene(
 
       pointerState.moved = false;
       pointerState.movedDistance = 0;
-      renderer.domElement.style.cursor = hoveredZoneId ? "pointer" : "grab";
+      renderer.domElement.style.cursor =
+        hoveredZoneId || hoveredBenchObject ? "pointer" : "grab";
     }
 
     function handlePointerLeave() {
       controller.endDrag();
       hoveredZoneId = null;
+      setHoveredBenchObject(null);
       syncBenchVisuals();
+      hideTooltip();
     }
 
     function handleWheel(event) {
@@ -514,7 +580,12 @@ const LabScene = forwardRef(function LabScene(
     };
   }, [onDeskModeChange, onFocusChange]);
 
-  return <div className="scene-canvas" ref={mountRef} />;
+  return (
+    <>
+      <div className="scene-canvas" ref={mountRef} />
+      <div className="scene-tooltip" ref={tooltipRef} />
+    </>
+  );
 });
 
 export default LabScene;

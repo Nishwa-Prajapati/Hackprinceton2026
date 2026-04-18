@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import EntryOverlay from "./components/EntryOverlay";
+import InfoPanel from "./components/InfoPanel";
 import LabScene from "./components/LabScene";
 
 function App() {
@@ -15,19 +16,7 @@ function App() {
           <EntryOverlay onEnter={() => setHasEntered(true)} />
         ) : (
           <>
-            <div className="hud-card">
-              <p className="eyebrow">Virtual Chemistry Lab</p>
-              <h1>Walk-In Lab Core</h1>
-              <p className="hud-copy">
-                Scroll to walk the aisle, drag to look around, and click a numbered
-                marker to glide into a reaction bench.
-              </p>
-              <div className="hud-meta">
-                <span>Focus: {focusLabel}</span>
-                <span>4 interactive benches</span>
-                <span>React + Three.js + GSAP</span>
-              </div>
-            </div>
+            <InfoPanel focusLabel={focusLabel} />
 
             <div className="scene-actions">
               <button
