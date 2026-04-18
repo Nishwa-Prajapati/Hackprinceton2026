@@ -1,290 +1,30 @@
-:root {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  color: #122033;
-  background:
-    radial-gradient(circle at top, rgba(208, 224, 241, 0.85), transparent 30%),
-    linear-gradient(180deg, #dfe7f0 0%, #cfd8e3 100%);
-  color-scheme: light;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: #2a2a35;
+  color: #eef5fb;
+  font-family: 'Share Tech Mono', monospace;
+  overflow: hidden;
 }
 
 html,
 body,
 #root {
-  min-height: 100%;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-button {
-  font: inherit;
-}
-
-.app-shell {
-  min-height: 100vh;
-  padding: 20px;
-}
-
-.scene-stage {
-  position: relative;
-  min-height: calc(100vh - 40px);
-  border-radius: 28px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  background: rgba(244, 248, 252, 0.6);
-  box-shadow:
-    0 24px 70px rgba(62, 81, 104, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
-}
-
-.scene-canvas {
   width: 100%;
-  height: calc(100vh - 40px);
+  height: 100%;
+  overflow: hidden;
 }
 
-.scene-tooltip {
-  position: absolute;
-  z-index: 4;
-  pointer-events: none;
-  visibility: hidden;
-  opacity: 0;
-  transform: translate(-9999px, -9999px);
-  padding: 8px 12px;
-  border-radius: 14px;
-  background: rgba(20, 31, 45, 0.76);
-  color: #f7fbff;
-  font-size: 0.88rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 14px 26px rgba(18, 29, 43, 0.16);
-  white-space: nowrap;
-  backdrop-filter: blur(12px);
-  transition:
-    opacity 120ms ease,
-    transform 120ms ease;
-}
-
-.entry-overlay {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background:
-    radial-gradient(circle at top, rgba(214, 228, 242, 0.88), transparent 34%),
-    linear-gradient(180deg, #dbe4ee 0%, #c8d3df 100%);
-}
-
-.entry-card {
-  width: min(440px, 100%);
-  padding: 36px 30px;
-  border-radius: 28px;
-  text-align: center;
-  background: rgba(250, 252, 255, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  box-shadow:
-    0 28px 70px rgba(56, 73, 94, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92);
-}
-
-.entry-eyebrow {
-  margin: 0 0 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #4a6d92;
-}
-
-.entry-card h1 {
-  margin: 0;
-  font-size: clamp(2.4rem, 6vw, 3.8rem);
-  line-height: 1;
-  color: #122033;
-}
-
-.entry-button {
-  margin-top: 22px;
-  border: none;
-  border-radius: 16px;
-  padding: 14px 22px;
-  background: linear-gradient(135deg, #27405c, #4d6f92);
-  color: #f7fbff;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 14px 30px rgba(39, 64, 92, 0.22);
-}
-
-.hud-card,
-.scene-actions,
-.instruction-bar {
-  position: absolute;
-  z-index: 2;
-  backdrop-filter: blur(16px);
-  background: rgba(250, 252, 255, 0.74);
-  border: 1px solid rgba(255, 255, 255, 0.86);
-  box-shadow: 0 18px 40px rgba(63, 80, 101, 0.12);
-}
-
-.hud-card {
-  top: 20px;
-  left: 20px;
-  max-width: min(420px, calc(100% - 40px));
-  padding: 18px 20px;
-  border-radius: 22px;
-}
-
-.info-panel {
-  transition:
-    max-width 180ms ease,
-    padding 180ms ease;
-}
-
-.info-panel-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.info-panel-header .eyebrow {
-  margin-bottom: 0;
-}
-
-.info-panel-toggle {
-  border: none;
-  border-radius: 999px;
-  padding: 8px 12px;
-  background: rgba(226, 236, 247, 0.94);
-  color: #27405c;
-  cursor: pointer;
-  font-size: 0.88rem;
-  font-weight: 700;
-}
-
-.info-panel.is-minimized {
-  max-width: 260px;
-  padding: 14px 16px;
-}
-
-.info-panel.is-minimized h1 {
-  margin-top: 10px;
-  font-size: 1.2rem;
-  line-height: 1.1;
-}
-
-.eyebrow {
-  margin: 0 0 8px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #4673a7;
-}
-
-.hud-card h1 {
-  margin: 0;
-  font-size: clamp(2.2rem, 5vw, 3.8rem);
-  line-height: 0.96;
-}
-
-.hud-copy {
-  margin: 14px 0 0;
-  max-width: 34ch;
-  color: #43556b;
-  line-height: 1.55;
-}
-
-.hud-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.hud-meta span {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(226, 236, 247, 0.94);
-  color: #27405c;
-  font-size: 0.92rem;
-}
-
-.scene-actions {
-  top: 20px;
-  right: 20px;
-  padding: 10px;
-  border-radius: 18px;
-}
-
-.secondary-button {
-  border: none;
-  border-radius: 14px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #27405c, #4d6f92);
-  color: #f7fbff;
-  cursor: pointer;
-  font-weight: 700;
-  box-shadow: 0 10px 24px rgba(39, 64, 92, 0.22);
-}
-
-.instruction-bar {
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  color: #3b5069;
-}
-
-.instruction-bar span {
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(232, 239, 248, 0.92);
-}
-
-@media (max-width: 860px) {
-  .app-shell {
-    padding: 12px;
-  }
-
-  .scene-stage {
-    min-height: calc(100vh - 24px);
-    border-radius: 22px;
-  }
-
-  .scene-canvas {
-    height: calc(100vh - 24px);
-  }
-
-  .hud-card,
-  .scene-actions,
-  .instruction-bar {
-    left: 12px;
-    right: 12px;
-  }
-
-  .hud-card,
-  .scene-actions {
-    top: 12px;
-  }
-
-  .scene-actions {
-    left: auto;
-  }
-
-  .instruction-bar {
-    bottom: 12px;
-  }
+html,
+body {
+  overscroll-behavior: none;
 }
