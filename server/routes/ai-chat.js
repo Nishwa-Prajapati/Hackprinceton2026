@@ -3,40 +3,48 @@ import { Router } from "express";
 
 const router = Router();
 
-function buildPrompt(question, context = {}) {
+const SYSTEM_INSTRUCTION = `You are a voice assistant inside a virtual chemistry lab for students. Your answers are spoken aloud — never written on screen. This means you must NEVER use bullet points, numbered lists, headers, bold text, asterisks, or any markdown formatting of any kind. If you use any of those, the student will hear symbols read aloud, which sounds broken.
+
+Rules you must follow without exception:
+- Respond in 2 to 3 plain spoken sentences only
+- Keep the total answer under 50 words
+- Mention one specific real-world use or surprising fact
+- Use simple conversational language a 14-year-old would understand
+- Never use lists or formatting — only natural flowing sentences
+- Never open with filler words like "Certainly!" or "Great question!"`;
+
+function buildUserMessage(question, context = {}) {
   const chemicals = Array.isArray(context.chemicals)
     ? context.chemicals.filter(Boolean).join(", ")
     : "";
 
-  const contextBlock = [
-    context.desk && `Lab desk: ${context.desk}`,
-    context.reaction && `Reaction being studied: ${context.reaction}`,
-    chemicals && `Chemicals involved: ${chemicals}`,
-    context.output && `Product formed: ${context.output}`,
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const contextLines = [
+    context.desk && `Lab: ${context.desk}`,
+    context.reaction && `Reaction: ${context.reaction}`,
+    chemicals && `Chemicals: ${chemicals}`,
+    context.output && `Product: ${context.output}`,
+  ].filter(Boolean);
 
-  return `You are an encouraging chemistry tutor inside a virtual science lab. Your responses are spoken aloud to the student via a voice assistant, so always write in plain spoken English — no bullet points, no markdown, no asterisks, no numbered lists.
+  const contextBlock = contextLines.length
+    ? `Context: ${contextLines.join(" | ")}\n`
+    : "";
 
-${contextBlock ? `Current lab context:\n${contextBlock}\n` : ""}Student message:
-${question}
-
-How to respond:
-- If the student is asking a chemistry question, answer it clearly and completely
-- If the student says they don't know something, explain it to them — do not just say "that's okay" and stop
-- If the student gives a partial or wrong answer, briefly acknowledge it then give the correct explanation
-- Always include at least one real-world use case or interesting fact in your answer
-- Use simple language suitable for a curious 14-year-old
-- Write 3 to 5 natural spoken sentences — enough to actually answer the question
-- Never stop at just an acknowledgment word like "Fantastic" or "Great" — always follow through with the actual answer`;
+  return `${contextBlock}Student: ${question}`;
 }
 
 function extractText(payload) {
   const parts = payload?.candidates?.[0]?.content?.parts ?? [];
-  return parts
-    .map((part) => part?.text ?? "")
-    .join(" ")
+  return parts.map((part) => part?.text ?? "").join(" ").trim();
+}
+
+function stripMarkdown(text) {
+  return text
+    .replace(/#{1,6}\s*/g, "")
+    .replace(/\*{1,3}([^*]+)\*{1,3}/g, "$1")
+    .replace(/^\s*[-*•]\s+/gm, "")
+    .replace(/^\s*\d+\.\s+/gm, "")
+    .replace(/\n{2,}/g, " ")
+    .replace(/\n/g, " ")
     .trim();
 }
 
@@ -60,15 +68,19 @@ router.post("/", async (request, response) => {
     const geminiResponse = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
+        systemInstruction: {
+          parts: [{ text: SYSTEM_INSTRUCTION }],
+        },
         contents: [
           {
-            parts: [{ text: buildPrompt(trimmedQuestion, context) }],
+            role: "user",
+            parts: [{ text: buildUserMessage(trimmedQuestion, context) }],
           },
         ],
         generationConfig: {
-          temperature: 0.4,
-          topP: 0.88,
-          maxOutputTokens: 280,
+          temperature: 0.3,
+          topP: 0.85,
+          maxOutputTokens: 120,
         },
       },
       {
@@ -80,16 +92,18 @@ router.post("/", async (request, response) => {
       }
     );
 
-    const answer = extractText(geminiResponse.data);
-    if (!answer) {
+    const raw = extractText(geminiResponse.data);
+    if (!raw) {
       throw new Error("Gemini returned an empty response.");
     }
 
-    response.json({ answer });
+    response.json({ answer: stripMarkdown(raw) });
   } catch (error) {
+    const details = error.response?.data ?? error.message;
+    console.error('[ai-chat] Gemini error:', JSON.stringify(details, null, 2));
     response.status(500).json({
       error: "Unable to generate an AI assistant response.",
-      details: error.response?.data ?? error.message,
+      details,
     });
   }
 });

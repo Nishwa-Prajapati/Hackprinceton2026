@@ -81,11 +81,9 @@ export function useAIAssistant() {
       setStatusText('');
       return answer;
     } catch (error) {
-      const fallback = 'I’m having trouble answering that right now.';
-      setStatusText('Speaking...');
-      await speak(fallback);
-      setStatusText(fallback);
-      return fallback;
+      console.error('[AIAssistant] askAssistant failed:', JSON.stringify(error?.response?.data ?? error?.message ?? error, null, 2));
+      setStatusText('Could not reach the assistant.');
+      return '';
     }
   }
 
