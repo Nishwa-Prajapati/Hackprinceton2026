@@ -3,6 +3,7 @@ import { LabEngine } from './lab/LabEngine';
 import { labState } from './lab/LabState';
 import EntryScreen from './components/EntryScreen';
 import ChemicalBench from './components/ChemicalBench';
+import LabAssistant, { BENCH_LINES } from './components/LabAssistant';
 import periodicTablePopup from './assets/periodic-table-popup.png';
 
 const UI_EDGE = 'max(20px, env(safe-area-inset-left), env(safe-area-inset-right))';
@@ -26,7 +27,12 @@ export default function App() {
     engine.init(canvasRef.current);
     engine.setTooltipEl(tooltipRef.current);
 
-    const offBenchFocus = labState.on('bench:focused',  ({ id, name }) => { setActiveBench({ id, name }); setPhase('focused'); });
+    const offBenchFocus = labState.on('bench:focused', ({ id, name }) => {
+      setActiveBench({ id, name });
+      setPhase('focused');
+      const line = BENCH_LINES[name];
+      if (line) setTimeout(() => labState.emit('aria:speak', { text: line }), 600);
+    });
     const offBenchExit  = labState.on('bench:exited',   ()             => { setActiveBench(null); setPhase('roaming'); });
     const offPeriodicOpen = labState.on('periodic:opened', () => {
       setPeriodicOpen(true);
@@ -203,6 +209,9 @@ export default function App() {
           </svg>
         ))}
       </div>
+
+      {/* ARIA voice assistant — always visible after entry */}
+      {phase !== 'entry' && <LabAssistant />}
 
       {/* Item tooltip */}
       <div ref={tooltipRef} style={{

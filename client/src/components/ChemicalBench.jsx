@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import apiClient from '../api/client';
+import { labState } from '../lab/LabState';
+import { RUN_LINES, RESULT_LINES } from './LabAssistant';
 
 // ── bench zone → server desk ID ──────────────────────────────────────────────
 const ZONE_TO_DESK = {
@@ -727,13 +729,30 @@ export default function ChemicalBench({ benchId, benchName, onExit }) {
 
   async function handleRun() {
     if (selected.length < 2) return;
+
+    // ARIA narrates the hazard level before mixing starts
+    const levels  = selChems.map(c => getHazardLevel(c.hazard));
+    const combo   = worstHazard(levels);
+    labState.emit('aria:speak', { text: RUN_LINES[combo] });
+
     setStage('mixing');
     try {
       const res = await apiClient.post(`/api/desks/${deskId}/lookup`, { reactants: selected });
       const rxn = res.data.found ? res.data.reaction : null;
-      timerRef.current = setTimeout(() => { setReaction(rxn); setStage('result'); }, 2800);
+      timerRef.current = setTimeout(() => {
+        setReaction(rxn);
+        setStage('result');
+        // ARIA narrates the result after the flashcard appears
+        setTimeout(() => labState.emit('aria:speak', {
+          text: rxn ? RESULT_LINES.found : RESULT_LINES.notFound,
+        }), 500);
+      }, 2800);
     } catch {
-      timerRef.current = setTimeout(() => { setReaction(null); setStage('result'); }, 2800);
+      timerRef.current = setTimeout(() => {
+        setReaction(null);
+        setStage('result');
+        setTimeout(() => labState.emit('aria:speak', { text: RESULT_LINES.notFound }), 500);
+      }, 2800);
     }
   }
 
