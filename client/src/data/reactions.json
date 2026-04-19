@@ -1,0 +1,62 @@
+{
+  "reactions": [
+    {
+      "id": "na-water-01",
+      "zone": "B",
+      "name": "Sodium + Water",
+      "equation": "2Na + 2H₂O → 2NaOH + H₂↑",
+      "correctReagents": ["sodium", "water"],
+      "conditions": { "temp": 25, "pressure": 1.0 },
+      "dangerLevel": "high",
+      "cabinet": "cabinet-A",
+      "correctAnimation": "gentle_fizz",
+      "failureModes": [
+        {
+          "type": "wrong_order",
+          "trigger": "sodium_dropped_fast",
+          "animation": "explosion_red",
+          "elevenLabsText": "A violent crack echoes through the lab. The flask shatters. Acrid smoke fills the air around you. You can feel the heat on your face.",
+          "explanation": "You dropped sodium into water too quickly. The reaction rate exceeded the heat dissipation rate, causing a runaway exothermic event.",
+          "claudePrompt": "Student caused a sodium-water explosion by dropping sodium too quickly. Explain what went wrong at the molecular level in 3 sentences for a 14-year-old."
+        }
+      ],
+      "realWorldContexts": ["car_battery", "soap_manufacturing"],
+      "sensoryData": {
+        "approach": "The sodium cabinet has a bright hazard sticker. You can almost smell the mineral oil it's stored in.",
+        "before": "The sodium sits in mineral oil, silvery and soft. The water flask is clear and still.",
+        "during": "A sharp hiss. Bubbles erupt violently. The flask warms instantly in your hands.",
+        "after": "The solution is now basic. A faint alkaline smell. The flask is warm to the touch.",
+        "failure": "A violent crack echoes through the lab. The flask shatters. Acrid smoke fills the air."
+      }
+    },
+    {
+      "id": "hcl-naoh-01",
+      "zone": "A",
+      "name": "HCl + NaOH",
+      "equation": "HCl + NaOH → NaCl + H₂O",
+      "correctReagents": ["hcl", "naoh"],
+      "conditions": { "temp": 25, "pressure": 1.0 },
+      "dangerLevel": "medium",
+      "cabinet": "cabinet-A",
+      "correctAnimation": "colour_change",
+      "failureModes": [
+        {
+          "type": "wrong_acid",
+          "trigger": "excess_hcl",
+          "animation": "fume_yellow",
+          "elevenLabsText": "A sharp acrid smell stings your nose. Yellow-green fumes rise from the beaker. You step back instinctively.",
+          "explanation": "Too much HCl was added. The solution remained strongly acidic and released hydrogen chloride fumes instead of neutralising cleanly.",
+          "claudePrompt": "Student added too much HCl to NaOH, producing acidic fumes. Explain what went wrong at the molecular level in 3 sentences for a 14-year-old."
+        }
+      ],
+      "realWorldContexts": ["antacid_tablets", "water_treatment"],
+      "sensoryData": {
+        "approach": "The reagent cabinet smells faintly of chemicals. A yellow hazard label marks the HCl bottle.",
+        "before": "The HCl solution is colourless and sharp-smelling. The NaOH solution is clear with a slight slippery feel.",
+        "during": "The indicator turns pink, then purple, then settles to a steady neutral green.",
+        "after": "Salt water. Completely harmless. The indicator stays green — a perfect neutral.",
+        "failure": "A sharp acrid smell. Yellow fumes. The indicator stays red — too much acid."
+      }
+    }
+  ]
+}

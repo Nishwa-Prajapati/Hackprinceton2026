@@ -1,0 +1,995 @@
+{
+  "desk": {
+    "id": "desk_2",
+    "name": "Combustion Reactions",
+    "description": "Select a fuel and a supporter/test reagent to explore combustion chemistry — complete and incomplete burning, flame colours, metal combustions, limewater tests, and soot formation.",
+    "grade": ["9", "10"],
+    "max_selection": 2
+  },
+
+  "chemicals": [
+    {
+      "id": 1,
+      "name": "Magnesium Ribbon",
+      "formula": "Mg",
+      "type": "metal_fuel",
+      "state": "solid",
+      "bottle_color": "#E8E8E8",
+      "solid_color": "#C0C0C0",
+      "hazard": "burns_bright_white — never look directly at flame"
+    },
+    {
+      "id": 2,
+      "name": "Sulfur Powder",
+      "formula": "S",
+      "type": "non_metal_fuel",
+      "state": "solid",
+      "bottle_color": "#FFF176",
+      "solid_color": "#FFD600",
+      "hazard": "toxic_fumes — use fume cupboard"
+    },
+    {
+      "id": 3,
+      "name": "Charcoal / Carbon",
+      "formula": "C",
+      "type": "non_metal_fuel",
+      "state": "solid",
+      "bottle_color": "#424242",
+      "solid_color": "#212121",
+      "hazard": "produces_CO — ensure ventilation"
+    },
+    {
+      "id": 4,
+      "name": "Ethanol",
+      "formula": "C2H5OH",
+      "type": "alcohol_fuel",
+      "state": "liquid",
+      "bottle_color": "#E1F5FE",
+      "liquid_color": "#F0FBFF",
+      "hazard": "highly_flammable"
+    },
+    {
+      "id": 5,
+      "name": "Candle Wax (Paraffin)",
+      "formula": "C25H52",
+      "type": "hydrocarbon_fuel",
+      "state": "solid",
+      "bottle_color": "#FFFDE7",
+      "solid_color": "#FFFFF0",
+      "hazard": "mild — fire hazard when melted"
+    },
+    {
+      "id": 6,
+      "name": "Methane Gas",
+      "formula": "CH4",
+      "type": "gaseous_fuel",
+      "state": "gas",
+      "bottle_color": "#E8F5E9",
+      "gas_color": "#F1FBF2",
+      "hazard": "flammable_gas — no naked flames near cylinder"
+    },
+    {
+      "id": 7,
+      "name": "Iron Filings / Wool",
+      "formula": "Fe",
+      "type": "metal_fuel",
+      "state": "solid",
+      "bottle_color": "#EFEBE9",
+      "solid_color": "#A1887F",
+      "hazard": "sparks — keep away from flammables"
+    },
+    {
+      "id": 8,
+      "name": "Calcium",
+      "formula": "Ca",
+      "type": "metal_fuel",
+      "state": "solid",
+      "bottle_color": "#F3E5F5",
+      "solid_color": "#CE93D8",
+      "hazard": "reacts_with_moisture — store dry"
+    },
+    {
+      "id": 9,
+      "name": "Oxygen Gas",
+      "formula": "O2",
+      "type": "oxidant",
+      "state": "gas",
+      "bottle_color": "#E3F2FD",
+      "gas_color": "#EBF5FB",
+      "hazard": "oxidizer — keeps fires burning vigorously"
+    },
+    {
+      "id": 10,
+      "name": "Limewater",
+      "formula": "Ca(OH)2 (aq)",
+      "type": "test_reagent",
+      "state": "liquid",
+      "bottle_color": "#E8F8F5",
+      "liquid_color": "#F0FBF8",
+      "hazard": "mild_irritant"
+    },
+    {
+      "id": 11,
+      "name": "Cobalt Chloride Paper",
+      "formula": "CoCl2 paper",
+      "type": "test_reagent",
+      "state": "solid",
+      "bottle_color": "#FCE4EC",
+      "solid_color": "#1565C0",
+      "hazard": "mild — cobalt compounds are slightly toxic"
+    },
+    {
+      "id": 12,
+      "name": "Copper(II) Oxide",
+      "formula": "CuO",
+      "type": "oxidant_solid",
+      "state": "solid",
+      "bottle_color": "#3E2723",
+      "solid_color": "#1B0000",
+      "hazard": "toxic_if_ingested — avoid inhaling dust"
+    }
+  ],
+
+  "apparatus": [
+    { "id": 1,  "name": "Bunsen Burner",           "icon": "bunsen_burner"        },
+    { "id": 2,  "name": "Deflagrating Spoon",       "icon": "deflagrating_spoon"   },
+    { "id": 3,  "name": "Gas Jar / Bell Jar",       "icon": "gas_jar"              },
+    { "id": 4,  "name": "Crucible with Lid",        "icon": "crucible"             },
+    { "id": 5,  "name": "Delivery Tube & Stopper",  "icon": "delivery_tube"        },
+    { "id": 6,  "name": "Boiling Tube",             "icon": "boiling_tube"         },
+    { "id": 7,  "name": "Crucible Tongs",           "icon": "crucible_tongs"       },
+    { "id": 8,  "name": "Heat-Proof Mat",           "icon": "heatproof_mat"        },
+    { "id": 9,  "name": "Combustion Tube (Hard Glass)", "icon": "combustion_tube"  },
+    { "id": 10, "name": "Tripod & Gauze",           "icon": "tripod_gauze"         },
+    { "id": 11, "name": "Wooden Splint",            "icon": "wooden_splint"        },
+    { "id": 12, "name": "Safety Goggles & Screen",  "icon": "safety_screen"        }
+  ],
+
+  "reactions": [
+
+    {
+      "id": "rxn_1_9",
+      "reactants": [1, 9],
+      "name": "Magnesium Burning in Oxygen — Dazzling White Flame",
+      "formula": "2Mg + O2 -> 2MgO",
+      "type": "vigorous_combustion",
+      "output": {
+        "flame_color": "#FFFFFF",
+        "flame_intensity": "blinding_white",
+        "smoke_produced": true,
+        "smoke_color": "#FFFFFF",
+        "smoke_name": "Magnesium Oxide white smoke",
+        "soot_produced": false,
+        "ash_residue": true,
+        "ash_color": "#F5F5F5",
+        "ash_name": "Magnesium Oxide (MgO) white powder",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["blinding_white_flash", "white_smoke_billowing", "bright_white_flame"],
+        "observation": "Magnesium burns with an intensely bright white flame. Dense white smoke of magnesium oxide fills the gas jar. A white powdery ash (MgO) is left behind."
+      },
+      "apparatus_needed": [2, 3, 7, 8, 12],
+      "educational_note": "Magnesium undergoes complete combustion in oxygen. The product MgO is a white solid. This is also a synthesis (combination) reaction. NEVER look directly at the flame — it emits UV radiation."
+    },
+
+    {
+      "id": "rxn_1_10",
+      "reactants": [1, 10],
+      "name": "Magnesium Ash + Limewater — No Reaction",
+      "formula": "MgO + Ca(OH)2 -> no reaction (MgO is insoluble)",
+      "type": "no_reaction",
+      "output": {
+        "flame_color": null,
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Magnesium ribbon does not react with limewater at room temperature. Limewater stays clear. The two do not combust together."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Limewater is a test reagent for CO2, not a combustion supporter. Metals require an ignition source and oxygen to combust — not limewater."
+    },
+
+    {
+      "id": "rxn_1_11",
+      "reactants": [1, 11],
+      "name": "Magnesium + Cobalt Chloride Paper — No Reaction",
+      "formula": "Mg + CoCl2 paper -> no combustion reaction",
+      "type": "no_reaction",
+      "output": {
+        "flame_color": null,
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No combustion reaction. Cobalt chloride paper is a moisture-detection test reagent, not a fuel or oxidant. No reaction occurs."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Cobalt chloride paper tests for water (turns pink when wet). It does not support or cause combustion."
+    },
+
+    {
+      "id": "rxn_1_12",
+      "reactants": [1, 12],
+      "name": "Magnesium Burns with Copper(II) Oxide — Displacement",
+      "formula": "Mg + CuO -> MgO + Cu",
+      "type": "thermite_type_combustion",
+      "output": {
+        "flame_color": "#FF8C00",
+        "flame_intensity": "vigorous_sparks",
+        "smoke_produced": true,
+        "smoke_color": "#FFFFFF",
+        "soot_produced": false,
+        "residue_produced": true,
+        "residue_color": "#B87333",
+        "residue_name": "Copper metal (reddish-brown)",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["orange_sparks_shower", "bright_flame_pulse", "residue_glow_red"],
+        "observation": "Vigorous reaction with bright sparks and intense heat. Reddish-brown copper metal is seen in the white ash. MgO white powder also forms."
+      },
+      "apparatus_needed": [4, 7, 8, 10, 12],
+      "educational_note": "Magnesium displaces copper from copper oxide because Mg is more reactive than Cu. This is both a combustion-type and a displacement reaction. The reddish product confirms copper metal formation."
+    },
+
+    {
+      "id": "rxn_2_9",
+      "reactants": [2, 9],
+      "name": "Sulfur Burns in Oxygen — Blue Flame, Choking Fumes",
+      "formula": "S + O2 -> SO2",
+      "type": "vigorous_combustion",
+      "output": {
+        "flame_color": "#4FC3F7",
+        "flame_intensity": "steady_blue_flame",
+        "smoke_produced": true,
+        "smoke_color": "#EEEEEE",
+        "smoke_name": "Sulfur Dioxide (SO2) gas — toxic, choking",
+        "soot_produced": false,
+        "gas_produced": true,
+        "gas_name": "Sulfur Dioxide",
+        "gas_formula": "SO2",
+        "heat_released": true,
+        "odor": "pungent choking smell — rotten eggs / matchstick",
+        "animations": ["blue_flame_flicker", "white_fumes_drifting", "vigorous_blue_glow"],
+        "observation": "Sulfur burns with a beautiful pale blue flame. Dense, choking white-gray fumes of SO2 fill the gas jar. The fumes smell strongly of burning matchsticks."
+      },
+      "apparatus_needed": [2, 3, 7, 8, 12],
+      "educational_note": "Sulfur combustion produces sulfur dioxide (SO2), an acidic gas responsible for acid rain. In a fume cupboard, SO2 can be tested by its bleaching of damp litmus paper."
+    },
+
+    {
+      "id": "rxn_2_10",
+      "reactants": [2, 10],
+      "name": "SO2 + Limewater — Turns Milky",
+      "formula": "SO2 + Ca(OH)2 -> CaSO3 (precipitate) + H2O",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0FBF8",
+        "result_color": "#E8E8E8",
+        "precipitate": true,
+        "precipitate_name": "Calcium Sulfite (CaSO3)",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "faint sulfur smell",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "Limewater turns milky white — indicating an acidic gas. Note: SO2 gives the same limewater test as CO2, so further tests are needed to distinguish them."
+      },
+      "apparatus_needed": [5, 6, 8, 10],
+      "educational_note": "SO2 makes limewater milky (just like CO2 does). Additional tests (e.g. bleaching of potassium manganate) can distinguish SO2 from CO2. Both are acidic gases."
+    },
+
+    {
+      "id": "rxn_2_11",
+      "reactants": [2, 11],
+      "name": "Sulfur + Cobalt Chloride Paper — No Relevant Test",
+      "formula": "S combustion -> SO2, not H2O",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Cobalt chloride paper tests for water. Sulfur combustion produces SO2, not water — so the paper stays blue. No water is produced when sulfur burns."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Only fuels containing hydrogen (H) produce water when burned. Sulfur contains no hydrogen, so no water forms and cobalt chloride paper does not change colour."
+    },
+
+    {
+      "id": "rxn_2_12",
+      "reactants": [2, 12],
+      "name": "Sulfur + Copper(II) Oxide — No Direct Combustion",
+      "formula": "S + CuO -> no clean combustion at room temperature",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction at room temperature. Sulfur and copper oxide do not combust together without very high heat input. This pair is not used in a standard combustion experiment."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Not all pairs of combustible and oxidising materials react under normal lab conditions. Activation energy and reactivity must both be sufficient."
+    },
+
+    {
+      "id": "rxn_3_9",
+      "reactants": [3, 9],
+      "name": "Carbon (Charcoal) Burns in Oxygen — Blue Flame, CO2",
+      "formula": "C + O2 -> CO2",
+      "type": "complete_combustion",
+      "output": {
+        "flame_color": "#FF6F00",
+        "flame_intensity": "steady_orange_glow",
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["orange_glow_pulse", "heat_shimmer", "bubbles_rising"],
+        "observation": "Charcoal glows orange-red and burns cleanly in pure oxygen. No visible smoke. Colourless, odourless CO2 is produced. The glow intensifies in pure O2 compared to air."
+      },
+      "apparatus_needed": [2, 3, 5, 7, 8, 10],
+      "educational_note": "Complete combustion of carbon gives CO2. If oxygen is limited, incomplete combustion gives CO (carbon monoxide), a colourless, odourless, and very toxic gas."
+    },
+
+    {
+      "id": "rxn_3_10",
+      "reactants": [3, 10],
+      "name": "CO2 Test — Limewater Turns Milky",
+      "formula": "CO2 + Ca(OH)2 -> CaCO3 (precipitate) + H2O",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0FBF8",
+        "result_color": "#E0E0E0",
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate (CaCO3) — white milky precipitate",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "Limewater turns milky white — the classic positive test for carbon dioxide. The white precipitate is calcium carbonate (chalk)."
+      },
+      "apparatus_needed": [5, 6, 8, 10],
+      "educational_note": "The limewater test is the standard school test for CO2. Milky = CO2 present. If excess CO2 is bubbled through, the precipitate can redissolve forming Ca(HCO3)2."
+    },
+
+    {
+      "id": "rxn_3_11",
+      "reactants": [3, 11],
+      "name": "Carbon Combustion + Cobalt Chloride Paper — Stays Blue",
+      "formula": "C + O2 -> CO2 (no H2O produced)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Cobalt chloride paper stays blue — confirming that carbon combustion produces no water. Carbon has no hydrogen, so no H2O can form."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Only hydrogen-containing fuels produce water on combustion. Pure carbon produces only CO2 (complete) or CO (incomplete). Cobalt chloride paper stays blue = no water."
+    },
+
+    {
+      "id": "rxn_3_12",
+      "reactants": [3, 12],
+      "name": "Carbon Reduces Copper Oxide — Reddish Copper Appears",
+      "formula": "C + 2CuO -> CO2 + 2Cu",
+      "type": "reduction_combustion",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1B0000",
+        "result_color": "#B87333",
+        "residue_produced": true,
+        "residue_color": "#B87333",
+        "residue_name": "Copper metal (reddish-brown)",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["color_fade_black_to_copper", "heat_shimmer", "glow_warm_orange"],
+        "observation": "Black copper oxide slowly turns reddish-brown as copper metal is produced. CO2 gas is also produced (confirmed by limewater). Carbon acts as a reducing agent."
+      },
+      "apparatus_needed": [4, 5, 7, 8, 9, 10],
+      "educational_note": "Carbon reduces copper oxide — a key industrial concept (blast furnace). Carbon is oxidised to CO2; copper oxide is reduced to copper. This is a redox reaction."
+    },
+
+    {
+      "id": "rxn_4_9",
+      "reactants": [4, 9],
+      "name": "Ethanol Burns in Oxygen — Blue Flame, CO2 + H2O",
+      "formula": "C2H5OH + 3O2 -> 2CO2 + 3H2O",
+      "type": "complete_combustion",
+      "output": {
+        "flame_color": "#64B5F6",
+        "flame_intensity": "steady_pale_blue_flame",
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide + Water vapour",
+        "heat_released": true,
+        "odor": "faint sweet alcoholic smell near base of flame",
+        "animations": ["pale_blue_flame_flicker", "heat_shimmer", "steam_wisps"],
+        "observation": "Ethanol burns with a near-invisible pale blue flame. No smoke or soot. Water condenses on a cool surface held above the flame. CO2 can be confirmed with limewater."
+      },
+      "apparatus_needed": [1, 5, 6, 8, 10, 11],
+      "educational_note": "Ethanol is a clean-burning alcohol fuel. The products are CO2 and water — same as any complete hydrocarbon combustion. Its almost invisible flame is a lab safety hazard."
+    },
+
+    {
+      "id": "rxn_4_10",
+      "reactants": [4, 10],
+      "name": "Ethanol Combustion Products — CO2 Turns Limewater Milky",
+      "formula": "CO2 (from C2H5OH combustion) + Ca(OH)2 -> CaCO3 + H2O",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0FBF8",
+        "result_color": "#E0E0E0",
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate (CaCO3)",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "Combustion products of ethanol are bubbled through limewater. It turns milky white — confirming CO2 was produced by the ethanol burning."
+      },
+      "apparatus_needed": [1, 5, 6, 8, 10],
+      "educational_note": "Limewater confirms CO2 in ethanol combustion products. This is a key practical skill: using a delivery tube to divert combustion gases through limewater."
+    },
+
+    {
+      "id": "rxn_4_11",
+      "reactants": [4, 11],
+      "name": "Ethanol Combustion — Water Detected by Cobalt Chloride Paper",
+      "formula": "C2H5OH + 3O2 -> 2CO2 + 3H2O (water turns paper pink)",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1565C0",
+        "result_color": "#F48FB1",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_blue_to_pink"],
+        "observation": "Cobalt chloride paper turns from blue to pink when held in the water vapour produced by burning ethanol. This confirms water (H2O) is a product of combustion."
+      },
+      "apparatus_needed": [1, 6, 8, 11],
+      "educational_note": "Blue cobalt chloride paper turns pink in the presence of water. This is the standard water test. Ethanol contains hydrogen, so burning it always produces water."
+    },
+
+    {
+      "id": "rxn_4_12",
+      "reactants": [4, 12],
+      "name": "Ethanol + Copper Oxide — No Direct Combustion at Room Temperature",
+      "formula": "no reaction without ignition",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "faint ethanol smell",
+        "animations": [],
+        "observation": "No reaction at room temperature. Ethanol requires ignition to combust. Copper oxide is not an ignition source — it is an oxidising solid that requires high temperatures."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Combustion needs three things: fuel, oxygen, and sufficient activation energy (ignition). Just mixing ethanol and CuO does not trigger a reaction without heat."
+    },
+
+    {
+      "id": "rxn_5_9",
+      "reactants": [5, 9],
+      "name": "Candle Wax Burns in Oxygen — Yellow Flame, CO2 + H2O",
+      "formula": "2C25H52 + 76O2 -> 50CO2 + 52H2O",
+      "type": "complete_combustion",
+      "output": {
+        "flame_color": "#FFD54F",
+        "flame_intensity": "bright_yellow_orange_flame",
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide + Water Vapour",
+        "heat_released": true,
+        "odor": "faint waxy smell",
+        "animations": ["yellow_flame_flicker", "heat_shimmer", "steam_wisps"],
+        "observation": "Candle wax burns with a bright yellow-orange flame in pure oxygen. No soot. Water vapour and CO2 are produced. The flame is much brighter in pure O2 than in air."
+      },
+      "apparatus_needed": [1, 3, 5, 8, 10, 11],
+      "educational_note": "Complete combustion of paraffin wax produces only CO2 and H2O. The yellow colour of a candle flame in air is due to incandescent soot particles — absent in pure oxygen."
+    },
+
+    {
+      "id": "rxn_5_10",
+      "reactants": [5, 10],
+      "name": "Candle Combustion Products — CO2 Turns Limewater Milky",
+      "formula": "CO2 (from wax) + Ca(OH)2 -> CaCO3 + H2O",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0FBF8",
+        "result_color": "#E0E0E0",
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate (chalk)",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "Limewater turns milky white as candle combustion gases are bubbled through. Positive test for CO2. The white precipitate is calcium carbonate (the same as chalk)."
+      },
+      "apparatus_needed": [5, 6, 8, 10],
+      "educational_note": "This is the classic school limewater test for CO2 using a burning candle. Milky white result = CO2 confirmed. Used to prove that hydrocarbons contain carbon."
+    },
+
+    {
+      "id": "rxn_5_11",
+      "reactants": [5, 11],
+      "name": "Candle Combustion — Water Detected by Cobalt Chloride Paper",
+      "formula": "C25H52 + O2 -> CO2 + H2O (water turns paper pink)",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1565C0",
+        "result_color": "#F48FB1",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_blue_to_pink"],
+        "observation": "Cobalt chloride paper held above a burning candle turns from blue to pink — confirming water vapour is produced by combustion. You may also see water droplets condense."
+      },
+      "apparatus_needed": [1, 6, 8, 11],
+      "educational_note": "The candle + cobalt chloride paper test is a standard practical. Pink = water. This proves that paraffin wax contains hydrogen — since only H-containing fuels make water."
+    },
+
+    {
+      "id": "rxn_5_12",
+      "reactants": [5, 12],
+      "name": "Candle Wax + Copper Oxide — No Room Temperature Reaction",
+      "formula": "no reaction without ignition",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "faint waxy smell",
+        "animations": [],
+        "observation": "No reaction at room temperature. Candle wax is a fuel that needs a flame to ignite. Copper oxide does not act as an ignition source under these conditions."
+      },
+      "apparatus_needed": [],
+      "educational_note": "The fire triangle (fuel, oxygen, heat) applies here. Wax + CuO have fuel and an oxidant but no ignition source — so no combustion occurs."
+    },
+
+    {
+      "id": "rxn_6_9",
+      "reactants": [6, 9],
+      "name": "Methane Burns in Oxygen — Blue Flame, CO2 + H2O",
+      "formula": "CH4 + 2O2 -> CO2 + 2H2O",
+      "type": "complete_combustion",
+      "output": {
+        "flame_color": "#4FC3F7",
+        "flame_intensity": "bright_blue_flame",
+        "smoke_produced": false,
+        "soot_produced": false,
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide + Water Vapour",
+        "heat_released": true,
+        "odor": "odorless (methane) — slight smell from odorant added in domestic supply",
+        "animations": ["blue_flame_flicker", "heat_shimmer", "steam_wisps"],
+        "observation": "Methane burns with a clean bright blue flame in pure oxygen — no soot or smoke. CO2 and water vapour are produced. This is the cleanest burning fossil fuel."
+      },
+      "apparatus_needed": [1, 3, 5, 8, 10, 11],
+      "educational_note": "Complete combustion of methane (natural gas / Bunsen burner fuel): CH4 + 2O2 → CO2 + 2H2O. The blue flame indicates complete combustion; a yellow flame indicates incomplete combustion."
+    },
+
+    {
+      "id": "rxn_6_10",
+      "reactants": [6, 10],
+      "name": "Methane Combustion — CO2 Turns Limewater Milky",
+      "formula": "CO2 (from CH4) + Ca(OH)2 -> CaCO3 + H2O",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0FBF8",
+        "result_color": "#E0E0E0",
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate (CaCO3)",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "Methane combustion gases are passed through limewater. It turns milky white — confirming CO2 was produced. The Bunsen burner itself uses this reaction."
+      },
+      "apparatus_needed": [1, 5, 6, 8, 10],
+      "educational_note": "The limewater test works for all carbon-containing fuels. Methane from the Bunsen burner produces CO2 that turns limewater milky."
+    },
+
+    {
+      "id": "rxn_6_11",
+      "reactants": [6, 11],
+      "name": "Methane Combustion — Water Detected by Cobalt Chloride Paper",
+      "formula": "CH4 + 2O2 -> CO2 + 2H2O (water turns paper pink)",
+      "type": "test_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1565C0",
+        "result_color": "#F48FB1",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_blue_to_pink"],
+        "observation": "Cobalt chloride paper turns pink when held in methane combustion gases — confirming water vapour production. Methane (CH4) has 4 hydrogen atoms, all converted to water."
+      },
+      "apparatus_needed": [1, 6, 8, 11],
+      "educational_note": "Methane has 4 hydrogen atoms → 2 water molecules per CH4 burned. Cobalt chloride paper is a quick, easy water test used alongside limewater in combustion practicals."
+    },
+
+    {
+      "id": "rxn_6_12",
+      "reactants": [6, 12],
+      "name": "Methane + Copper Oxide — Slow Reduction at High Temperature",
+      "formula": "CH4 + 4CuO -> CO2 + 2H2O + 4Cu (at high temp)",
+      "type": "reduction_combustion",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1B0000",
+        "result_color": "#B87333",
+        "residue_produced": true,
+        "residue_name": "Copper metal (reddish-brown)",
+        "residue_color": "#B87333",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide + Water Vapour",
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["color_fade_black_to_copper", "heat_shimmer", "steam_wisps"],
+        "observation": "When methane gas is passed over heated copper oxide, the black CuO slowly turns reddish-brown as copper metal is formed. CO2 and water vapour are also produced."
+      },
+      "apparatus_needed": [5, 7, 8, 9, 10, 11],
+      "educational_note": "Methane reduces copper oxide at high temperatures — a redox reaction. CuO is reduced to Cu (gains electrons); CH4 is oxidised to CO2 + H2O. Used in industry to reduce metal oxides."
+    },
+
+    {
+      "id": "rxn_7_9",
+      "reactants": [7, 9],
+      "name": "Iron Wool Burns in Oxygen — Glowing Sparks",
+      "formula": "3Fe + 2O2 -> Fe3O4",
+      "type": "metal_combustion",
+      "output": {
+        "flame_color": "#FF6F00",
+        "flame_intensity": "bright_orange_sparks",
+        "smoke_produced": true,
+        "smoke_color": "#8B4513",
+        "smoke_name": "Iron oxide particles",
+        "soot_produced": false,
+        "ash_residue": true,
+        "ash_color": "#8B2500",
+        "ash_name": "Iron(II,III) oxide (Fe3O4) — black-brown magnetic solid",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "metallic",
+        "animations": ["orange_sparks_shower", "bright_flame_pulse", "smoke_wisps_brown"],
+        "observation": "Iron wool glows and showers brilliant orange sparks in pure oxygen. Black-brown iron oxide ash forms. The sparks are a dramatic and memorable demonstration."
+      },
+      "apparatus_needed": [2, 3, 7, 8, 12],
+      "educational_note": "Iron burns in pure oxygen but not in air (too slow — it only rusts). The product Fe3O4 is magnetic. This shows that combustion supports vary in how vigorously they react."
+    },
+
+    {
+      "id": "rxn_7_10",
+      "reactants": [7, 10],
+      "name": "Iron + Limewater — No Reaction",
+      "formula": "Fe + Ca(OH)2 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction. Iron does not react with limewater at room temperature. Limewater is a CO2 test reagent — iron combustion produces no CO2."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Iron combustion produces iron oxide — not CO2. So limewater stays clear. This is a useful contrast: metal combustion ≠ CO2 production."
+    },
+
+    {
+      "id": "rxn_7_11",
+      "reactants": [7, 11],
+      "name": "Iron + Cobalt Chloride Paper — No Water Produced",
+      "formula": "3Fe + 2O2 -> Fe3O4 (no H2O formed)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Cobalt chloride paper stays blue — iron combustion produces no water. Iron contains no hydrogen, so water cannot be a product."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Metals produce metal oxides when burned — not CO2 or H2O. These are key differences from hydrocarbon combustion. Cobalt chloride paper = no change confirms no water."
+    },
+
+    {
+      "id": "rxn_7_12",
+      "reactants": [7, 12],
+      "name": "Iron + Copper Oxide — Displacement (Thermite Type)",
+      "formula": "Fe + CuO -> FeO + Cu",
+      "type": "thermite_type_combustion",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1B0000",
+        "result_color": "#B87333",
+        "residue_produced": true,
+        "residue_name": "Copper metal (reddish-brown) + Iron oxide (black)",
+        "residue_color": "#B87333",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "metallic",
+        "animations": ["color_fade_black_to_copper", "heat_shimmer", "glow_warm_orange"],
+        "observation": "When heated strongly, iron displaces copper from copper oxide. Reddish-brown copper is seen in the residue alongside black iron oxide."
+      },
+      "apparatus_needed": [4, 7, 8, 10, 12],
+      "educational_note": "Iron is higher in the reactivity series than copper, so it displaces copper from CuO. This requires strong heating — not a room temperature reaction. Iron is oxidised; copper is reduced."
+    },
+
+    {
+      "id": "rxn_8_9",
+      "reactants": [8, 9],
+      "name": "Calcium Burns in Oxygen — Red-Orange Flame",
+      "formula": "2Ca + O2 -> 2CaO",
+      "type": "metal_combustion",
+      "output": {
+        "flame_color": "#FF3D00",
+        "flame_intensity": "vivid_red_orange_flame",
+        "smoke_produced": true,
+        "smoke_color": "#FFFFFF",
+        "smoke_name": "Calcium Oxide (CaO) white powder",
+        "soot_produced": false,
+        "ash_residue": true,
+        "ash_color": "#F5F5F5",
+        "ash_name": "Calcium Oxide (CaO) — white, reacts with water to form Ca(OH)2",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["vivid_red_orange_flame", "white_smoke_billowing", "heat_shimmer"],
+        "observation": "Calcium burns with a vivid brick-red / orange flame in oxygen. White calcium oxide smoke is produced. The ash (CaO) fizzes and heats up when water is added."
+      },
+      "apparatus_needed": [2, 3, 7, 8, 12],
+      "educational_note": "Calcium burns more vigorously than iron but less vigorously than magnesium. CaO (quicklime) is industrially important — mixed with water it forms Ca(OH)2 (slaked lime / limewater)."
+    },
+
+    {
+      "id": "rxn_8_10",
+      "reactants": [8, 10],
+      "name": "Calcium Oxide Ash + Limewater — No CO2 Test Reaction",
+      "formula": "CaO + H2O -> Ca(OH)2 (quicklime reacts with water in limewater)",
+      "type": "side_reaction",
+      "output": {
+        "color_change": false,
+        "heat_released": true,
+        "gas_produced": false,
+        "odor": "odorless",
+        "animations": ["heat_shimmer"],
+        "observation": "Calcium oxide (formed from burning calcium) reacts exothermically with water in the limewater. The mixture heats up. This is not a CO2 detection — it is CaO + H2O."
+      },
+      "apparatus_needed": [6, 8, 10],
+      "educational_note": "CaO + H2O → Ca(OH)2 (limewater) is an important reaction used industrially. However, this does not test for CO2. Only CO2 turns limewater milky by forming CaCO3."
+    },
+
+    {
+      "id": "rxn_8_11",
+      "reactants": [8, 11],
+      "name": "Calcium Combustion — Cobalt Chloride Paper Stays Blue",
+      "formula": "2Ca + O2 -> 2CaO (no H2O produced)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Cobalt chloride paper stays blue — calcium combustion produces no water. Calcium (Ca) has no hydrogen, so H2O cannot be a product."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Metal combustion products are always metal oxides — never CO2 or H2O. Cobalt chloride paper confirms no water in metal combustion. A key distinction from hydrocarbon combustion."
+    },
+
+    {
+      "id": "rxn_8_12",
+      "reactants": [8, 12],
+      "name": "Calcium + Copper Oxide — Calcium Displaces Copper",
+      "formula": "Ca + CuO -> CaO + Cu",
+      "type": "thermite_type_combustion",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1B0000",
+        "result_color": "#B87333",
+        "residue_produced": true,
+        "residue_name": "Copper metal (reddish-brown) + Calcium Oxide (white)",
+        "residue_color": "#B87333",
+        "gas_produced": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["bright_flame_pulse", "color_fade_black_to_copper", "heat_shimmer"],
+        "observation": "Vigorous exothermic reaction with sparks and heat. Reddish-brown copper and white CaO are formed. Calcium is more reactive than copper and displaces it from its oxide."
+      },
+      "apparatus_needed": [4, 7, 8, 10, 12],
+      "educational_note": "Calcium is high in the reactivity series (above copper), so it easily reduces CuO. This demonstrates the reactivity series through a combustion-type displacement."
+    },
+
+    {
+      "id": "rxn_9_10",
+      "reactants": [9, 10],
+      "name": "Oxygen + Limewater — No Reaction",
+      "formula": "O2 + Ca(OH)2 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Oxygen gas bubbled through limewater causes no change. Limewater only turns milky with CO2 or SO2 — not with O2."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Limewater is a selective reagent — it tests for acidic gases like CO2 and SO2, not for oxygen. Oxygen is neutral and does not react with Ca(OH)2."
+    },
+
+    {
+      "id": "rxn_9_11",
+      "reactants": [9, 11],
+      "name": "Oxygen + Cobalt Chloride Paper — No Reaction",
+      "formula": "O2 + CoCl2 paper -> no reaction (no water present)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "Cobalt chloride paper stays blue — pure oxygen gas contains no water, so no colour change. Oxygen itself is an oxidant, not a source of water."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Cobalt chloride paper only responds to water (H2O). Pure dry oxygen gas doesn't contain H2O, so the paper stays blue. The test is simple: pink = water, blue = dry."
+    },
+
+    {
+      "id": "rxn_9_12",
+      "reactants": [9, 12],
+      "name": "Oxygen + Copper Oxide — No Further Reaction",
+      "formula": "O2 + CuO -> no reaction (CuO is already fully oxidised)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction. Copper oxide (CuO) is already fully oxidised — copper is in its +2 state and cannot be oxidised further by oxygen under normal conditions."
+      },
+      "apparatus_needed": [],
+      "educational_note": "CuO is a stable, fully oxidised compound. Oxygen cannot react further with it. This is why CuO is used as an oxidant in reduction reactions — it easily gives up its oxygen to fuels."
+    },
+
+    {
+      "id": "rxn_10_11",
+      "reactants": [10, 11],
+      "name": "Limewater + Cobalt Chloride Paper — No Reaction",
+      "formula": "Ca(OH)2 (aq) + CoCl2 paper -> no chemical reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#1565C0",
+        "result_color": "#F48FB1",
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_blue_to_pink"],
+        "observation": "Cobalt chloride paper turns pink — but only because limewater is an aqueous solution (it contains water). This is not a combustion reaction; it is just moisture detection."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Limewater is a solution, so it contains water. Cobalt chloride paper detects that water. Important: this does not confirm combustion products — it just shows the reagent itself is wet."
+    },
+
+    {
+      "id": "rxn_10_12",
+      "reactants": [10, 12],
+      "name": "Limewater + Copper Oxide — No Reaction",
+      "formula": "Ca(OH)2 + CuO -> no reaction at room temperature",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No significant reaction at room temperature. Limewater and copper oxide are both reagents/products of combustion reactions — they do not react with each other under these conditions."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Both limewater and copper oxide serve as reagents in combustion experiments but don't react with each other at room temperature."
+    },
+
+    {
+      "id": "rxn_11_12",
+      "reactants": [11, 12],
+      "name": "Cobalt Chloride Paper + Copper Oxide — No Reaction",
+      "formula": "CoCl2 paper + CuO -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction. Both are solid reagents used in combustion experiments. They do not react with each other in any chemically meaningful way."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Test reagents (cobalt chloride paper, limewater) are used to detect combustion products — they don't react with each other or with oxidants like CuO."
+    }
+
+  ],
+
+  "animations": {
+    "blinding_white_flash":        { "description": "Intense bright white flash — magnesium ignition",        "color": "#FFFFFF" },
+    "bright_white_flame":          { "description": "Sustained brilliant white flame",                         "color": "#FFFFFF" },
+    "white_smoke_billowing":       { "description": "Dense white smoke billowing outward",                     "color": "#F5F5F5" },
+    "blue_flame_flicker":          { "description": "Pale-to-bright blue flickering flame",                    "color": "#4FC3F7" },
+    "vigorous_blue_glow":          { "description": "Intense glowing blue from sulfur / methane combustion",   "color": "#29B6F6" },
+    "pale_blue_flame_flicker":     { "description": "Near-invisible pale blue ethanol flame flicker",          "color": "#B3E5FC" },
+    "yellow_flame_flicker":        { "description": "Warm yellow-orange flickering candle flame",              "color": "#FFD54F" },
+    "vivid_red_orange_flame":      { "description": "Vivid brick-red to orange flame — calcium combustion",    "color": "#FF3D00" },
+    "orange_glow_pulse":           { "description": "Glowing orange pulse from charcoal burning",             "color": "#FF6F00" },
+    "orange_sparks_shower":        { "description": "Shower of bright orange-white sparks — iron/calcium",    "color": "#FFAB40" },
+    "bright_flame_pulse":          { "description": "Short intense bright flame burst",                        "color": "#FF8F00" },
+    "heat_shimmer":                { "description": "Wavy heat distortion rising from surface",                "color": "#FFD580" },
+    "glow_warm_orange":            { "description": "Warm orange glow from exothermic reaction",               "color": "#FFA500" },
+    "steam_wisps":                 { "description": "White steam wisps rising — water vapour product",         "color": "#E3F2FD" },
+    "smoke_wisps_brown":           { "description": "Faint brownish smoke wisps — iron oxide particles",       "color": "#8D6E63" },
+    "white_fumes_drifting":        { "description": "White-grey fumes drifting — SO2 from sulfur",            "color": "#EEEEEE" },
+    "milky_cloud_diffusion":       { "description": "White cloud spreading in clear limewater",               "color": "#F0F0F0" },
+    "white_precipitate_settling":  { "description": "White particles slowly settling to bottom of tube",       "color": "#FFFFFF" },
+    "residue_glow_red":            { "description": "Reddish-copper glow of displaced copper metal",          "color": "#B87333" },
+    "color_fade_black_to_copper":  { "description": "Black CuO colour fades to reddish-brown copper",         "from": "#1B0000", "to": "#B87333" },
+    "color_shift_blue_to_pink":    { "description": "Blue cobalt chloride paper turns pink — water detected",  "from": "#1565C0", "to": "#F48FB1" },
+    "bubbles_rising":              { "description": "CO2 gas bubbles rising through limewater",               "color": "#FFFFFF" }
+  },
+
+  "ui_config": {
+    "selection_mode": "max_2_chemicals",
+    "lookup_note": "Always sort selected chemical IDs ascending before lookup. e.g. user picks bottles 9 and 2 -> look up reactants [2, 9]",
+    "no_reaction_message": "These two materials do not react with each other in a combustion experiment. Try pairing a fuel with oxygen or a test reagent!",
+    "reaction_found_message": "Reaction found! Highlighting apparatus and starting experiment...",
+    "apparatus_highlight_style": "pulse_glow_cyan",
+    "chemical_highlight_style": "pulse_glow_yellow",
+    "reaction_type_badges": {
+      "complete_combustion":       { "color": "#FF6F00", "label": "Complete Combustion"   },
+      "vigorous_combustion":       { "color": "#E53935", "label": "Vigorous Combustion"   },
+      "metal_combustion":          { "color": "#F4511E", "label": "Metal Combustion"      },
+      "thermite_type_combustion":  { "color": "#BF360C", "label": "Displacement + Heat"   },
+      "reduction_combustion":      { "color": "#6A1B9A", "label": "Reduction Reaction"    },
+      "test_reaction":             { "color": "#1565C0", "label": "Product Test"          },
+      "side_reaction":             { "color": "#00838F", "label": "Side Reaction"         },
+      "no_reaction":               { "color": "#9E9E9E", "label": "No Reaction"           }
+    },
+    "safety_banner": "⚠️ All combustion experiments require adult supervision, safety goggles, a heat-proof mat, and adequate ventilation or a fume cupboard."
+  }
+}
