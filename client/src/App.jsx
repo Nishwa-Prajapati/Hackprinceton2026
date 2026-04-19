@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
+import apiClient from './api/client';
 import { LabEngine } from './lab/LabEngine';
+import { buildBenchDefinitions } from './lab/benchDefinitions';
 import { labState } from './lab/LabState';
 import EntryScreen from './components/EntryScreen';
 import periodicTablePopup from './assets/periodic-table-popup.png';
@@ -20,25 +22,57 @@ export default function App() {
 
   // ── Engine init ──────────────────────────────────────────────────────────────
   useEffect(() => {
-    const engine = new LabEngine();
-    engineRef.current = engine;
-    engine.init(canvasRef.current);
-    engine.setTooltipEl(tooltipRef.current);
+    let disposed = false;
+    let cleanup = () => {};
 
-    const offBenchFocus = labState.on('bench:focused',  ({ id, name }) => { setActiveBench({ id, name }); setPhase('focused'); });
-    const offBenchExit  = labState.on('bench:exited',   ()             => { setActiveBench(null); setPhase('roaming'); });
-    const offPeriodicOpen = labState.on('periodic:opened', () => {
-      setPeriodicOpen(true);
-      engine.setUiLocked(true);
-    });
-    const offPeriodicClose = labState.on('periodic:closed', () => {
-      setPeriodicOpen(false);
-      engine.setUiLocked(false);
-    });
+    async function initEngine() {
+      let benchDefinitions;
+
+      try {
+        const response = await apiClient.get('/api/desks');
+        benchDefinitions = buildBenchDefinitions(response.data?.desks ?? []);
+      } catch (error) {
+        console.error('Unable to load desk data, using fallback bench definitions.', error);
+      }
+
+      if (disposed || !canvasRef.current) return;
+
+      const engine = new LabEngine({ benchDefinitions });
+      engineRef.current = engine;
+      engine.init(canvasRef.current);
+      engine.setTooltipEl(tooltipRef.current);
+
+      const offBenchFocus = labState.on('bench:focused', ({ id, name }) => {
+        setActiveBench({ id, name });
+        setPhase('focused');
+      });
+      const offBenchExit = labState.on('bench:exited', () => {
+        setActiveBench(null);
+        setPhase('roaming');
+      });
+      const offPeriodicOpen = labState.on('periodic:opened', () => {
+        setPeriodicOpen(true);
+        engine.setUiLocked(true);
+      });
+      const offPeriodicClose = labState.on('periodic:closed', () => {
+        setPeriodicOpen(false);
+        engine.setUiLocked(false);
+      });
+
+      cleanup = () => {
+        offBenchFocus();
+        offBenchExit();
+        offPeriodicOpen();
+        offPeriodicClose();
+        engine.dispose();
+      };
+    }
+
+    initEngine();
 
     return () => {
-      offBenchFocus(); offBenchExit(); offPeriodicOpen(); offPeriodicClose();
-      engine.dispose();
+      disposed = true;
+      cleanup();
     };
   }, []);
 

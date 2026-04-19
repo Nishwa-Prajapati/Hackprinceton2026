@@ -3,6 +3,7 @@ import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLigh
 import { LabControls } from './LabControls.js';
 import { labState } from './LabState.js';
 import { createBench } from './BenchBuilder.js';
+import { DEFAULT_BENCH_DEFINITIONS } from './benchDefinitions.js';
 import { intersectObjects } from '../utils/raycaster.js';
 import periodicTableFrame from '../assets/periodic-table-frame.png';
 import rightWallPoster from '../assets/right-wall-poster.png';
@@ -10,13 +11,6 @@ import rightWallPoster from '../assets/right-wall-poster.png';
 RectAreaLightUniformsLib.init();
 
 // ─── Bench definitions — positions from main branch, accent colors = ours ─────
-const BENCH_DEFS = [
-  { id: 'zone1', title: 'Acid-Base',       accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0,  7.2),   cameraOffsetX:  0.55 },
-  { id: 'zone2', title: 'Combustion',       accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0,  1.35),  cameraOffsetX: -0.55 },
-  { id: 'zone3', title: 'Synthesis',        accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0, -4.7),   cameraOffsetX:  0.55 },
-  { id: 'zone4', title: 'Electrochemistry', accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0, -10.75), cameraOffsetX: -0.55 },
-];
-
 // ─── Cabinet placeholder item colors ──────────────────────────────────────────
 const PLACEHOLDER_ITEMS = {
   A: [
@@ -46,11 +40,12 @@ const PLACEHOLDER_ITEMS = {
 };
 
 export class LabEngine {
-  constructor() {
+  constructor({ benchDefinitions = DEFAULT_BENCH_DEFINITIONS } = {}) {
     this.scene    = null;
     this.camera   = null;
     this.renderer = null;
     this.controls = null;
+    this._benchDefinitions = benchDefinitions;
 
     // Decorative cabinet system
     this._ledPulseData = [];
@@ -243,7 +238,7 @@ export class LabEngine {
   // ─── BENCHES ─────────────────────────────────────────────────────────────────
 
   _buildBenches() {
-    BENCH_DEFS.forEach(def => {
+    this._benchDefinitions.forEach(def => {
       const bench = createBench(def);
       this.scene.add(bench.group);
       this._benchMap.set(def.id, bench);
