@@ -132,10 +132,11 @@ export class LabEngine {
     this._activeBenchId = id;
     this._benchMap.forEach((b, bid) => b.setActive(bid === id));
     this.controls.focusBench(bench.focusZone);
-    labState.emit('bench:focused', { id, name: bench.focusZone.label });
+    labState.emit('bench:focused', { id, name: bench.focusZone.label, deskKey: bench.deskKey ?? null });
   }
 
   exitBench() {
+    this.clearExperimentApparatus();
     this._activeBenchId = null;
     this._benchMap.forEach(b => b.setActive(false));
     this.controls.exitBench();
@@ -146,6 +147,19 @@ export class LabEngine {
 
   setUiLocked(locked) {
     this.controls?.setUiLocked(locked);
+  }
+
+  setExperimentApparatus(apparatusNames = []) {
+    if (!this._activeBenchId) return;
+    this._benchMap.get(this._activeBenchId)?.setExperimentApparatusNames?.(apparatusNames);
+  }
+
+  clearExperimentApparatus() {
+    if (this._activeBenchId) {
+      this._benchMap.get(this._activeBenchId)?.setExperimentApparatusNames?.([]);
+      return;
+    }
+    this._benchMap.forEach((bench) => bench.setExperimentApparatusNames?.([]));
   }
 
   // ─── LIGHTING ────────────────────────────────────────────────────────────────
@@ -255,6 +269,7 @@ export class LabEngine {
         chemicals: getDeskChemicals(def.deskKey),
         apparatus: getDeskApparatus(def.deskKey),
       });
+      bench.deskKey = def.deskKey;
       this.scene.add(bench.group);
       this._benchMap.set(def.id, bench);
 
@@ -834,6 +849,24 @@ export class LabEngine {
         return;
       }
 
+      const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
+      if (
+        itemHit?.object?.userData?.benchId
+        && itemHit.object.userData.benchId === this._activeBenchId
+        && itemHit.object.userData.reactantFormula
+      ) {
+        labState.emit('bench:reactantSelected', {
+          benchId: itemHit.object.userData.benchId,
+          reactant: {
+            id: itemHit.object.userData.reactantId ?? null,
+            name: itemHit.object.userData.reactantName ?? null,
+            formula: itemHit.object.userData.reactantFormula,
+            displayName: itemHit.object.userData.reactantDisplayName ?? itemHit.object.userData.reactantFormula,
+          },
+        });
+        return;
+      }
+
       const benchHit = intersectObjects(e, canvas, this.camera, this._benchClickTargets);
       if (benchHit?.object?.userData?.benchAction === 'toggle-compartment') {
         this._benchMap.get(benchHit.object.userData.storageBenchId)?.handleAction?.('toggle-compartment');
@@ -844,7 +877,6 @@ export class LabEngine {
         return;
       }
 
-      const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
       if (itemHit?.object?.userData?.benchId && !itemHit.object.userData.preventBenchFocus) {
         this.focusBench(itemHit.object.userData.benchId);
       }

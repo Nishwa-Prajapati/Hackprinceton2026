@@ -33,9 +33,17 @@ function parseColor(value, fallback) {
   return fallback;
 }
 
+function normalizeToolKey(value) {
+  return String(value ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '');
+}
+
 function normalizeReagents(chemicals = []) {
   const source = chemicals.length ? chemicals.slice(0, 12) : DEFAULT_REAGENTS;
   return source.map((chemical, index) => ({
+    id: chemical.id ?? index + 1,
+    name: chemical.name ?? chemical.formula ?? `Reagent ${index + 1}`,
     formula: chemical.formula ?? chemical.label ?? `R${index + 1}`,
     displayName: chemical.name
       ? `${chemical.name}${chemical.formula ? ` (${chemical.formula})` : ''}`
@@ -256,7 +264,7 @@ function createTubeRack(x, z, hoverTargets, hoverControllers) {
   return g;
 }
 
-function createBottle({ label, displayName, color, x, y, z }, hoverTargets, hoverControllers) {
+function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTargets, hoverControllers) {
   const g = new THREE.Group();
 
   const glassMat = new THREE.MeshPhysicalMaterial({
@@ -295,6 +303,10 @@ function createBottle({ label, displayName, color, x, y, z }, hoverTargets, hove
 
   const hb = createHoverHitbox(0.13, 0.58);
   hb.position.y = 0.24;
+  hb.userData.reactantId = id ?? null;
+  hb.userData.reactantName = name ?? displayName ?? label;
+  hb.userData.reactantFormula = label;
+  hb.userData.reactantDisplayName = displayName ?? label;
   g.add(hb);
   g.position.set(x, y, z);
   registerHoverTarget(hoverTargets, hoverControllers, `bottle-${label}-${x}`, displayName ?? label, hb, g, [glassMat, liquidMat, capMat], { hoverScale: 1.05, emissiveBoost: 0.14 });
@@ -338,11 +350,11 @@ function createReagentRack(accentColor, hoverTargets, hoverControllers, chemical
 
   // 12 reagent bottles
   const spacing = 0.34;
-  reagents.forEach(({ formula, displayName, color }, i) => {
+  reagents.forEach(({ id, name, formula, displayName, color }, i) => {
     const row = i < 6 ? 0 : 1;
     const col = i % 6;
     g.add(createBottle({
-      label: formula, displayName, color,
+      id, name, label: formula, displayName, color,
       x: -0.85 + col * spacing,
       y: row === 0 ? 1.18 : 1.54,
       z: row === 0 ? -0.28 : -0.48,
@@ -352,7 +364,7 @@ function createReagentRack(accentColor, hoverTargets, hoverControllers, chemical
   return g;
 }
 
-function createDeskStorage(benchId, benchTitle, apparatus, hoverTargets, hoverControllers, accentHex, deskKey) {
+function createDeskStorage(benchId, benchTitle, apparatus, hoverTargets, hoverControllers, accentHex, deskKey, apparatusHighlightKeys) {
   const group = new THREE.Group();
   const clickTargets = [];
   const state = { open: false };
@@ -439,6 +451,7 @@ function createDeskStorage(benchId, benchTitle, apparatus, hoverTargets, hoverCo
     );
     hb.userData.preventBenchFocus = true;
     holder.add(hb);
+    apparatusHighlightKeys.set(normalizeToolKey(name), key);
     registerHoverTarget(hoverTargets, hoverControllers, key, name, hb, holder, materials, {
       hoverScale: opts.hoverScale ?? 1.04,
       emissiveBoost: opts.emissiveBoost ?? 0.12,
@@ -1126,6 +1139,8 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0, ch
   const itemHoverTargets = [];
   const clickTargets     = [];
   const hoverControllers = new Map();
+  const apparatusHighlightKeys = new Map();
+  let experimentHighlightKeys = new Set();
   let hoveredKey         = null;
   let compartmentToggle  = null;
 
@@ -1145,7 +1160,7 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0, ch
     roughness: 0.22, metalness: 0.1,
   });
 
-  const storage = createDeskStorage(id, title, apparatus, itemHoverTargets, hoverControllers, accent, deskKey);
+  const storage = createDeskStorage(id, title, apparatus, itemHoverTargets, hoverControllers, accent, deskKey, apparatusHighlightKeys);
   group.add(storage.group);
   clickTargets.push(...storage.clickTargets);
   compartmentToggle = storage.toggle;
@@ -1244,9 +1259,26 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0, ch
     },
     setHovered(v)  { state.hovered = v; refresh(); },
     setActive(v)   { state.active  = v; refresh(); },
+    setExperimentApparatusNames(names = []) {
+      const nextKeys = new Set(
+        names
+          .map(normalizeToolKey)
+          .map(name => apparatusHighlightKeys.get(name))
+          .filter(Boolean)
+      );
+
+      experimentHighlightKeys.forEach((key) => {
+        if (!nextKeys.has(key) && hoveredKey !== key) {
+          hoverControllers.get(key)?.(false);
+        }
+      });
+
+      nextKeys.forEach((key) => hoverControllers.get(key)?.(true));
+      experimentHighlightKeys = nextKeys;
+    },
     setHoveredObject(nextKey) {
       if (hoveredKey === nextKey) return;
-      if (hoveredKey) hoverControllers.get(hoveredKey)?.(false);
+      if (hoveredKey) hoverControllers.get(hoveredKey)?.(experimentHighlightKeys.has(hoveredKey));
       hoveredKey = nextKey;
       if (hoveredKey) hoverControllers.get(hoveredKey)?.(true);
     },
