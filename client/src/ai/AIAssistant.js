@@ -142,18 +142,14 @@ export function useAIAssistant() {
       async (transcript) => {
         clearFollowUpTimer();
         await askAssistant(
-          `A student answered your question about the real-world uses of ${outputName}. Student answer: "${transcript}". Acknowledge the answer briefly, gently correct it if needed, and explain the real-world uses of ${outputName}.`,
+          `The student responded with: "${transcript}". Whether they answered correctly, incorrectly, or asked a follow-up question — explain 2 real-world places where ${outputName} is used in everyday life. Be encouraging and always give the actual real-world uses in your response.`,
           context
         );
       },
       {
-        onError: async (error) => {
+        onError: async () => {
           clearFollowUpTimer();
-          if (error === 'empty-transcript') {
-            await askAssistant(`Explain real-world uses of ${outputName}.`, context);
-            return;
-          }
-          await askAssistant(`Explain real-world uses of ${outputName}.`, context);
+          await askAssistant(`Explain 2 real-world places where ${outputName} is used in everyday life.`, context);
         },
         maxDurationMs: 5000,
       }
@@ -166,7 +162,7 @@ export function useAIAssistant() {
 
     followUpTimerRef.current = window.setTimeout(async () => {
       stopListening();
-      await askAssistant(`Explain real-world uses of ${outputName}.`, context);
+      await askAssistant(`Explain 2 real-world places where ${outputName} is used in everyday life.`, context);
     }, 5000);
   }
 

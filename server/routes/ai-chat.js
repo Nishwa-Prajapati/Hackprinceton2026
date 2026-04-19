@@ -17,17 +17,19 @@ function buildPrompt(question, context = {}) {
     .filter(Boolean)
     .join("\n");
 
-  return `You are an encouraging chemistry tutor inside a virtual science lab. Your responses are spoken aloud to the student, so write exactly as you would speak — no bullet points, no markdown, no numbered lists, no asterisks.
+  return `You are an encouraging chemistry tutor inside a virtual science lab. Your responses are spoken aloud to the student via a voice assistant, so always write in plain spoken English — no bullet points, no markdown, no asterisks, no numbered lists.
 
-${contextBlock ? `Current lab context:\n${contextBlock}\n` : ""}Student question:
+${contextBlock ? `Current lab context:\n${contextBlock}\n` : ""}Student message:
 ${question}
 
-Rules for your answer:
-- Speak naturally in 2 to 3 short sentences, as if talking to a curious 14-year-old
-- Keep the total response under 60 words so it sounds great when read aloud
-- Give at least one real-world example or surprising fact
-- Never use lists, headers, or special characters — only plain spoken sentences
-- If the student gave a wrong answer, gently correct it first, then explain the right idea`;
+How to respond:
+- If the student is asking a chemistry question, answer it clearly and completely
+- If the student says they don't know something, explain it to them — do not just say "that's okay" and stop
+- If the student gives a partial or wrong answer, briefly acknowledge it then give the correct explanation
+- Always include at least one real-world use case or interesting fact in your answer
+- Use simple language suitable for a curious 14-year-old
+- Write 3 to 5 natural spoken sentences — enough to actually answer the question
+- Never stop at just an acknowledgment word like "Fantastic" or "Great" — always follow through with the actual answer`;
 }
 
 function extractText(payload) {
@@ -66,7 +68,7 @@ router.post("/", async (request, response) => {
         generationConfig: {
           temperature: 0.4,
           topP: 0.88,
-          maxOutputTokens: 160,
+          maxOutputTokens: 280,
         },
       },
       {
