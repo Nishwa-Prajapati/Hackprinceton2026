@@ -137,6 +137,23 @@ export class LabEngine {
     this.controls?.setUiLocked(locked);
   }
 
+  setBenchInteractionState(benchId, nextState) {
+    this._benchMap.get(benchId)?.setInteractionState(nextState);
+  }
+
+  clearBenchInteractionState(benchId) {
+    this._benchMap.get(benchId)?.clearInteractionState();
+  }
+
+  async playBenchEffects(benchId, effects = []) {
+    const bench = this._benchMap.get(benchId);
+    if (!bench) return;
+
+    for (const effect of effects) {
+      await bench.playEffect(effect);
+    }
+  }
+
   // ─── LIGHTING ────────────────────────────────────────────────────────────────
 
   _buildLighting() {
@@ -890,14 +907,22 @@ export class LabEngine {
         return;
       }
 
+      const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
+      if (itemHit?.object?.userData?.benchId) {
+        const { benchId, itemType, itemId } = itemHit.object.userData;
+        if (this._activeBenchId === benchId && itemType && itemId !== undefined) {
+          labState.emit('bench:item:selected', { benchId, itemType, itemId });
+          return;
+        }
+        this.focusBench(benchId);
+        return;
+      }
+
       const benchHit = intersectObjects(e, canvas, this.camera, this._benchClickTargets);
       if (benchHit?.object?.userData?.benchId) {
         this.focusBench(benchHit.object.userData.benchId);
         return;
       }
-
-      const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
-      if (itemHit?.object?.userData?.benchId) this.focusBench(itemHit.object.userData.benchId);
     };
     canvas.addEventListener('click', this._clickHandler);
 

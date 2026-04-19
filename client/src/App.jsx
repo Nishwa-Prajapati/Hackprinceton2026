@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import apiClient from './api/client';
+import { useDeskReactionFlow } from './hooks/useDeskReactionFlow';
 import { LabEngine } from './lab/LabEngine';
 import { buildBenchDefinitions } from './lab/benchDefinitions';
 import { labState } from './lab/LabState';
@@ -19,6 +20,7 @@ export default function App() {
   const [activeBench,   setActiveBench]   = useState(null);
   const [periodicOpen,  setPeriodicOpen]  = useState(false);
   const [hintVisible,   setHintVisible]   = useState(false);
+  const reactionFlow = useDeskReactionFlow({ activeBenchId: activeBench?.id ?? null, engineRef });
 
   // ── Engine init ──────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -98,6 +100,13 @@ export default function App() {
     engineRef.current?.flyIn(() => setTimeout(() => setHintVisible(false), 4000));
   }
 
+  const selectedChemicalNames = reactionFlow.selectedChemicals
+    .map(id => reactionFlow.chemicalMap.get(id)?.name)
+    .filter(Boolean);
+  const selectedApparatusNames = reactionFlow.selectedApparatus
+    .map(id => reactionFlow.apparatusMap.get(id)?.name)
+    .filter(Boolean);
+
   return (
     <>
       {/* Three.js canvas */}
@@ -147,6 +156,53 @@ export default function App() {
             textAlign: 'center',
           }}>
             Press Enter or ESC to exit
+          </div>
+
+          <div style={{
+            position: 'absolute',
+            right: UI_EDGE,
+            top: 'max(84px, calc(env(safe-area-inset-top) + 84px))',
+            width: 'min(26rem, calc(100vw - 40px))',
+            pointerEvents: 'auto',
+            background: 'rgba(11, 16, 24, 0.82)',
+            border: '1px solid rgba(0, 212, 255, 0.28)',
+            boxShadow: '0 0 28px rgba(0, 212, 255, 0.12)',
+            padding: '16px 18px',
+            backdropFilter: 'blur(8px)',
+          }}>
+            <div style={{ fontFamily: 'monospace', fontSize: '0.78rem', color: '#dff7ff', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              Reaction Flow
+            </div>
+            <div style={{ marginTop: 8, fontFamily: 'monospace', fontSize: '0.74rem', color: '#aeefff', lineHeight: 1.6 }}>
+              <div>1. Click 2 chemicals on the rack.</div>
+              <div>2. Select the highlighted apparatus.</div>
+              <div>3. Watch the reaction and review the result.</div>
+            </div>
+
+            <div style={{ marginTop: 12, fontFamily: 'monospace', fontSize: '0.72rem', color: '#f2f7fb', lineHeight: 1.6 }}>
+              <div>Chemicals: {selectedChemicalNames.length ? selectedChemicalNames.join(' + ') : 'None selected'}</div>
+              <div>Apparatus: {selectedApparatusNames.length ? selectedApparatusNames.join(', ') : 'None selected'}</div>
+              <div>Reaction: {reactionFlow.pendingReaction?.name ?? 'Waiting for valid pair'}</div>
+            </div>
+
+            {reactionFlow.message && (
+              <div style={{
+                marginTop: 14,
+                padding: '10px 12px',
+                border: `1px solid ${reactionFlow.message.type === 'warning' ? 'rgba(255, 140, 0, 0.55)' : reactionFlow.message.type === 'success' ? 'rgba(34, 197, 94, 0.5)' : 'rgba(0, 212, 255, 0.35)'}`,
+                background: reactionFlow.message.type === 'warning'
+                  ? 'rgba(255, 140, 0, 0.08)'
+                  : reactionFlow.message.type === 'success'
+                    ? 'rgba(34, 197, 94, 0.08)'
+                    : 'rgba(0, 212, 255, 0.08)',
+                color: '#f4fbff',
+                fontFamily: 'monospace',
+                fontSize: '0.72rem',
+                lineHeight: 1.5,
+              }}>
+                {reactionFlow.message.text}
+              </div>
+            )}
           </div>
 
           {['top:0;left:0','top:0;right:0','bottom:0;left:0','bottom:0;right:0'].map((pos, i) => {
@@ -239,6 +295,78 @@ export default function App() {
         visibility: 'hidden', opacity: 0, transition: 'opacity 0.12s',
         whiteSpace: 'nowrap', maxWidth: 'min(80vw, 20rem)', overflow: 'hidden', textOverflow: 'ellipsis',
       }} />
+
+      {reactionFlow.resultModal && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 40,
+            background: 'rgba(8, 12, 18, 0.78)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px'
+          }}
+        >
+          <div style={{
+            width: 'min(38rem, 100%)',
+            background: 'linear-gradient(180deg, rgba(18, 25, 36, 0.98) 0%, rgba(11, 16, 24, 0.98) 100%)',
+            border: '1px solid rgba(0, 212, 255, 0.28)',
+            boxShadow: '0 0 40px rgba(0, 212, 255, 0.16)',
+            padding: '22px 22px 18px 22px',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontFamily: 'monospace', fontSize: '0.78rem', color: '#9aefff', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Reaction Result</div>
+                <div style={{ marginTop: 8, fontFamily: 'monospace', fontSize: '1rem', color: '#f4fbff', letterSpacing: '0.04em' }}>
+                  {reactionFlow.resultModal.name}
+                </div>
+                <div style={{ marginTop: 4, fontFamily: 'monospace', fontSize: '0.78rem', color: '#ffd89a' }}>
+                  {reactionFlow.resultModal.formula}
+                </div>
+              </div>
+
+              <button
+                onClick={reactionFlow.closeResultModal}
+                style={{
+                  background: 'rgba(255,140,0,0.12)',
+                  border: '1px solid #FF8C00',
+                  color: '#FF8C00',
+                  fontFamily: 'monospace',
+                  fontSize: '0.78rem',
+                  letterSpacing: '0.08em',
+                  padding: '8px 14px',
+                  cursor: 'pointer'
+                }}
+              >
+                Close
+              </button>
+            </div>
+
+            <div style={{ marginTop: 16, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
+              {reactionFlow.resultModal.properties.map(property => (
+                <div key={property.label} style={{
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  background: 'rgba(255,255,255,0.03)',
+                  padding: '10px 12px'
+                }}>
+                  <div style={{ fontFamily: 'monospace', fontSize: '0.68rem', color: '#8fb7c8', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    {property.label}
+                  </div>
+                  <div style={{ marginTop: 6, fontFamily: 'monospace', fontSize: '0.82rem', color: '#f4fbff' }}>
+                    {property.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: 16, fontFamily: 'monospace', fontSize: '0.76rem', color: '#d9eef7', lineHeight: 1.7 }}>
+              {reactionFlow.resultModal.observation}
+            </div>
+          </div>
+        </div>
+      )}
 
       <style>{`
         @keyframes chevronBounce {

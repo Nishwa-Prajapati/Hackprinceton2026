@@ -74,30 +74,121 @@ function createHoverHitbox(width, height, depth = width) {
   );
 }
 
-function registerHoverTarget(targets, controllers, key, name, hitObject, scaleTarget, materials, opts = {}) {
+function createItemVisualController(scaleTarget, materials, opts = {}) {
   const baseScale = scaleTarget.scale.clone();
   const hoverScale = opts.hoverScale ?? 1.06;
-  const emissiveBoost = opts.emissiveBoost ?? 0.18;
   const tracked = materials.filter(Boolean).map(material => ({
     material,
-    baseEmissiveIntensity: typeof material.emissiveIntensity === 'number' ? material.emissiveIntensity : 0
+    baseColor: 'color' in material ? material.color.clone() : null,
+    baseEmissive: 'emissive' in material ? material.emissive.clone() : null,
+    baseEmissiveIntensity: typeof material.emissiveIntensity === 'number' ? material.emissiveIntensity : 0,
+    baseOpacity: typeof material.opacity === 'number' ? material.opacity : 1,
+    baseTransparent: Boolean(material.transparent)
   }));
+  const state = {
+    hovered: false,
+    selected: false,
+    required: false,
+    dimmed: false,
+    animating: false
+  };
+
+  const requiredColor = new THREE.Color('#22c55e');
+  const selectedColor = new THREE.Color('#00d4ff');
+  const animatedColor = new THREE.Color('#fff4a8');
+
+  function refresh() {
+    let scaleMultiplier = 1;
+    if (state.hovered) scaleMultiplier *= hoverScale;
+    if (state.selected) scaleMultiplier *= 1.06;
+    if (state.required) scaleMultiplier *= 1.04;
+    if (state.animating) scaleMultiplier *= 1.08;
+    scaleTarget.scale.copy(baseScale).multiplyScalar(scaleMultiplier);
+
+    tracked.forEach(({ material, baseColor, baseEmissive, baseEmissiveIntensity, baseOpacity, baseTransparent }) => {
+      if (baseColor) {
+        material.color.copy(baseColor);
+        if (state.dimmed) {
+          material.color.multiplyScalar(0.45);
+        }
+      }
+
+      if (baseEmissive) {
+        material.emissive.copy(baseEmissive);
+        if (state.required) material.emissive.lerp(requiredColor, 0.75);
+        if (state.selected) material.emissive.lerp(selectedColor, 0.7);
+        if (state.animating) material.emissive.lerp(animatedColor, 0.7);
+      }
+
+      if ('emissiveIntensity' in material) {
+        material.emissiveIntensity =
+          baseEmissiveIntensity +
+          (state.hovered ? 0.18 : 0) +
+          (state.selected ? 0.3 : 0) +
+          (state.required ? 0.45 : 0) +
+          (state.animating ? 0.7 : 0);
+      }
+
+      if ('opacity' in material) {
+        material.transparent = baseTransparent || state.dimmed;
+        material.opacity = state.dimmed ? Math.max(0.2, baseOpacity * 0.35) : baseOpacity;
+      }
+    });
+  }
+
+  refresh();
+
+  return {
+    setHovered(value) {
+      state.hovered = value;
+      refresh();
+    },
+    setSelected(value) {
+      state.selected = value;
+      refresh();
+    },
+    setRequired(value) {
+      state.required = value;
+      refresh();
+    },
+    setDimmed(value) {
+      state.dimmed = value;
+      refresh();
+    },
+    setAnimating(value) {
+      state.animating = value;
+      refresh();
+    },
+    reset() {
+      state.hovered = false;
+      state.selected = false;
+      state.required = false;
+      state.dimmed = false;
+      state.animating = false;
+      refresh();
+    }
+  };
+}
+
+function registerHoverTarget(targets, controllers, itemControllers, key, name, hitObject, scaleTarget, materials, itemMeta = {}, opts = {}) {
+  const controller = createItemVisualController(scaleTarget, materials, opts);
 
   hitObject.userData.hoverKey = key;
   hitObject.userData.hoverName = name;
+  if (itemMeta.itemType) hitObject.userData.itemType = itemMeta.itemType;
+  if (itemMeta.itemId !== undefined) hitObject.userData.itemId = itemMeta.itemId;
   targets.push(hitObject);
 
+  if (itemMeta.itemType && itemMeta.itemId !== undefined) {
+    itemControllers.set(`${itemMeta.itemType}:${itemMeta.itemId}`, controller);
+  }
+
   controllers.set(key, hovered => {
-    scaleTarget.scale.copy(baseScale).multiplyScalar(hovered ? hoverScale : 1);
-    tracked.forEach(({ material, baseEmissiveIntensity }) => {
-      if ('emissiveIntensity' in material) {
-        material.emissiveIntensity = baseEmissiveIntensity + (hovered ? emissiveBoost : 0);
-      }
-    });
+    controller.setHovered(hovered);
   });
 }
 
-function createBottle(chemical, layout, hoverTargets, hoverControllers) {
+function createBottle(chemical, layout, hoverTargets, hoverControllers, itemControllers) {
   const group = new THREE.Group();
   const bottleTint = colorToHex(chemical.bottleColor, 0xd7ebff);
   const fillColor = colorToHex(chemical.fillColor, 0x9fd7ff);
@@ -176,20 +267,23 @@ function createBottle(chemical, layout, hoverTargets, hoverControllers) {
   group.add(bottleCap);
 
   const sticker = new THREE.Mesh(
-    new THREE.PlaneGeometry(0.115, 0.06),
+    new THREE.PlaneGeometry(0.145, 0.09),
     new THREE.MeshBasicMaterial({
-      map: makeLabelTexture(chemical.displayLabel ?? chemical.formula ?? chemical.name, {
-        width: 256,
-        height: 128,
+      map: makeLabelTexture(chemical.stickerLabel ?? chemical.name, {
+        width: 340,
+        height: 200,
         background: '#fcfbf5',
         border: chemical.bottleColor ?? '#675f52',
-        font: '700 30px Arial'
+        color: '#1d2430',
+        font: '700 21px Arial',
+        wrap: true,
+        lineHeight: 24
       }),
       transparent: true,
       depthWrite: false
     })
   );
-  sticker.position.set(0, 0.2, 0.102);
+  sticker.position.set(0, 0.205, 0.102);
   group.add(sticker);
 
   const hitbox = createHoverHitbox(0.26, 0.58, 0.26);
@@ -201,18 +295,20 @@ function createBottle(chemical, layout, hoverTargets, hoverControllers) {
   registerHoverTarget(
     hoverTargets,
     hoverControllers,
+    itemControllers,
     `chemical-${chemical.id}-${layout.x}`,
     chemical.hoverName ?? chemical.name,
     hitbox,
     group,
     [glassMat, liquidMat, capMat],
+    { itemType: 'chemical', itemId: chemical.id },
     { hoverScale: 1.05, emissiveBoost: 0.14 }
   );
 
   return group;
 }
 
-function createReagentRack(chemicals, hoverTargets, hoverControllers) {
+function createReagentRack(chemicals, hoverTargets, hoverControllers, itemControllers) {
   const group = new THREE.Group();
 
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 0.45, metalness: 0.6 });
@@ -255,7 +351,7 @@ function createReagentRack(chemicals, hoverTargets, hoverControllers) {
       x: -0.85 + col * spacing,
       y: row === 0 ? 1.18 : 1.54,
       z: row === 0 ? -0.28 : -0.48
-    }, hoverTargets, hoverControllers));
+    }, hoverTargets, hoverControllers, itemControllers));
   });
 
   return group;
@@ -666,9 +762,15 @@ function createApparatusModel(icon, accentColor) {
   return group;
 }
 
-function createApparatusItem(apparatus, layout, accentColor, hoverTargets, hoverControllers) {
+function createApparatusItem(apparatus, layout, accentColor, hoverTargets, hoverControllers, itemControllers) {
   const group = new THREE.Group();
   const model = createApparatusModel(apparatus.icon, accentColor);
+  const trackedMaterials = [];
+  model.traverse(node => {
+    if (!node.isMesh) return;
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    materials.filter(Boolean).forEach(material => trackedMaterials.push(material));
+  });
   group.add(model);
 
   const hitbox = createHoverHitbox(0.26, 0.32, 0.2);
@@ -680,18 +782,20 @@ function createApparatusItem(apparatus, layout, accentColor, hoverTargets, hover
   registerHoverTarget(
     hoverTargets,
     hoverControllers,
+    itemControllers,
     `apparatus-${apparatus.id}-${layout.x}`,
     apparatus.name,
     hitbox,
     group,
-    [],
+    trackedMaterials,
+    { itemType: 'apparatus', itemId: apparatus.id },
     { hoverScale: 1.06, emissiveBoost: 0.12 }
   );
 
   return group;
 }
 
-function createApparatusGrid(apparatus, accentColor, hoverTargets, hoverControllers) {
+function createApparatusGrid(apparatus, accentColor, hoverTargets, hoverControllers, itemControllers) {
   const group = new THREE.Group();
   const columns = 6;
   const xStart = -1.05;
@@ -706,7 +810,7 @@ function createApparatusGrid(apparatus, accentColor, hoverTargets, hoverControll
     group.add(createApparatusItem(item, {
       x: xStart + col * xStep,
       z
-    }, accentColor, hoverTargets, hoverControllers));
+    }, accentColor, hoverTargets, hoverControllers, itemControllers));
   });
 
   return group;
@@ -760,6 +864,7 @@ export function createBench({
   const itemHoverTargets = [];
   const clickTargets = [];
   const hoverControllers = new Map();
+  const itemControllers = new Map();
   let hoveredKey = null;
 
   const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3a3a4a, roughness: 0.7, metalness: 0.1 });
@@ -818,8 +923,8 @@ export function createBench({
   group.add(tableHitbox);
   clickTargets.push(tableHitbox);
 
-  group.add(createReagentRack(chemicals, itemHoverTargets, hoverControllers));
-  group.add(createApparatusGrid(apparatus, accent, itemHoverTargets, hoverControllers));
+  group.add(createReagentRack(chemicals, itemHoverTargets, hoverControllers, itemControllers));
+  group.add(createApparatusGrid(apparatus, accent, itemHoverTargets, hoverControllers, itemControllers));
 
   const titleMat = new THREE.MeshBasicMaterial({
     map: createTitleTexture(title, accent),
@@ -854,6 +959,185 @@ export function createBench({
   clickTargets.push(titleHitbox);
 
   const state = { active: false, hovered: false };
+  const interactionState = {
+    selectedChemicalIds: [],
+    selectedApparatusIds: [],
+    requiredApparatusIds: [],
+    dimmedApparatusIds: []
+  };
+  const effectGroup = new THREE.Group();
+  effectGroup.position.set(0, 1.08, 0);
+  group.add(effectGroup);
+
+  function applyItemInteractionState() {
+    chemicals.forEach(chemical => {
+      const controller = itemControllers.get(`chemical:${chemical.id}`);
+      if (!controller) return;
+      controller.setSelected(interactionState.selectedChemicalIds.includes(chemical.id));
+      controller.setRequired(false);
+      controller.setDimmed(false);
+    });
+
+    apparatus.forEach(item => {
+      const controller = itemControllers.get(`apparatus:${item.id}`);
+      if (!controller) return;
+      controller.setSelected(interactionState.selectedApparatusIds.includes(item.id));
+      controller.setRequired(interactionState.requiredApparatusIds.includes(item.id));
+      controller.setDimmed(interactionState.dimmedApparatusIds.includes(item.id));
+    });
+  }
+
+  function animateFor(durationMs, updater) {
+    return new Promise(resolve => {
+      const start = performance.now();
+
+      function step(now) {
+        const progress = Math.min(1, (now - start) / durationMs);
+        updater(progress);
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          resolve();
+        }
+      }
+
+      requestAnimationFrame(step);
+    });
+  }
+
+  async function playPulseEffect() {
+    const glow = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.55, 0.7, 0.02, 32),
+      new THREE.MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.42, depthWrite: false })
+    );
+    glow.position.y = 0.02;
+    effectGroup.add(glow);
+
+    await animateFor(650, progress => {
+      const scale = 1 + progress * 1.1;
+      glow.scale.set(scale, 1, scale);
+      glow.material.opacity = 0.42 * (1 - progress);
+    });
+
+    effectGroup.remove(glow);
+    glow.geometry.dispose();
+    glow.material.dispose();
+  }
+
+  async function playFlashEffect() {
+    const light = new THREE.PointLight('#fff7bf', 0, 4.5);
+    light.position.set(0, 0.45, 0);
+    effectGroup.add(light);
+
+    await animateFor(500, progress => {
+      light.intensity = Math.sin(progress * Math.PI) * 4.5;
+      titleGlowMat.opacity = 0.16 + Math.sin(progress * Math.PI) * 0.5;
+    });
+
+    titleGlowMat.opacity = 0.16 + (state.active ? 0.32 : state.hovered ? 0.18 : 0);
+    effectGroup.remove(light);
+  }
+
+  async function playHeatEffect() {
+    const shimmer = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.9, 0.55),
+      new THREE.MeshBasicMaterial({ color: 0xffd27a, transparent: true, opacity: 0.18, depthWrite: false })
+    );
+    shimmer.rotation.x = -Math.PI / 2;
+    shimmer.position.set(0, 0.08, 0.05);
+    effectGroup.add(shimmer);
+
+    await animateFor(900, progress => {
+      shimmer.scale.set(1 + progress * 0.25, 1 + progress * 0.18, 1);
+      shimmer.material.opacity = 0.18 * (1 - progress);
+    });
+
+    effectGroup.remove(shimmer);
+    shimmer.geometry.dispose();
+    shimmer.material.dispose();
+  }
+
+  async function playBubbleEffect() {
+    const bubbles = Array.from({ length: 8 }, (_, index) => {
+      const bubble = new THREE.Mesh(
+        new THREE.SphereGeometry(0.028 - index * 0.0016, 10, 10),
+        new THREE.MeshPhysicalMaterial({
+          color: 0xdff8ff,
+          transparent: true,
+          opacity: 0.75,
+          transmission: 0.88,
+          roughness: 0.05
+        })
+      );
+      bubble.position.set(-0.28 + (index % 4) * 0.18, 0.05 + (index % 2) * 0.05, 0.08 - Math.floor(index / 4) * 0.08);
+      effectGroup.add(bubble);
+      return bubble;
+    });
+
+    await animateFor(1100, progress => {
+      bubbles.forEach((bubble, index) => {
+        bubble.position.y = 0.06 + progress * (0.28 + index * 0.01);
+        bubble.position.x += Math.sin(progress * Math.PI * 2 + index) * 0.0009;
+        bubble.material.opacity = 0.75 * (1 - progress);
+      });
+    });
+
+    bubbles.forEach(bubble => {
+      effectGroup.remove(bubble);
+      bubble.geometry.dispose();
+      bubble.material.dispose();
+    });
+  }
+
+  async function playSmokeEffect() {
+    const puffs = Array.from({ length: 7 }, (_, index) => {
+      const puff = new THREE.Mesh(
+        new THREE.SphereGeometry(0.06 + index * 0.008, 12, 12),
+        new THREE.MeshStandardMaterial({
+          color: 0xd8dde5,
+          transparent: true,
+          opacity: 0.26,
+          roughness: 0.95,
+          metalness: 0
+        })
+      );
+      puff.position.set(-0.16 + index * 0.05, 0.16 + (index % 2) * 0.04, -0.03 + (index % 3) * 0.03);
+      effectGroup.add(puff);
+      return puff;
+    });
+
+    await animateFor(1300, progress => {
+      puffs.forEach((puff, index) => {
+        puff.position.y = 0.16 + progress * (0.34 + index * 0.015);
+        puff.scale.setScalar(1 + progress * 0.55);
+        puff.material.opacity = 0.26 * (1 - progress);
+      });
+    });
+
+    puffs.forEach(puff => {
+      effectGroup.remove(puff);
+      puff.geometry.dispose();
+      puff.material.dispose();
+    });
+  }
+
+  async function runEffect(effect) {
+    apparatus.forEach(item => itemControllers.get(`apparatus:${item.id}`)?.setAnimating(true));
+    chemicals.forEach(item => itemControllers.get(`chemical:${item.id}`)?.setAnimating(true));
+
+    try {
+      if (effect === 'flash') await playFlashEffect();
+      else if (effect === 'heat') await playHeatEffect();
+      else if (effect === 'bubbles') await playBubbleEffect();
+      else if (effect === 'smoke') await playSmokeEffect();
+      else await playPulseEffect();
+    } finally {
+      apparatus.forEach(item => itemControllers.get(`apparatus:${item.id}`)?.setAnimating(false));
+      chemicals.forEach(item => itemControllers.get(`chemical:${item.id}`)?.setAnimating(false));
+      applyItemInteractionState();
+      refresh();
+    }
+  }
 
   function refresh() {
     const emphasis = state.active ? 1 : state.hovered ? 0.55 : 0;
@@ -878,6 +1162,23 @@ export function createBench({
     itemHoverTargets,
     clickTargets,
     focusZone,
+    setInteractionState(nextState = {}) {
+      interactionState.selectedChemicalIds = nextState.selectedChemicalIds ?? [];
+      interactionState.selectedApparatusIds = nextState.selectedApparatusIds ?? [];
+      interactionState.requiredApparatusIds = nextState.requiredApparatusIds ?? [];
+      interactionState.dimmedApparatusIds = nextState.dimmedApparatusIds ?? [];
+      applyItemInteractionState();
+    },
+    clearInteractionState() {
+      interactionState.selectedChemicalIds = [];
+      interactionState.selectedApparatusIds = [];
+      interactionState.requiredApparatusIds = [];
+      interactionState.dimmedApparatusIds = [];
+      itemControllers.forEach(controller => controller.reset());
+    },
+    async playEffect(effect) {
+      await runEffect(effect);
+    },
     setHovered(value) {
       state.hovered = value;
       refresh();
