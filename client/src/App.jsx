@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import apiClient from './api/client';
 import { useDeskReactionFlow } from './hooks/useDeskReactionFlow';
+import { FALLBACK_DESKS, normalizeDesks } from './data/fallbackDesks';
 import { LabEngine } from './lab/LabEngine';
 import { buildBenchDefinitions } from './lab/benchDefinitions';
 import { labState } from './lab/LabState';
@@ -18,9 +19,16 @@ export default function App() {
 
   const [phase,         setPhase]         = useState('entry');
   const [activeBench,   setActiveBench]   = useState(null);
+  const [deskData,      setDeskData]      = useState([]);
+  const [hasDeskReactionData, setHasDeskReactionData] = useState(true);
   const [periodicOpen,  setPeriodicOpen]  = useState(false);
   const [hintVisible,   setHintVisible]   = useState(false);
-  const reactionFlow = useDeskReactionFlow({ activeBenchId: activeBench?.id ?? null, engineRef });
+  const reactionFlow = useDeskReactionFlow({
+    activeBenchId: activeBench?.id ?? null,
+    engineRef,
+    desks: deskData,
+    hasDeskReactionData
+  });
 
   // ── Engine init ──────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -28,16 +36,23 @@ export default function App() {
     let cleanup = () => {};
 
     async function initEngine() {
-      let benchDefinitions;
+      let desks = FALLBACK_DESKS;
+      let benchDefinitions = buildBenchDefinitions(FALLBACK_DESKS);
 
       try {
         const response = await apiClient.get('/api/desks');
-        benchDefinitions = buildBenchDefinitions(response.data?.desks ?? []);
+        desks = normalizeDesks(response.data?.desks ?? []);
+        benchDefinitions = buildBenchDefinitions(desks);
       } catch (error) {
-        console.error('Unable to load desk data, using fallback bench definitions.', error);
+        console.error('Unable to load desk data from the server, using bundled desk fallback.', error);
       }
 
-      if (disposed || !canvasRef.current) return;
+      if (disposed) return;
+
+      setDeskData(desks);
+      setHasDeskReactionData(desks.length > 0);
+
+      if (!canvasRef.current) return;
 
       const engine = new LabEngine({ benchDefinitions });
       engineRef.current = engine;

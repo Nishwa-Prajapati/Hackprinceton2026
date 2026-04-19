@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import apiClient from '../api/client';
 import { labState } from '../lab/LabState';
 import {
   arraysMatchAsSets,
@@ -17,8 +16,12 @@ function createMessage(type, text) {
   return text ? { type, text } : null;
 }
 
-export function useDeskReactionFlow({ activeBenchId, engineRef }) {
-  const [desks, setDesks] = useState([]);
+export function useDeskReactionFlow({
+  activeBenchId,
+  engineRef,
+  desks = [],
+  hasDeskReactionData = true
+}) {
   const [selectedChemicals, setSelectedChemicals] = useState([]);
   const [selectedApparatus, setSelectedApparatus] = useState([]);
   const [pendingReaction, setPendingReaction] = useState(null);
@@ -27,28 +30,15 @@ export function useDeskReactionFlow({ activeBenchId, engineRef }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const previousBenchIdRef = useRef(null);
 
-  useEffect(() => {
-    let active = true;
-
-    async function loadDesks() {
-      try {
-        const response = await apiClient.get('/api/desks');
-        if (active) setDesks(response.data?.desks ?? []);
-      } catch (error) {
-        console.error('Unable to load desk reaction data.', error);
-      }
-    }
-
-    loadDesks();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
   const activeDesk = useMemo(() => getDeskForBench(desks, activeBenchId), [desks, activeBenchId]);
   const chemicalMap = useMemo(() => getDeskChemicalMap(activeDesk), [activeDesk]);
   const apparatusMap = useMemo(() => getDeskApparatusMap(activeDesk), [activeDesk]);
+  const deskUi = activeDesk?.ui ?? activeDesk?.ui_config ?? null;
+  const reactionDataAvailable = Boolean(
+    hasDeskReactionData &&
+    activeDesk &&
+    Array.isArray(activeDesk.reactions)
+  );
 
   const applyBenchState = useCallback((nextState = {}) => {
     if (!activeBenchId) return;
@@ -96,7 +86,17 @@ export function useDeskReactionFlow({ activeBenchId, engineRef }) {
   }, [activeBenchId, applyBenchState, engineRef, resetFlow, showMessage]);
 
   const handleChemicalSelection = useCallback(async (chemicalId) => {
-    if (!activeDesk || isPlaying) return;
+    if (isPlaying) return;
+
+    if (!activeDesk) {
+      showMessage('warning', 'No desk data is available for this bench yet.');
+      return;
+    }
+
+    if (!reactionDataAvailable) {
+      showMessage('warning', 'Reaction data is unavailable. Start the server to enable reactions.');
+      return;
+    }
 
     const numericId = Number(chemicalId);
     const current = selectedChemicals;
@@ -135,7 +135,7 @@ export function useDeskReactionFlow({ activeBenchId, engineRef }) {
         requiredApparatusIds: [],
         dimmedApparatusIds: []
       });
-      showMessage('warning', activeDesk?.ui?.no_reaction_message ?? 'No reaction possible.');
+      showMessage('warning', deskUi?.no_reaction_message ?? 'No reaction possible.');
       return;
     }
 
@@ -155,12 +155,14 @@ export function useDeskReactionFlow({ activeBenchId, engineRef }) {
       return;
     }
 
-    showMessage('success', activeDesk?.ui?.reaction_found_message ?? 'Reaction found. Select the highlighted apparatus.');
+    showMessage('success', deskUi?.reaction_found_message ?? 'Reaction found. Select the highlighted apparatus.');
   }, [
     activeDesk,
     apparatusMap,
     applyBenchState,
+    deskUi,
     isPlaying,
+    reactionDataAvailable,
     runReaction,
     selectedChemicals,
     showMessage
@@ -227,14 +229,21 @@ export function useDeskReactionFlow({ activeBenchId, engineRef }) {
     setSelectedChemicals([]);
     setSelectedApparatus([]);
     setPendingReaction(null);
-    setMessage(createMessage('info', 'Select 2 chemicals to begin.'));
+    setMessage(
+      createMessage(
+        reactionDataAvailable ? 'info' : 'warning',
+        reactionDataAvailable
+          ? 'Select 2 chemicals to begin.'
+          : 'Reaction data is unavailable for this desk right now.'
+      )
+    );
     applyBenchState({
       selectedChemicalIds: [],
       selectedApparatusIds: [],
       requiredApparatusIds: [],
       dimmedApparatusIds: []
     });
-  }, [activeBenchId, applyBenchState, clearBenchState, resetFlow]);
+  }, [activeBenchId, applyBenchState, clearBenchState, reactionDataAvailable, resetFlow]);
 
   useEffect(() => {
     const offItemSelected = labState.on('bench:item:selected', ({ benchId, itemType, itemId }) => {

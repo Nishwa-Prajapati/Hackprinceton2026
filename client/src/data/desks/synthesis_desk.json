@@ -1,0 +1,1265 @@
+{
+  "desk": {
+    "id": "desk_3",
+    "name": "Synthesis Reactions",
+    "description": "Select any 2 chemicals to explore synthesis chemistry — two or more simple substances combining to form a single, more complex compound. Observe colour changes, heat release, gas formation, and new compound properties.",
+    "grade": [
+      "9",
+      "10"
+    ],
+    "max_selection": 2
+  },
+  "chemicals": [
+    {
+      "id": 1,
+      "name": "Iron Powder",
+      "formula": "Fe",
+      "type": "metal",
+      "state": "solid",
+      "bottle_color": "#BCAAA4",
+      "particle_color": "#757575",
+      "hazard": "mild_irritant",
+      "note": "Grey magnetic powder — attracted by magnet before reaction",
+      "color_name": "Gray"
+    },
+    {
+      "id": 2,
+      "name": "Sulfur Powder",
+      "formula": "S",
+      "type": "non_metal",
+      "state": "solid",
+      "bottle_color": "#FFF176",
+      "particle_color": "#FFEE58",
+      "hazard": "mild",
+      "note": "Yellow powder — non-magnetic, insulator",
+      "color_name": "Bright Yellow"
+    },
+    {
+      "id": 3,
+      "name": "Magnesium Ribbon",
+      "formula": "Mg",
+      "type": "reactive_metal",
+      "state": "solid",
+      "bottle_color": "#E0E0E0",
+      "particle_color": "#BDBDBD",
+      "hazard": "burns_intensely",
+      "note": "Shiny silver metal strip — cleaned with sandpaper before use",
+      "color_name": "Silver / Light Gray"
+    },
+    {
+      "id": 4,
+      "name": "Oxygen Gas",
+      "formula": "O2",
+      "type": "oxidant_gas",
+      "state": "gas",
+      "bottle_color": "#E0F7FA",
+      "particle_color": "#B2EBF2",
+      "hazard": "oxidising_agent",
+      "note": "Colourless gas — supports and intensifies combustion reactions",
+      "color_name": "Colorless / Very Pale Blue"
+    },
+    {
+      "id": 5,
+      "name": "Hydrogen Gas",
+      "formula": "H2",
+      "type": "flammable_gas",
+      "state": "gas",
+      "bottle_color": "#E3F2FD",
+      "particle_color": "#BBDEFB",
+      "hazard": "highly_flammable",
+      "note": "Colourless, odourless, lightest gas — explosive with oxygen",
+      "color_name": "Colorless"
+    },
+    {
+      "id": 6,
+      "name": "Nitrogen Gas",
+      "formula": "N2",
+      "type": "inert_gas",
+      "state": "gas",
+      "bottle_color": "#F3E5F5",
+      "particle_color": "#E1BEE7",
+      "hazard": "low_hazard",
+      "note": "Colourless, inert gas — requires high temperature and catalyst to react",
+      "color_name": "Colorless / Very Pale Purple Tint"
+    },
+    {
+      "id": 7,
+      "name": "Calcium Oxide (Quicklime)",
+      "formula": "CaO",
+      "type": "basic_oxide",
+      "state": "solid",
+      "bottle_color": "#FFF9C4",
+      "particle_color": "#FFF59D",
+      "hazard": "corrosive_on_contact_with_water",
+      "note": "White chalky powder — reacts vigorously with water, highly exothermic",
+      "color_name": "White / Pale Yellow"
+    },
+    {
+      "id": 8,
+      "name": "Water",
+      "formula": "H2O",
+      "type": "solvent_reagent",
+      "state": "liquid",
+      "bottle_color": "#E1F5FE",
+      "liquid_color": "#F0FBFF",
+      "hazard": "safe",
+      "note": "Distilled water — reacts with oxides to form acids or bases",
+      "color_name": "Colorless"
+    },
+    {
+      "id": 9,
+      "name": "Sulfur Trioxide",
+      "formula": "SO3",
+      "type": "acidic_oxide",
+      "state": "gas",
+      "bottle_color": "#FFCCBC",
+      "particle_color": "#FFAB91",
+      "hazard": "corrosive_choking",
+      "note": "Colourless fuming gas — reacts with water to form sulfuric acid (acid rain)",
+      "color_name": "Colorless / Very Pale Orange Tint"
+    },
+    {
+      "id": 10,
+      "name": "Sodium Metal",
+      "formula": "Na",
+      "type": "alkali_metal",
+      "state": "solid",
+      "bottle_color": "#C8E6C9",
+      "particle_color": "#A5D6A7",
+      "hazard": "highly_reactive_water_fire_risk",
+      "note": "Soft silvery metal — stored under oil, reacts violently with water",
+      "color_name": "Light Greenish Silver"
+    },
+    {
+      "id": 11,
+      "name": "Chlorine Gas",
+      "formula": "Cl2",
+      "type": "halogen_gas",
+      "state": "gas",
+      "bottle_color": "#F9FBE7",
+      "particle_color": "#F0F4C3",
+      "hazard": "toxic_choking",
+      "note": "Yellow-green toxic gas with a sharp bleach-like smell",
+      "color_name": "Yellow-Green"
+    },
+    {
+      "id": 12,
+      "name": "Aluminium Powder",
+      "formula": "Al",
+      "type": "metal",
+      "state": "solid",
+      "bottle_color": "#ECEFF1",
+      "particle_color": "#CFD8DC",
+      "hazard": "flammable_powder",
+      "note": "Fine silvery-grey powder — reacts with halogens and oxygen on heating",
+      "color_name": "Light Silver / Gray"
+    }
+  ],
+  "apparatus": [
+    {
+      "id": 1,
+      "name": "Test Tube",
+      "icon": "test_tube"
+    },
+    {
+      "id": 2,
+      "name": "Test Tube Rack",
+      "icon": "rack"
+    },
+    {
+      "id": 3,
+      "name": "Bunsen Burner",
+      "icon": "bunsen_burner"
+    },
+    {
+      "id": 4,
+      "name": "Crucible with Lid",
+      "icon": "crucible"
+    },
+    {
+      "id": 5,
+      "name": "Beaker",
+      "icon": "beaker"
+    },
+    {
+      "id": 6,
+      "name": "Dropper / Pipette",
+      "icon": "dropper"
+    },
+    {
+      "id": 7,
+      "name": "Tongs / Crucible Tongs",
+      "icon": "tongs"
+    },
+    {
+      "id": 8,
+      "name": "Heat-proof Mat",
+      "icon": "heatproof_mat"
+    },
+    {
+      "id": 9,
+      "name": "Magnet",
+      "icon": "magnet"
+    },
+    {
+      "id": 10,
+      "name": "Delivery Tube",
+      "icon": "delivery_tube"
+    },
+    {
+      "id": 11,
+      "name": "Gas Jar with Lid",
+      "icon": "gas_jar"
+    },
+    {
+      "id": 12,
+      "name": "Thermometer",
+      "icon": "thermometer"
+    }
+  ],
+  "reactions": [
+    {
+      "id": "rxn_1_2",
+      "reactants": [
+        1,
+        2
+      ],
+      "name": "Iron + Sulfur → Iron(II) Sulfide",
+      "formula": "Fe + S -> FeS",
+      "type": "element_element_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9E9E9E",
+        "result_color": "#212121",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "faint_sulfurous",
+        "magnetic_change": true,
+        "magnetic_note": "Iron powder is magnetic before reaction; FeS product is NON-magnetic",
+        "animations": [
+          "glowing_red_spread",
+          "black_product_forming",
+          "heat_shimmer"
+        ],
+        "observation": "When the grey iron + yellow sulfur mixture is heated, a glowing red front spreads through the tube — the reaction is exothermic and self-sustaining once started. The yellow sulfur colour disappears. A new black solid, iron(II) sulfide (FeS), is formed. Unlike the iron powder mixture, the black product is NOT attracted to a magnet — proving a new compound was made, not just a mixture."
+      },
+      "apparatus_needed": [
+        1,
+        2,
+        3,
+        8,
+        9
+      ],
+      "educational_note": "Classic synthesis: two elements → one compound (A + B → AB). The magnet test is the key proof: iron filings are magnetic; FeS is not. This demonstrates how a compound has completely different properties from the elements that formed it. Fe + S → FeS (iron(II) sulfide, also called ferrous sulfide)."
+    },
+    {
+      "id": "rxn_3_4",
+      "reactants": [
+        3,
+        4
+      ],
+      "name": "Magnesium + Oxygen → Magnesium Oxide",
+      "formula": "2Mg + O2 -> 2MgO",
+      "type": "metal_oxygen_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#E0E0E0",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "odorless",
+        "animations": [
+          "blinding_white_flash",
+          "white_smoke_cloud",
+          "white_ash_settling"
+        ],
+        "observation": "Magnesium burns with a blindingly bright white flame. Dense white smoke rises. A white powdery ash of magnesium oxide (MgO) remains. The product has completely different properties — MgO is a white ionic solid and a basic oxide, very different from shiny metallic magnesium or colourless oxygen gas."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        4,
+        11
+      ],
+      "educational_note": "Metal + oxygen → metal oxide (basic oxide). MgO is an ionic compound with a high melting point (2852°C), very different from the metallic Mg it came from. This synthesis is also an oxidation reaction. MgO dissolves slightly in water to form Mg(OH)2, a mild base."
+    },
+    {
+      "id": "rxn_5_4",
+      "reactants": [
+        4,
+        5
+      ],
+      "name": "Hydrogen + Oxygen → Water",
+      "formula": "2H2 + O2 -> 2H2O",
+      "type": "nonmetal_nonmetal_synthesis",
+      "output": {
+        "color_change": false,
+        "result_color": "#F0FBFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "odorless",
+        "animations": [
+          "pale_blue_flash",
+          "water_droplets_condensing",
+          "heat_shimmer"
+        ],
+        "observation": "Hydrogen ignites and burns with an almost invisible pale-blue flame. The only product is pure water — clear droplets form on cold surfaces near the reaction. No CO2 is produced. A 'squeaky pop' sound is heard if a small amount of hydrogen is ignited in a test tube. The synthesis of water from its elements is highly exothermic."
+      },
+      "apparatus_needed": [
+        1,
+        2,
+        5,
+        8,
+        10,
+        12
+      ],
+      "educational_note": "Two non-metal gases combine to synthesise liquid water — one of the most fundamental synthesis reactions. This is the reverse of electrolysis of water (decomposition). It proves water is a compound of hydrogen and oxygen. Hydrogen fuel cells use this exact reaction to generate electricity and water — a clean energy technology."
+    },
+    {
+      "id": "rxn_6_5",
+      "reactants": [
+        5,
+        6
+      ],
+      "name": "Nitrogen + Hydrogen → Ammonia (Haber Process)",
+      "formula": "N2 + 3H2 -> 2NH3  (450°C, Fe catalyst, 200 atm)",
+      "type": "industrial_synthesis",
+      "output": {
+        "color_change": false,
+        "result_color": "#F3E5F5",
+        "gas_produced": true,
+        "gas": "NH3 (ammonia)",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "pungent_ammonia",
+        "animations": [
+          "gas_mixing_colourless",
+          "heat_shimmer",
+          "faint_mist"
+        ],
+        "observation": "At room temperature and pressure nitrogen and hydrogen do NOT react — nitrogen is very unreactive due to its strong N≡N triple bond. Under industrial conditions (450°C, 200 atm pressure, iron catalyst), the two gases combine to form ammonia (NH3). The product has a sharp, pungent smell. This is the Haber-Bosch process — one of the most important industrial reactions ever discovered."
+      },
+      "apparatus_needed": [
+        3,
+        8,
+        10,
+        12
+      ],
+      "educational_note": "The Haber process: N2 + 3H2 ⇌ 2NH3. It is a reversible, exothermic synthesis reaction requiring high temperature, high pressure, and an iron catalyst. About 150 million tonnes of ammonia are produced annually, mostly for fertilisers that feed ~half the world's population. A key example of synthesis in industry and the importance of reaction conditions."
+    },
+    {
+      "id": "rxn_7_8",
+      "reactants": [
+        7,
+        8
+      ],
+      "name": "Calcium Oxide + Water → Calcium Hydroxide (Slaking of Lime)",
+      "formula": "CaO + H2O -> Ca(OH)2",
+      "type": "oxide_water_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFDE7",
+        "result_color": "#FAFAFA",
+        "gas_produced": false,
+        "fumes": true,
+        "precipitate": true,
+        "precipitate_color": "#FFFFFF",
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [
+          "vigorous_hissing_steam",
+          "heat_shimmer",
+          "white_powder_crumbling",
+          "milky_suspension_forming"
+        ],
+        "observation": "Water added to calcium oxide causes a dramatic, vigorous reaction — the solid hisses, crackles, swells, and crumbles as steam is released. The beaker becomes very hot. A white suspension of calcium hydroxide (slaked lime) is formed. If excess water is added, limewater forms. Temperature rise can be 150–200°C in concentrated reactions."
+      },
+      "apparatus_needed": [
+        5,
+        6,
+        8,
+        12
+      ],
+      "educational_note": "Metallic oxide + water → metal hydroxide (base). CaO + H2O → Ca(OH)2. This is 'slaking of lime' — one of the oldest industrial chemical reactions (used in cement, plaster, and agriculture). The reaction is highly exothermic — CaO was historically used to generate heat in self-heating meal packs. Ca(OH)2 is a weak base used to neutralise acidic soils."
+    },
+    {
+      "id": "rxn_8_9",
+      "reactants": [
+        8,
+        9
+      ],
+      "name": "Sulfur Trioxide + Water → Sulfuric Acid",
+      "formula": "SO3 + H2O -> H2SO4",
+      "type": "oxide_water_synthesis",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFDE7",
+        "gas_produced": false,
+        "fumes": true,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "sharp_acid_fumes",
+        "animations": [
+          "white_acid_mist",
+          "heat_shimmer",
+          "faint_fuming"
+        ],
+        "observation": "Sulfur trioxide dissolves rapidly and violently into water, releasing dense white acid mist. The solution becomes extremely hot as concentrated sulfuric acid forms. The reaction is dangerously exothermic. This is why SO3 from industrial plants contributes to acid rain — it reacts with atmospheric water vapour to produce H2SO4 droplets."
+      },
+      "apparatus_needed": [
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "educational_note": "Non-metal oxide + water → acid. SO3 + H2O → H2SO4. This synthesis produces one of the most important industrial chemicals — sulfuric acid. The Contact Process (industrial) makes SO3 first (from burning sulfur), then reacts it with water. SO3 + rainwater → acid rain, causing environmental damage. An important real-world connection for grade 9–10 students."
+    },
+    {
+      "id": "rxn_10_11",
+      "reactants": [
+        10,
+        11
+      ],
+      "name": "Sodium + Chlorine → Sodium Chloride (Table Salt)",
+      "formula": "2Na + Cl2 -> 2NaCl",
+      "type": "metal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#C8E6C9",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "faint_chlorine_then_none",
+        "animations": [
+          "bright_orange_flame",
+          "white_salt_crystals_forming",
+          "yellow_green_gas_disappearing"
+        ],
+        "observation": "Sodium burns spontaneously and brilliantly in chlorine gas with a bright orange-yellow flame. The yellow-green chlorine colour disappears entirely. White crystalline sodium chloride (common table salt) deposits on the jar walls. The transformation is dramatic — a dangerous reactive metal and a toxic gas combine to make a safe, edible compound."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        11,
+        4
+      ],
+      "educational_note": "Metal + non-metal → ionic salt. 2Na + Cl2 → 2NaCl. This is the textbook demonstration of ionic bond formation in synthesis. Sodium transfers its electron to chlorine, forming Na⁺ and Cl⁻ ions that pack into a crystal lattice. The product (salt) is completely safe — the opposite of the hazardous reactants. Shows how properties of compounds differ entirely from their elements."
+    },
+    {
+      "id": "rxn_11_12",
+      "reactants": [
+        11,
+        12
+      ],
+      "name": "Aluminium + Chlorine → Aluminium Chloride",
+      "formula": "2Al + 3Cl2 -> 2AlCl3",
+      "type": "metal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#ECEFF1",
+        "result_color": "#FAFAFA",
+        "gas_produced": false,
+        "fumes": true,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "sharp_acidic_fumes",
+        "animations": [
+          "white_smoke_cloud",
+          "bright_spark_flashes",
+          "heat_shimmer"
+        ],
+        "observation": "Aluminium powder ignites readily in chlorine gas with bright white sparks and dense white fumes. The yellow-green chlorine gas is consumed completely. White/pale yellow aluminium chloride solid forms. The reaction is rapid and exothermic. AlCl3 is a covalent chloride (unlike NaCl) and fumes in moist air."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        11,
+        4,
+        10
+      ],
+      "educational_note": "Al + Cl2 → AlCl3. Aluminium chloride is an unusual product — it behaves as a covalent compound despite being metal + non-metal, due to Al's high charge density. AlCl3 is used as a catalyst in organic synthesis (Friedel-Crafts reactions). This contrasts with NaCl synthesis to show how different metals produce different types of chlorides."
+    },
+    {
+      "id": "rxn_4_12",
+      "reactants": [
+        4,
+        12
+      ],
+      "name": "Aluminium + Oxygen → Aluminium Oxide",
+      "formula": "4Al + 3O2 -> 2Al2O3",
+      "type": "metal_oxygen_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#ECEFF1",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "odorless",
+        "animations": [
+          "bright_sparks_white",
+          "white_oxide_powder_forming",
+          "heat_shimmer"
+        ],
+        "observation": "Aluminium powder burns with bright white sparks in oxygen to form white aluminium oxide (Al2O3). The reaction is highly exothermic. Al2O3 is an extremely hard, high-melting-point white solid — used in industry as a refractory material. In practice, aluminium objects develop a thin protective Al2O3 layer spontaneously in air, preventing further corrosion."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        4,
+        11
+      ],
+      "educational_note": "4Al + 3O2 → 2Al2O3. Aluminium oxide is amphoteric — it reacts with both acids and bases. It is the basis of corundum (ruby and sapphire gemstones) when trace metals are present. The thermite reaction (Al + Fe2O3) releases enormous heat by using this very synthesis driving force. The natural Al2O3 coating is why aluminium appears unreactive despite being a reactive metal."
+    },
+    {
+      "id": "rxn_4_1",
+      "reactants": [
+        1,
+        4
+      ],
+      "name": "Iron + Oxygen → Iron(III) Oxide (Rusting)",
+      "formula": "4Fe + 3O2 -> 2Fe2O3",
+      "type": "metal_oxygen_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#757575",
+        "result_color": "#BF360C",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [
+          "slow_rust_colour_spreading",
+          "orange_brown_coating_forming"
+        ],
+        "observation": "Iron powder reacts with oxygen slowly at room temperature, forming reddish-brown iron(III) oxide (rust/Fe2O3). The grey iron gradually turns orange-brown. Unlike magnesium or aluminium, iron does not burn in air — it only slowly oxidises. The rust is a non-protective, flaky oxide layer that allows further corrosion below it."
+      },
+      "apparatus_needed": [
+        1,
+        2,
+        3,
+        8,
+        12
+      ],
+      "educational_note": "4Fe + 3O2 → 2Fe2O3. Rust is a synthesis reaction but a very slow one — a slow oxidation. Fe2O3 is a basic oxide. Rusting requires both oxygen AND water — removing either prevents rusting (galvanising, painting, oiling). This connects synthesis chemistry to everyday corrosion and materials science. Iron rusting costs economies billions annually in infrastructure damage."
+    },
+    {
+      "id": "rxn_4_10",
+      "reactants": [
+        4,
+        10
+      ],
+      "name": "Sodium + Oxygen → Sodium Oxide",
+      "formula": "4Na + O2 -> 2Na2O",
+      "type": "metal_oxygen_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#C8E6C9",
+        "result_color": "#FAFAFA",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "odorless",
+        "animations": [
+          "bright_yellow_flame",
+          "white_oxide_coating",
+          "heat_shimmer"
+        ],
+        "observation": "Sodium burns rapidly in oxygen with a bright characteristic yellow flame, forming white sodium oxide (Na2O). The freshly cut silver sodium surface quickly dulls and turns white. In excess oxygen, sodium peroxide (Na2O2, a yellow solid) can also form. Na2O dissolves vigorously in water to form NaOH (a strong base)."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        11,
+        4
+      ],
+      "educational_note": "4Na + O2 → 2Na2O. Sodium oxide is a strongly basic oxide — it reacts vigorously with water (Na2O + H2O → 2NaOH). The bright yellow colour of sodium's flame is due to the sodium emission line at 589 nm — this is the basis of flame tests for sodium ions. In excess O2, Na forms Na2O2 (sodium peroxide), a more complex product than expected."
+    },
+    {
+      "id": "rxn_5_11",
+      "reactants": [
+        5,
+        11
+      ],
+      "name": "Hydrogen + Chlorine → Hydrogen Chloride Gas",
+      "formula": "H2 + Cl2 -> 2HCl",
+      "type": "nonmetal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F0F4C3",
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas": "HCl gas",
+        "fumes": true,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "sharp_acidic_choking",
+        "animations": [
+          "yellow_green_colour_fading",
+          "white_fumes_drifting",
+          "heat_shimmer"
+        ],
+        "observation": "When hydrogen and chlorine are mixed and exposed to light or ignited, they react explosively — the yellow-green chlorine colour disappears completely. Colourless hydrogen chloride gas (HCl) forms with sharp, choking acidic fumes. Moist air turns the HCl into hydrochloric acid droplets, visible as white fumes."
+      },
+      "apparatus_needed": [
+        1,
+        2,
+        5,
+        10,
+        11
+      ],
+      "educational_note": "H2 + Cl2 → 2HCl. This synthesis is triggered by UV light (photochemical synthesis) — a chain reaction via free radicals. HCl gas dissolves in water to form hydrochloric acid (strong acid). This reaction shows how two non-metals can synthesise a covalent compound. The H–Cl bond is polar covalent, giving HCl its acidic properties in water."
+    },
+    {
+      "id": "rxn_3_11",
+      "reactants": [
+        3,
+        11
+      ],
+      "name": "Magnesium + Chlorine → Magnesium Chloride",
+      "formula": "Mg + Cl2 -> MgCl2",
+      "type": "metal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#E0E0E0",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "faint_chlorine_then_none",
+        "animations": [
+          "white_bright_flame",
+          "white_salt_forming",
+          "yellow_green_fading"
+        ],
+        "observation": "Magnesium burns vigorously in chlorine gas with a bright white flame. The yellow-green chlorine gas is consumed entirely. White crystalline magnesium chloride (MgCl2) is produced. The reaction is very exothermic. MgCl2 is an ionic salt that dissolves readily in water — used industrially in de-icing roads."
+      },
+      "apparatus_needed": [
+        7,
+        8,
+        11,
+        4,
+        10
+      ],
+      "educational_note": "Mg + Cl2 → MgCl2. A reactive metal combining with a halogen gas — a model ionic synthesis. Magnesium loses 2 electrons (Mg → Mg²⁺) while each Cl gains 1 electron (Cl + e⁻ → Cl⁻), so 2 Cl⁻ balance one Mg²⁺. This demonstrates how ionic compounds form and why their formulae are determined by charge balance."
+    },
+    {
+      "id": "rxn_2_9",
+      "reactants": [
+        2,
+        9
+      ],
+      "name": "Sulfur + Oxygen → Sulfur Dioxide (Step 1 of Contact Process)",
+      "formula": "S + O2 -> SO2",
+      "type": "nonmetal_oxygen_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFEE58",
+        "result_color": "#F5F5F5",
+        "gas_produced": true,
+        "gas": "SO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "sharp_choking_sulfurous",
+        "animations": [
+          "blue_flame_burning",
+          "pale_gas_rising",
+          "heat_shimmer"
+        ],
+        "observation": "Sulfur melts then ignites with a distinctive blue flame. The yellow solid completely converts to invisible sulfur dioxide gas (SO2). A sharp, choking smell of SO2 is detected. The gas can be confirmed by testing with damp litmus paper (turns red) or potassium manganate(VII) solution (decolourises). This is Step 1 of the industrial Contact Process to make H2SO4."
+      },
+      "apparatus_needed": [
+        3,
+        4,
+        8,
+        10,
+        1,
+        2
+      ],
+      "educational_note": "S + O2 → SO2. Non-metal + oxygen → acidic oxide. In the industrial Contact Process: Step 1 — S + O2 → SO2; Step 2 — 2SO2 + O2 → 2SO3 (V2O5 catalyst); Step 3 — SO3 + H2O → H2SO4. SO2 also forms acid rain when it escapes industrial chimneys: SO2 + H2O → H2SO3 (sulfurous acid). Key real-world application of synthesis chemistry."
+    },
+    {
+      "id": "rxn_6_4",
+      "reactants": [
+        4,
+        6
+      ],
+      "name": "Nitrogen + Oxygen → Nitrogen Monoxide",
+      "formula": "N2 + O2 -> 2NO  (lightning / very high temperatures)",
+      "type": "element_element_synthesis",
+      "output": {
+        "color_change": false,
+        "result_color": "#F3E5F5",
+        "gas_produced": true,
+        "gas": "NO (nitrogen monoxide)",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [
+          "lightning_arc_flash",
+          "faint_gas_forming"
+        ],
+        "observation": "At room temperature and atmospheric pressure, nitrogen and oxygen do NOT react — both are very stable gases. The reaction only occurs at very high temperatures (above 2000°C), such as in lightning strikes or inside car engine cylinders. The colourless NO gas produced quickly reacts further with oxygen in air to form brown NO2 (nitrogen dioxide)."
+      },
+      "apparatus_needed": [
+        1,
+        2,
+        10,
+        12
+      ],
+      "educational_note": "N2 + O2 → 2NO (only at very high temperatures). This synthesis requires breaking the extremely strong N≡N triple bond (945 kJ/mol). In car engines and during lightning, the high temperatures cause this reaction — producing NOx gases that contribute to smog and acid rain. It demonstrates that not all element combinations react spontaneously — activation energy determines if synthesis occurs."
+    },
+    {
+      "id": "rxn_3_2",
+      "reactants": [
+        2,
+        3
+      ],
+      "name": "Magnesium + Sulfur → Magnesium Sulfide",
+      "formula": "Mg + S -> MgS  (on strong heating)",
+      "type": "metal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#E0E0E0",
+        "result_color": "#F5F5F5",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "faint_sulfurous",
+        "animations": [
+          "bright_spark_flashes",
+          "pale_product_forming",
+          "heat_shimmer"
+        ],
+        "observation": "When strongly heated, magnesium reacts with sulfur powder with bright flashes. A pale yellowish-white solid, magnesium sulfide (MgS), is formed. MgS is an ionic compound with a characteristic smell when wet (releases H2S on contact with moisture). The reaction is less dramatic than Mg burning in oxygen but follows the same A + B → AB synthesis pattern."
+      },
+      "apparatus_needed": [
+        4,
+        3,
+        8,
+        7
+      ],
+      "educational_note": "Mg + S → MgS. Magnesium (Group 2, forms Mg²⁺) combines with sulfur (Group 16, forms S²⁻) to form an ionic compound. MgS has the same crystal structure as NaCl. The Mg²⁺:S²⁻ ratio is 1:1 because both ions have the same magnitude charge. This reinforces how ion charges determine compound formulae in ionic synthesis reactions."
+    },
+    {
+      "id": "rxn_1_11",
+      "reactants": [
+        1,
+        11
+      ],
+      "name": "Iron + Chlorine → Iron(III) Chloride",
+      "formula": "2Fe + 3Cl2 -> 2FeCl3",
+      "type": "metal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#757575",
+        "result_color": "#8B4513",
+        "gas_produced": false,
+        "fumes": true,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "sharp_fumes",
+        "animations": [
+          "orange_glow_spreading",
+          "brown_orange_fumes",
+          "dark_brown_solid_forming"
+        ],
+        "observation": "Iron glows orange-red in chlorine gas. Reddish-brown fumes of iron(III) chloride (FeCl3) are produced and condense as a dark brown-orange crystalline solid on cooler parts of the tube. The yellow-green chlorine gas is consumed. FeCl3 fumes in moist air. This reaction shows chlorine oxidising iron to its +3 oxidation state."
+      },
+      "apparatus_needed": [
+        1,
+        3,
+        8,
+        11,
+        10
+      ],
+      "educational_note": "2Fe + 3Cl2 → 2FeCl3. Iron can form FeCl2 or FeCl3 depending on conditions — with excess chlorine, the higher +3 state (FeCl3) is always produced. FeCl3 is an important industrial catalyst and is used in etching printed circuit boards. This reaction also shows that Cl2 is a strong enough oxidising agent to force iron into a higher oxidation state than typical."
+    },
+    {
+      "id": "rxn_6_8",
+      "reactants": [
+        6,
+        8
+      ],
+      "name": "No Reaction — Nitrogen and Water",
+      "formula": "N2 + H2O -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [
+          "bubbles_rising"
+        ],
+        "observation": "No reaction. Nitrogen gas simply bubbles through water without dissolving significantly or reacting. Nitrogen is extremely unreactive at room temperature due to the very strong N≡N triple bond (945 kJ/mol). The water remains clear and neutral (pH 7). Nitrogen's inertness at room temperature is why it is used to fill food packaging."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Not all elements combine easily — synthesis reactions require enough energy to break existing bonds. The N≡N triple bond is one of the strongest bonds in chemistry, making nitrogen very unreactive at room temperature. This is a key contrast to the Haber Process, where high temperature and pressure are needed to force N2 and H2 to react. Activation energy is essential."
+    },
+    {
+      "id": "rxn_1_8",
+      "reactants": [
+        1,
+        8
+      ],
+      "name": "No Direct Reaction — Iron Powder and Water (Slow Rust)",
+      "formula": "Fe + H2O -> no immediate synthesis  (slow rusting with O2 present)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No immediate synthesis reaction. Iron and water alone do not react rapidly. Rusting is a very slow process that requires BOTH water AND oxygen together. Iron in pure, deoxygenated water does not rust. This is why iron stored underwater in oxygen-free conditions does not corrode — and why rust inhibitors work by blocking oxygen access."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Synthesis does not always occur simply by mixing two substances. Iron rusting (Fe + O2 + H2O → Fe2O3·xH2O) requires both oxygen and water — neither alone is sufficient. This is important for understanding corrosion prevention: remove O2 (vacuum packing), remove H2O (dessicants), or coat the surface (paint, oil, galvanising). Real-world connection to engineering and materials science."
+    },
+    {
+      "id": "rxn_5_8",
+      "reactants": [
+        5,
+        8
+      ],
+      "name": "No Reaction — Hydrogen and Water",
+      "formula": "H2 + H2O -> no reaction  (at room temperature)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [
+          "bubbles_rising"
+        ],
+        "observation": "Hydrogen gas bubbles through water without any reaction. Hydrogen does not react with water at room temperature. Water is already the product of hydrogen + oxygen synthesis — it cannot react further with hydrogen under normal conditions. The water remains neutral and clear."
+      },
+      "apparatus_needed": [],
+      "educational_note": "H2 and H2O do not react at room temperature. This is a good example of chemical stability — once water is formed, it does not react further with hydrogen. However, at very high temperatures (>2500°C), water can be decomposed back into H2 and O2. This reinforces the concept of reversibility — synthesis reactions can be reversed under extreme conditions."
+    },
+    {
+      "id": "rxn_2_11",
+      "reactants": [
+        2,
+        11
+      ],
+      "name": "Sulfur + Chlorine → Disulfur Dichloride",
+      "formula": "2S + Cl2 -> S2Cl2",
+      "type": "nonmetal_nonmetal_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFEE58",
+        "result_color": "#FF8F00",
+        "gas_produced": false,
+        "fumes": true,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "sharp_unpleasant_fumes",
+        "animations": [
+          "yellow_green_colour_fading",
+          "orange_liquid_forming",
+          "faint_fuming"
+        ],
+        "observation": "Sulfur and chlorine react on gentle heating to form disulfur dichloride (S2Cl2) — an orange-yellow, fuming oily liquid with an intensely unpleasant smell. The yellow-green chlorine gas is absorbed. S2Cl2 fumes strongly in moist air, reacting with water to produce HCl and sulfur. This is a less common but real non-metal + halogen synthesis reaction."
+      },
+      "apparatus_needed": [
+        1,
+        3,
+        8,
+        11,
+        10
+      ],
+      "educational_note": "2S + Cl2 → S2Cl2. Two non-metals combining to form a covalent compound — a synthesis reaction producing a liquid product rather than a solid salt. S2Cl2 is used in rubber vulcanisation. This contrasts with metal + halogen synthesis (which makes ionic solids) and shows that non-metal + halogen synthesis produces covalent molecules with very different physical properties."
+    },
+    {
+      "id": "rxn_6_11",
+      "reactants": [
+        6,
+        11
+      ],
+      "name": "No Direct Reaction — Nitrogen and Chlorine at Room Temperature",
+      "formula": "N2 + Cl2 -> no spontaneous reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "chlorine_smell_persists",
+        "animations": [],
+        "observation": "No reaction. Nitrogen and chlorine gases do not react with each other at room temperature. Nitrogen trichloride (NCl3) can be made only through indirect reactions (e.g., ammonia reacting with chlorine), not by direct synthesis. The yellow-green chlorine smell remains as no reaction consumes it."
+      },
+      "apparatus_needed": [],
+      "educational_note": "N2 and Cl2 do not react directly — the N≡N triple bond is too strong to be broken by Cl2 under normal conditions. This shows that not all combinations of elements lead to synthesis reactions. Comparing reactions that work (Na + Cl2, Mg + Cl2, Fe + Cl2) with those that don't (N2 + Cl2) teaches students to evaluate reactivity and bond strength when predicting synthesis outcomes."
+    },
+    {
+      "id": "rxn_7_9",
+      "reactants": [
+        7,
+        9
+      ],
+      "name": "Calcium Oxide + Sulfur Trioxide → Calcium Sulfate",
+      "formula": "CaO + SO3 -> CaSO4",
+      "type": "oxide_oxide_synthesis",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFDE7",
+        "result_color": "#FAFAFA",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": false,
+        "odor": "sulfurous_then_odorless",
+        "animations": [
+          "white_powder_absorbing_gas",
+          "heat_shimmer",
+          "solid_product_forming"
+        ],
+        "observation": "Calcium oxide absorbs sulfur trioxide gas and reacts to form calcium sulfate (CaSO4, gypsum). The reaction occurs as a white powder absorbs the gas. The SO3 fumes disappear and the white solid product forms. CaSO4 is the familiar 'gypsum' material — used in plaster of Paris, drywall, and cement. This is an acid-base oxide synthesis."
+      },
+      "apparatus_needed": [
+        4,
+        8,
+        10,
+        3
+      ],
+      "educational_note": "CaO (basic oxide) + SO3 (acidic oxide) → CaSO4 (a salt). This is an oxide-oxide synthesis — an acidic oxide reacting with a basic oxide to form a salt, with no water needed. This pattern (acid oxide + basic oxide → salt) parallels acid + base → salt + water. It explains how flue-gas desulfurisation works in power stations: CaO scrubbers absorb SO3 to prevent acid rain."
+    },
+    {
+      "id": "rxn_3_6",
+      "reactants": [
+        3,
+        6
+      ],
+      "name": "No Reaction — Magnesium and Nitrogen at Room Temperature",
+      "formula": "3Mg + N2 -> Mg3N2  (requires very high temperature)",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "light_produced": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction at room temperature. Magnesium ribbon does not react with nitrogen gas under normal lab conditions. However, when burning magnesium is placed in nitrogen gas, it does react with a yellow-orange flame to form magnesium nitride (Mg3N2) — a yellow-brown solid. This reaction only proceeds with high activation energy (ignition)."
+      },
+      "apparatus_needed": [],
+      "educational_note": "3Mg + N2 → Mg3N2 only occurs on ignition — not spontaneously. When magnesium burns in air, it actually makes BOTH MgO (reaction with O2) and Mg3N2 (reaction with N2), since air contains 78% N2. This is why the white MgO ash also contains traces of yellow Mg3N2. Mg3N2 reacts with water to release ammonia: Mg3N2 + 6H2O → 3Mg(OH)2 + 2NH3."
+    },
+    {
+      "id": "rxn_10_8",
+      "reactants": [
+        8,
+        10
+      ],
+      "name": "Sodium + Water → Sodium Hydroxide + Hydrogen",
+      "formula": "2Na + 2H2O -> 2NaOH + H2",
+      "type": "metal_water_synthesis",
+      "output": {
+        "color_change": false,
+        "result_color": "#F0FBFF",
+        "gas_produced": true,
+        "gas": "H2 (hydrogen gas)",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "light_produced": true,
+        "odor": "odorless",
+        "animations": [
+          "vigorous_fizzing",
+          "sodium_darting_on_surface",
+          "lilac_flame",
+          "heat_shimmer"
+        ],
+        "observation": "Sodium skitters across the water surface as it reacts vigorously, fizzing rapidly. Hydrogen gas is released — enough to ignite the sodium, burning with a characteristic lilac/violet flame (sodium emission). The water turns alkaline (NaOH forms) — confirmed by universal indicator turning purple. The sodium disappears completely."
+      },
+      "apparatus_needed": [
+        5,
+        7,
+        8,
+        12,
+        3
+      ],
+      "educational_note": "2Na + 2H2O → 2NaOH + H2↑. Sodium hydroxide (NaOH) is synthesised directly as a product. Note: this is also a displacement reaction (Na displaces H from water). The lilac flame is a flame test for sodium (actually the intense yellow-orange of sodium emission — it appears lilac/violet in the intense reflection). NaOH is a major industrial base used in soap, paper, and textiles."
+    }
+  ],
+  "animations": {
+    "glowing_red_spread": {
+      "description": "A glowing red front spreads through the powder mixture",
+      "color": "#FF3D00"
+    },
+    "black_product_forming": {
+      "description": "Black solid product forming from grey and yellow mix",
+      "color": "#212121"
+    },
+    "blinding_white_flash": {
+      "description": "Extremely bright white flash burst",
+      "color": "#FFFFFF"
+    },
+    "white_smoke_cloud": {
+      "description": "Dense white smoke cloud billowing upward",
+      "color": "#F5F5F5"
+    },
+    "white_ash_settling": {
+      "description": "Fine white powder slowly settling down",
+      "color": "#FAFAFA"
+    },
+    "pale_blue_flash": {
+      "description": "Brief pale blue flash as hydrogen ignites",
+      "color": "#B0BEC5"
+    },
+    "water_droplets_condensing": {
+      "description": "Clear water droplets forming on cold surfaces",
+      "color": "#B2EBF2"
+    },
+    "gas_mixing_colourless": {
+      "description": "Two colourless gases mixing in container",
+      "color": "#F3E5F5"
+    },
+    "faint_mist": {
+      "description": "Very faint mist near liquid surface",
+      "color": "#F8F8F8"
+    },
+    "vigorous_hissing_steam": {
+      "description": "Steam rising vigorously with hissing sound from solid",
+      "color": "#EEEEEE"
+    },
+    "white_powder_crumbling": {
+      "description": "White solid crumbling and expanding with heat",
+      "color": "#FFFFFF"
+    },
+    "milky_suspension_forming": {
+      "description": "Milky white suspension forming in liquid",
+      "color": "#F0F0F0"
+    },
+    "white_acid_mist": {
+      "description": "Dense white corrosive acid mist forming above reaction",
+      "color": "#ECEFF1"
+    },
+    "faint_fuming": {
+      "description": "Light fumes drifting from reaction surface",
+      "color": "#FAFAFA"
+    },
+    "bright_orange_flame": {
+      "description": "Bright orange-yellow sodium flame",
+      "color": "#FF6D00"
+    },
+    "white_salt_crystals_forming": {
+      "description": "White crystalline salt depositing on surfaces",
+      "color": "#FFFFFF"
+    },
+    "yellow_green_gas_disappearing": {
+      "description": "Yellow-green chlorine colour fading as gas is consumed",
+      "color": "#F9FBE7"
+    },
+    "white_smoke_billowing": {
+      "description": "Thick white smoke billowing outward",
+      "color": "#EEEEEE"
+    },
+    "bright_spark_flashes": {
+      "description": "Bright white sparks flashing from reaction",
+      "color": "#FFF9C4"
+    },
+    "white_bright_flame": {
+      "description": "Intense bright white flame from metal burning",
+      "color": "#FFFFFF"
+    },
+    "yellow_green_fading": {
+      "description": "Yellow-green colour fading as chlorine is consumed",
+      "color": "#F0F4C3"
+    },
+    "blue_flame_burning": {
+      "description": "Blue flame as sulfur burns in oxygen",
+      "color": "#4FC3F7"
+    },
+    "pale_gas_rising": {
+      "description": "Pale colourless gas rising from reaction",
+      "color": "#EEEEEE"
+    },
+    "lightning_arc_flash": {
+      "description": "Simulated lightning arc flash for extreme conditions",
+      "color": "#FFEE58"
+    },
+    "faint_gas_forming": {
+      "description": "Trace amounts of faint gas appearing",
+      "color": "#F3E5F5"
+    },
+    "orange_glow_spreading": {
+      "description": "Orange-red glow spreading as iron heats in chlorine",
+      "color": "#FF8F00"
+    },
+    "brown_orange_fumes": {
+      "description": "Reddish-brown fumes of FeCl3 drifting upward",
+      "color": "#BF360C"
+    },
+    "dark_brown_solid_forming": {
+      "description": "Dark brown crystalline FeCl3 forming on cooler surfaces",
+      "color": "#6D4C41"
+    },
+    "slow_rust_colour_spreading": {
+      "description": "Gradual orange-brown rust spreading over grey iron",
+      "color": "#BF360C"
+    },
+    "orange_brown_coating_forming": {
+      "description": "Orange-brown Fe2O3 coating developing on surface",
+      "color": "#D84315"
+    },
+    "bright_yellow_flame": {
+      "description": "Characteristic bright yellow-orange sodium flame",
+      "color": "#FFD600"
+    },
+    "white_oxide_coating": {
+      "description": "White oxide layer forming on metal surface",
+      "color": "#FAFAFA"
+    },
+    "white_oxide_powder_forming": {
+      "description": "White powder product forming from metal combustion",
+      "color": "#FFFFFF"
+    },
+    "yellow_green_colour_fading": {
+      "description": "Yellow-green Cl2 colour disappearing as reaction proceeds",
+      "color": "#F9FBE7"
+    },
+    "white_fumes_drifting": {
+      "description": "White HCl fumes drifting in moist air",
+      "color": "#EEEEEE"
+    },
+    "orange_liquid_forming": {
+      "description": "Orange-yellow oily liquid forming from reaction",
+      "color": "#FF8F00"
+    },
+    "pale_product_forming": {
+      "description": "Pale-coloured solid product forming on heating",
+      "color": "#F5F5F5"
+    },
+    "white_powder_absorbing_gas": {
+      "description": "White powder visibly absorbing SO3 gas",
+      "color": "#FAFAFA"
+    },
+    "solid_product_forming": {
+      "description": "White solid product forming from gas + solid reaction",
+      "color": "#FFFFFF"
+    },
+    "vigorous_fizzing": {
+      "description": "Rapid vigorous bubbling as H2 gas is released",
+      "color": "#FFFFFF"
+    },
+    "sodium_darting_on_surface": {
+      "description": "Small sodium piece sliding rapidly across water surface",
+      "color": "#C8E6C9"
+    },
+    "lilac_flame": {
+      "description": "Characteristic lilac/violet sodium flame on water surface",
+      "color": "#CE93D8"
+    },
+    "heat_shimmer": {
+      "description": "Wavy heat distortion rising from reaction zone",
+      "color": "#FFD580"
+    },
+    "bubbles_rising": {
+      "description": "Gas bubbles rising through liquid without reacting",
+      "color": "#FFFFFF"
+    }
+  },
+  "ui_config": {
+    "selection_mode": "max_2_chemicals",
+    "lookup_note": "Always sort selected chemical IDs ascending before lookup. e.g. user picks bottles 10 and 3 -> look up reactants [3, 10]",
+    "no_reaction_message": "These two substances do not combine under normal lab conditions. Synthesis needs the right reactants AND enough activation energy!",
+    "reaction_found_message": "Reaction found! Highlighting apparatus and starting experiment...",
+    "apparatus_highlight_style": "pulse_glow_cyan",
+    "chemical_highlight_style": "pulse_glow_yellow",
+    "reaction_type_badges": {
+      "element_element_synthesis": {
+        "color": "#FF6F00",
+        "label": "Element + Element"
+      },
+      "metal_oxygen_synthesis": {
+        "color": "#E53935",
+        "label": "Metal + Oxygen"
+      },
+      "nonmetal_oxygen_synthesis": {
+        "color": "#FB8C00",
+        "label": "Non-metal + Oxygen"
+      },
+      "metal_nonmetal_synthesis": {
+        "color": "#8E24AA",
+        "label": "Metal + Non-metal"
+      },
+      "nonmetal_nonmetal_synthesis": {
+        "color": "#1E88E5",
+        "label": "Non-metal + Non-metal"
+      },
+      "oxide_water_synthesis": {
+        "color": "#00897B",
+        "label": "Oxide + Water"
+      },
+      "oxide_oxide_synthesis": {
+        "color": "#6D4C41",
+        "label": "Oxide + Oxide"
+      },
+      "industrial_synthesis": {
+        "color": "#3949AB",
+        "label": "Industrial Synthesis"
+      },
+      "metal_water_synthesis": {
+        "color": "#00ACC1",
+        "label": "Metal + Water"
+      },
+      "no_reaction": {
+        "color": "#9E9E9E",
+        "label": "No Reaction"
+      }
+    }
+  }
+}
