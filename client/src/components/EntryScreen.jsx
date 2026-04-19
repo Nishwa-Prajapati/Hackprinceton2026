@@ -14,7 +14,6 @@ export default function EntryScreen({ onEntered }) {
 
   function triggerOpen() {
     setOpening(true);
-    // After gate slide finishes (0.85s), tell App to start camera fly-in
     setTimeout(() => onEntered(), 880);
   }
 

@@ -4,6 +4,7 @@ import express from "express";
 import elevenLabsRouter from "./routes/elevenlabs.js";
 import geminiRouter from "./routes/gemini.js";
 import claudeRouter from "./routes/claude.js";
+import aiChatRouter from "./routes/ai-chat.js";
 import reactionsRouter from "./routes/reactions.js";
 
 const app = express();
@@ -19,6 +20,7 @@ app.get("/api/health", (_req, res) => {
 app.use("/api/reactions", reactionsRouter);
 app.use("/api/narrate", elevenLabsRouter);
 app.use("/api/iteminfo", geminiRouter);
+app.use("/api/ai-chat", aiChatRouter);
 app.use("/api", claudeRouter);
 
 app.listen(port, () => {

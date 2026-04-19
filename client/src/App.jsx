@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { LabEngine } from './lab/LabEngine';
 import { labState } from './lab/LabState';
+import useAIAssistant from './ai/AIAssistant';
 import EntryScreen from './components/EntryScreen';
 import periodicTablePopup from './assets/periodic-table-popup.png';
 import { DESK_DATA, findDeskReaction, getDeskApparatus, getDeskData } from './data/desks/index';
@@ -1356,6 +1357,7 @@ export default function App() {
   const reactantARef = useRef('');
   const reactantBRef = useRef('');
   const guideBubbleTimerRef = useRef(null);
+  const assistant = useAIAssistant();
 
   const [phase, setPhase] = useState('entry');
   const [activeBench, setActiveBench] = useState(null);
@@ -1400,15 +1402,18 @@ export default function App() {
     const offPeriodicOpen = labState.on('periodic:opened', () => setPeriodicOpen(true));
     const offPeriodicClose = labState.on('periodic:closed', () => setPeriodicOpen(false));
     const offGuideWelcome = labState.on('guide:welcome', ({ message }) => {
+      const text = message ?? 'Hey, welcome to Lab Zero';
       window.clearTimeout(guideBubbleTimerRef.current);
       setGuideGreeting('');
+      assistant.speakText(text);
       guideBubbleTimerRef.current = window.setTimeout(() => {
-        setGuideGreeting(message ?? 'Hey, welcome to Lab Zero');
+        setGuideGreeting(text);
       }, 520);
     });
     const offGuideHidden = labState.on('guide:hidden', () => {
       window.clearTimeout(guideBubbleTimerRef.current);
       setGuideGreeting('');
+      assistant.stopAll({ preserveContext: true });
     });
     const offReactantSelected = labState.on('bench:reactantSelected', ({ benchId, reactant }) => {
       setActiveBench((currentBench) => {
@@ -1482,6 +1487,39 @@ export default function App() {
     window.addEventListener('keydown', handle);
     return () => window.removeEventListener('keydown', handle);
   }, [experimentState, periodicOpen, phase, reactionPromptOpen]);
+
+  useEffect(() => {
+    if (phase === 'focused' && activeBench?.deskKey) {
+      assistant.onDeskEnter({
+        ...activeBench,
+        deskData: getDeskData(activeBench.deskKey),
+      });
+      return;
+    }
+
+    if (phase !== 'focused') {
+      assistant.stopAll({ preserveContext: false });
+    }
+  }, [activeBench, phase]);
+
+  useEffect(() => {
+    if (!experimentState) return;
+
+    assistant.onReactionComplete({
+      desk: activeBench ?? {
+        name: experimentState.deskName,
+        deskKey: experimentState.deskKey,
+      },
+      reaction: experimentState.reaction,
+      chemicals: experimentState.chemicals,
+    });
+  }, [experimentState]);
+
+  useEffect(() => {
+    if (periodicOpen) {
+      assistant.stopAll({ preserveContext: true });
+    }
+  }, [periodicOpen]);
 
   function handleGateOpened() {
     setPhase('roaming');
@@ -1847,6 +1885,77 @@ export default function App() {
         textOverflow: 'ellipsis',
       }} />
 
+      {phase !== 'entry' && (
+        <div style={{
+          position: 'fixed',
+          right: `max(18px, env(safe-area-inset-right))`,
+          bottom: `max(18px, env(safe-area-inset-bottom))`,
+          zIndex: 42,
+          display: 'flex',
+          alignItems: 'flex-end',
+          gap: '12px',
+        }}>
+          {!!assistant.statusText && (
+            <div style={{
+              maxWidth: 'min(24rem, 62vw)',
+              background: 'rgba(13, 18, 28, 0.94)',
+              border: `1px solid ${assistant.isListening ? '#ff8c00aa' : '#00d4ffaa'}`,
+              borderRadius: '18px',
+              color: '#eef8ff',
+              padding: '11px 14px',
+              fontFamily: UI_FONT,
+              fontSize: '0.92rem',
+              lineHeight: 1.35,
+              boxShadow: assistant.isListening
+                ? '0 10px 24px rgba(255, 140, 0, 0.22)'
+                : '0 10px 24px rgba(0, 212, 255, 0.16)',
+            }}>
+              {assistant.statusText}
+            </div>
+          )}
+
+          <button
+            type="button"
+            onClick={assistant.onMicClick}
+            disabled={!assistant.supportsSpeechInput}
+            title={assistant.supportsSpeechInput ? 'Ask the AI lab assistant' : 'Voice input is unavailable in this browser'}
+            style={{
+              width: '62px',
+              height: '62px',
+              borderRadius: '50%',
+              border: assistant.isListening ? '1px solid #ff8c00' : '1px solid #00d4ff',
+              background: assistant.isListening
+                ? 'radial-gradient(circle at 30% 30%, rgba(255,163,64,0.95), rgba(110,38,0,0.98))'
+                : assistant.isSpeaking
+                  ? 'radial-gradient(circle at 30% 30%, rgba(131,233,255,0.96), rgba(0,88,112,0.98))'
+                  : 'radial-gradient(circle at 30% 30%, rgba(52,63,84,0.96), rgba(12,16,26,0.98))',
+              color: '#f4fbff',
+              cursor: assistant.supportsSpeechInput ? 'pointer' : 'not-allowed',
+              display: 'grid',
+              placeItems: 'center',
+              boxShadow: assistant.isListening
+                ? '0 0 0 10px rgba(255, 140, 0, 0.12), 0 14px 28px rgba(0,0,0,0.28)'
+                : assistant.isSpeaking
+                  ? '0 0 0 8px rgba(0, 212, 255, 0.12), 0 14px 28px rgba(0,0,0,0.24)'
+                  : '0 14px 28px rgba(0,0,0,0.24)',
+              opacity: assistant.supportsSpeechInput ? 1 : 0.58,
+              animation: assistant.isListening ? 'assistantPulse 1.2s ease-in-out infinite' : 'none',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M12 15.5a3.5 3.5 0 0 0 3.5-3.5V6.5a3.5 3.5 0 1 0-7 0V12a3.5 3.5 0 0 0 3.5 3.5Z"
+                fill="currentColor"
+              />
+              <path
+                d="M5 11.75a.75.75 0 0 1 1.5 0 5.5 5.5 0 1 0 11 0 .75.75 0 0 1 1.5 0 6.98 6.98 0 0 1-6.25 6.95V21a.75.75 0 0 1-1.5 0v-2.3A6.98 6.98 0 0 1 5 11.75Z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
+
       <style>{`
         @keyframes chevronBounce {
           0%, 100% { transform: translateY(0); opacity: 0.55; }
@@ -1909,6 +2018,10 @@ export default function App() {
         @keyframes guideCloudIn {
           0% { opacity: 0; transform: translate3d(18px, 12px, 0) scale(0.9); }
           100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+        }
+        @keyframes assistantPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
         }
       `}</style>
     </>
