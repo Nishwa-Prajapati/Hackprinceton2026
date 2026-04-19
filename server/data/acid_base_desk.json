@@ -1,0 +1,1634 @@
+{
+  "desk": {
+    "id": "desk_1",
+    "name": "Acid-Base Reactions",
+    "description": "Select any 2 chemicals to explore acid-base chemistry — neutralizations, gas evolution, precipitates, fumes, and indicator colour changes.",
+    "grade": ["9", "10"],
+    "max_selection": 2
+  },
+
+  "chemicals": [
+    {
+      "id": 1,
+      "name": "Hydrochloric Acid",
+      "formula": "HCl",
+      "type": "strong_acid",
+      "pH": 1,
+      "bottle_color": "#FFEB99",
+      "liquid_color": "#FFF9CC",
+      "hazard": "corrosive"
+    },
+    {
+      "id": 2,
+      "name": "Sodium Hydroxide",
+      "formula": "NaOH",
+      "type": "strong_base",
+      "pH": 14,
+      "bottle_color": "#B5EAD7",
+      "liquid_color": "#D4F5E9",
+      "hazard": "corrosive"
+    },
+    {
+      "id": 3,
+      "name": "Sulfuric Acid",
+      "formula": "H2SO4",
+      "type": "strong_acid",
+      "pH": 1,
+      "bottle_color": "#FFD6A5",
+      "liquid_color": "#FFF0DC",
+      "hazard": "highly_corrosive"
+    },
+    {
+      "id": 4,
+      "name": "Acetic Acid",
+      "formula": "CH3COOH",
+      "type": "weak_acid",
+      "pH": 3,
+      "bottle_color": "#FFFFCC",
+      "liquid_color": "#FAFAD2",
+      "hazard": "mild_irritant"
+    },
+    {
+      "id": 5,
+      "name": "Sodium Carbonate",
+      "formula": "Na2CO3",
+      "type": "base_salt",
+      "pH": 11,
+      "bottle_color": "#C9F0FF",
+      "liquid_color": "#E0F7FF",
+      "hazard": "mild_irritant"
+    },
+    {
+      "id": 6,
+      "name": "Sodium Bicarbonate",
+      "formula": "NaHCO3",
+      "type": "weak_base_salt",
+      "pH": 8,
+      "bottle_color": "#E8F5E9",
+      "liquid_color": "#F1FBF2",
+      "hazard": "safe"
+    },
+    {
+      "id": 7,
+      "name": "Calcium Hydroxide",
+      "formula": "Ca(OH)2",
+      "type": "weak_base",
+      "pH": 12,
+      "bottle_color": "#EDE7F6",
+      "liquid_color": "#F3EEFF",
+      "hazard": "mild_irritant"
+    },
+    {
+      "id": 8,
+      "name": "Ammonia Solution",
+      "formula": "NH3 (aq)",
+      "type": "weak_base",
+      "pH": 11,
+      "bottle_color": "#E0F0FF",
+      "liquid_color": "#EEF7FF",
+      "hazard": "pungent_irritant"
+    },
+    {
+      "id": 9,
+      "name": "Phenolphthalein",
+      "formula": "C20H14O4",
+      "type": "indicator",
+      "pH": null,
+      "bottle_color": "#FFE4F0",
+      "liquid_color": "#FFF0F7",
+      "hazard": "mild"
+    },
+    {
+      "id": 10,
+      "name": "Universal Indicator",
+      "formula": "mixture",
+      "type": "indicator",
+      "pH": null,
+      "bottle_color": "#C8F5C8",
+      "liquid_color": "#DFFFDF",
+      "hazard": "mild"
+    },
+    {
+      "id": 11,
+      "name": "Litmus Solution",
+      "formula": "natural dye mixture",
+      "type": "indicator",
+      "pH": null,
+      "bottle_color": "#D8B4FE",
+      "liquid_color": "#EDE0FF",
+      "hazard": "safe"
+    },
+    {
+      "id": 12,
+      "name": "Citric Acid",
+      "formula": "C6H8O7",
+      "type": "weak_acid",
+      "pH": 2,
+      "bottle_color": "#FFFDE7",
+      "liquid_color": "#FFFFE0",
+      "hazard": "mild_irritant"
+    }
+  ],
+
+  "apparatus": [
+    { "id": 1,  "name": "Beaker",              "icon": "beaker"             },
+    { "id": 2,  "name": "Test Tube",            "icon": "test_tube"          },
+    { "id": 3,  "name": "Test Tube Rack",       "icon": "rack"               },
+    { "id": 4,  "name": "Dropper / Pipette",    "icon": "dropper"            },
+    { "id": 5,  "name": "Burette",              "icon": "burette"            },
+    { "id": 6,  "name": "Conical Flask",        "icon": "conical_flask"      },
+    { "id": 7,  "name": "Stirring Rod",         "icon": "stirring_rod"       },
+    { "id": 8,  "name": "Delivery Tube",        "icon": "delivery_tube"      },
+    { "id": 9,  "name": "Litmus Paper Strips",  "icon": "litmus_paper"       },
+    { "id": 10, "name": "Watch Glass",          "icon": "watch_glass"        },
+    { "id": 11, "name": "Measuring Cylinder",   "icon": "measuring_cylinder" },
+    { "id": 12, "name": "pH Meter",             "icon": "ph_meter"           }
+  ],
+
+  "reactions": [
+
+    {
+      "id": "rxn_1_2",
+      "reactants": [1, 2],
+      "name": "Strong Acid + Strong Base Neutralisation",
+      "formula": "HCl + NaOH -> NaCl + H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["heat_shimmer"],
+        "observation": "No visible colour change. Solution becomes warm — the reaction is exothermic. Use a thermometer to observe temperature rise."
+      },
+      "apparatus_needed": [1, 4, 5, 6, 7, 12],
+      "educational_note": "Classic neutralization: acid + base -> salt + water. pH changes from acidic to 7 at the endpoint."
+    },
+
+    {
+      "id": "rxn_1_3",
+      "reactants": [1, 3],
+      "name": "Two Strong Acids Mixed",
+      "formula": "HCl + H2SO4 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "sharp acidic fumes",
+        "animations": [],
+        "observation": "No chemical reaction. Both are strong acids and cannot react with each other."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Acids do not react with other acids. They both release H+ ions — there is no driving force for a reaction."
+    },
+
+    {
+      "id": "rxn_1_4",
+      "reactants": [1, 4],
+      "name": "Two Acids Mixed",
+      "formula": "HCl + CH3COOH -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": [],
+        "observation": "No reaction. Both are acids — they cannot neutralise each other."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Mixing two acids just gives a more acidic mixture. No neutralization can occur without a base."
+    },
+
+    {
+      "id": "rxn_1_5",
+      "reactants": [1, 5],
+      "name": "HCl + Sodium Carbonate",
+      "formula": "2HCl + Na2CO3 -> 2NaCl + H2O + CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["bubbles_rising", "vigorous_fizz"],
+        "observation": "Vigorous fizzing and bubbling. Colourless, odourless CO2 gas is produced."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Acids react with carbonates to produce CO2 gas. Test the gas with limewater — it turns milky white, confirming CO2."
+    },
+
+    {
+      "id": "rxn_1_6",
+      "reactants": [1, 6],
+      "name": "HCl + Sodium Bicarbonate",
+      "formula": "HCl + NaHCO3 -> NaCl + H2O + CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["bubbles_rising", "vigorous_fizz"],
+        "observation": "Rapid fizzing with CO2 bubbles. Faster reaction than with Na2CO3."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Bicarbonates react with acids like carbonates but need only one H+ ion. Same CO2 limewater test applies."
+    },
+
+    {
+      "id": "rxn_1_7",
+      "reactants": [1, 7],
+      "name": "HCl + Calcium Hydroxide Neutralisation",
+      "formula": "2HCl + Ca(OH)2 -> CaCl2 + 2H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F3EEFF",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["heat_shimmer", "color_fade_to_clear"],
+        "observation": "Cloudy limewater turns clear as it is neutralised. Solution warms slightly."
+      },
+      "apparatus_needed": [1, 4, 6, 7, 12],
+      "educational_note": "Limewater (Ca(OH)2) is a weak base. It takes twice the moles of HCl to neutralise it."
+    },
+
+    {
+      "id": "rxn_1_8",
+      "reactants": [1, 8],
+      "name": "HCl + Ammonia -> White Fumes!",
+      "formula": "HCl + NH3 -> NH4Cl (white smoke)",
+      "type": "fume_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": true,
+        "fume_color": "#F5F5F5",
+        "fume_name": "Ammonium Chloride white smoke",
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "sharp pungent — ammonia and acid combined",
+        "animations": ["white_smoke_puff", "white_fumes_drifting"],
+        "observation": "Dense white fumes/smoke instantly appear where the two vapours meet in air. Very dramatic and visible!"
+      },
+      "apparatus_needed": [2, 3, 4, 10],
+      "educational_note": "This reaction happens in the gas phase — no liquid mixing needed! It is used as a lab test to identify HCl and NH3 gas."
+    },
+
+    {
+      "id": "rxn_1_9",
+      "reactants": [1, 9],
+      "name": "HCl + Phenolphthalein Indicator",
+      "formula": "HCl (acid) -> Phenolphthalein stays COLOURLESS",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFF0F7",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_fade_to_clear"],
+        "observation": "Phenolphthalein stays completely colourless — confirming the solution is acidic."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Phenolphthalein is colourless below pH 8.2. No colour = acid or neutral."
+    },
+
+    {
+      "id": "rxn_1_10",
+      "reactants": [1, 10],
+      "name": "HCl + Universal Indicator",
+      "formula": "HCl (pH 1) -> Universal Indicator turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#FF0000",
+        "result_pH": 1,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_red"],
+        "observation": "Solution turns bright RED — very strong acid at pH 1."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Universal indicator shows exact pH by colour: red (pH 1) to violet (pH 14)."
+    },
+
+    {
+      "id": "rxn_1_11",
+      "reactants": [1, 11],
+      "name": "HCl + Litmus Indicator",
+      "formula": "HCl (acid) -> Litmus turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#FF3333",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_red"],
+        "observation": "Litmus turns from purple to bright red — confirming an acid."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Litmus is the simplest acid-base indicator. Red = acid, Blue = base."
+    },
+
+    {
+      "id": "rxn_1_12",
+      "reactants": [1, 12],
+      "name": "Two Acids Mixed",
+      "formula": "HCl + C6H8O7 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus and acid smell",
+        "animations": [],
+        "observation": "No reaction. Both are acids."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Acids only react with bases, metals, or carbonates — not with each other."
+    },
+
+    {
+      "id": "rxn_2_3",
+      "reactants": [2, 3],
+      "name": "H2SO4 + NaOH Neutralisation (Diprotic)",
+      "formula": "H2SO4 + 2NaOH -> Na2SO4 + 2H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["heat_shimmer", "glow_warm_orange"],
+        "observation": "Solution becomes very hot — highly exothermic. No gas or precipitate. Temperature spikes noticeably."
+      },
+      "apparatus_needed": [1, 4, 5, 6, 7, 12],
+      "educational_note": "H2SO4 is diprotic — needs TWICE the moles of NaOH to neutralise compared to HCl. Key for titration calculations."
+    },
+
+    {
+      "id": "rxn_2_4",
+      "reactants": [2, 4],
+      "name": "Acetic Acid + NaOH Neutralisation",
+      "formula": "CH3COOH + NaOH -> CH3COONa + H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "faint soapy smell",
+        "animations": ["heat_shimmer"],
+        "observation": "Mild heat released. Faint soapy odour from sodium acetate. No gas or colour change."
+      },
+      "apparatus_needed": [1, 4, 5, 6, 7, 12],
+      "educational_note": "Weak acid + strong base gives a basic salt. The endpoint pH is above 7 because sodium acetate is slightly alkaline."
+    },
+
+    {
+      "id": "rxn_2_5",
+      "reactants": [2, 5],
+      "name": "Two Bases Mixed",
+      "formula": "NaOH + Na2CO3 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction. Both chemicals are basic."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Bases only react with acids — not with other bases."
+    },
+
+    {
+      "id": "rxn_2_6",
+      "reactants": [2, 6],
+      "name": "NaOH + Sodium Bicarbonate",
+      "formula": "NaOH + NaHCO3 -> Na2CO3 + H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No visible change. Bicarbonate is converted to carbonate by the strong base."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "A strong base converts bicarbonate to carbonate. Useful concept in buffer chemistry."
+    },
+
+    {
+      "id": "rxn_2_7",
+      "reactants": [2, 7],
+      "name": "Two Bases Mixed",
+      "formula": "NaOH + Ca(OH)2 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction. Both are bases."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Bases require an acid to react. Two bases simply mix without reacting."
+    },
+
+    {
+      "id": "rxn_2_8",
+      "reactants": [2, 8],
+      "name": "Two Bases Mixed",
+      "formula": "NaOH + NH3 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": [],
+        "observation": "No chemical reaction. Ammonia smell from NH3 solution. Both are bases."
+      },
+      "apparatus_needed": [],
+      "educational_note": "No acid-base reaction possible between two bases."
+    },
+
+    {
+      "id": "rxn_2_9",
+      "reactants": [2, 9],
+      "name": "NaOH + Phenolphthalein -> Pink",
+      "formula": "NaOH (pH 14) -> Phenolphthalein turns BRIGHT PINK",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFFFF",
+        "result_color": "#FF69B4",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_bloom_pink", "color_shift_clear_to_pink"],
+        "observation": "Solution instantly turns bright pink/magenta — confirming a strongly basic environment."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Phenolphthalein turns pink above pH 8.2. The stronger the base, the more vivid the pink."
+    },
+
+    {
+      "id": "rxn_2_10",
+      "reactants": [2, 10],
+      "name": "NaOH + Universal Indicator -> Violet",
+      "formula": "NaOH (pH 14) -> Universal Indicator turns VIOLET",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#8B00FF",
+        "result_pH": 14,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_violet"],
+        "observation": "Solution turns deep violet/purple — very strong base at pH 14."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Violet = pH 12-14 on universal indicator scale = strong alkali."
+    },
+
+    {
+      "id": "rxn_2_11",
+      "reactants": [2, 11],
+      "name": "NaOH + Litmus -> Blue",
+      "formula": "NaOH (base) -> Litmus turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#3355FF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_blue"],
+        "observation": "Litmus turns from purple to blue — confirming a base/alkali."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Blue litmus = base. The most fundamental acid-base test."
+    },
+
+    {
+      "id": "rxn_2_12",
+      "reactants": [2, 12],
+      "name": "Citric Acid + NaOH Neutralisation",
+      "formula": "C6H8O7 + 3NaOH -> Na3C6H5O7 + 3H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "faint citrus",
+        "animations": ["heat_shimmer"],
+        "observation": "Mild heat released. Citrus smell fades as the acid is neutralised."
+      },
+      "apparatus_needed": [1, 4, 5, 6, 7, 12],
+      "educational_note": "Citric acid is triprotic — needs 3 moles of NaOH to fully neutralise 1 mole of citric acid."
+    },
+
+    {
+      "id": "rxn_3_4",
+      "reactants": [3, 4],
+      "name": "Two Acids Mixed",
+      "formula": "H2SO4 + CH3COOH -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "sharp vinegar and acid fumes",
+        "animations": [],
+        "observation": "No reaction. Both are acids."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Acids cannot react with each other in a neutralization."
+    },
+
+    {
+      "id": "rxn_3_5",
+      "reactants": [3, 5],
+      "name": "H2SO4 + Sodium Carbonate",
+      "formula": "H2SO4 + Na2CO3 -> Na2SO4 + H2O + CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["bubbles_rising", "vigorous_fizz", "heat_shimmer"],
+        "observation": "Very vigorous fizzing with CO2 gas. Solution also warms due to the strong acid."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Strong acid + carbonate reacts more vigorously than weak acid + carbonate."
+    },
+
+    {
+      "id": "rxn_3_6",
+      "reactants": [3, 6],
+      "name": "H2SO4 + Sodium Bicarbonate",
+      "formula": "H2SO4 + 2NaHCO3 -> Na2SO4 + 2H2O + 2CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["bubbles_rising", "vigorous_fizz", "heat_shimmer"],
+        "observation": "Rapid and vigorous bubbling. CO2 produced quickly. Solution warms slightly."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Bicarbonate reacts with H2SO4 releasing twice the CO2 per mole."
+    },
+
+    {
+      "id": "rxn_3_7",
+      "reactants": [3, 7],
+      "name": "H2SO4 + Calcium Hydroxide -> White Precipitate",
+      "formula": "H2SO4 + Ca(OH)2 -> CaSO4 (precipitate) + 2H2O",
+      "type": "precipitate",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F3EEFF",
+        "result_color": "#E8E8E8",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": true,
+        "precipitate_name": "Calcium Sulfate (Gypsum)",
+        "precipitate_color": "#FFFFFF",
+        "heat_released": true,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "White milky precipitate of calcium sulfate forms immediately. Solution turns cloudy white. Heat also released."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 7],
+      "educational_note": "CaSO4 is insoluble in water — precipitates as a white solid. This is how gypsum is made industrially."
+    },
+
+    {
+      "id": "rxn_3_8",
+      "reactants": [3, 8],
+      "name": "H2SO4 + Ammonia Neutralisation",
+      "formula": "H2SO4 + 2NH3 -> (NH4)2SO4",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": true,
+        "fume_color": "#EEEEEE",
+        "fume_name": "faint white mist near surface",
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "sharp ammonia smell reducing",
+        "animations": ["heat_shimmer", "faint_mist"],
+        "observation": "Mild white mist near the surface. Ammonia smell disappears as it reacts. Solution warms. Produces ammonium sulfate (a fertiliser)."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 7],
+      "educational_note": "Ammonium sulfate is a widely used fertiliser — industrially produced by exactly this reaction."
+    },
+
+    {
+      "id": "rxn_3_9",
+      "reactants": [3, 9],
+      "name": "H2SO4 + Phenolphthalein",
+      "formula": "H2SO4 (acid) -> Phenolphthalein stays COLOURLESS",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFF0F7",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_fade_to_clear"],
+        "observation": "Phenolphthalein stays completely colourless — confirming an acidic environment."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Colourless result = pH below 8.2 = acidic or neutral."
+    },
+
+    {
+      "id": "rxn_3_10",
+      "reactants": [3, 10],
+      "name": "H2SO4 + Universal Indicator -> Red",
+      "formula": "H2SO4 (pH 1) -> Universal Indicator turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#FF0000",
+        "result_pH": 1,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_red"],
+        "observation": "Solution turns deep red — pH 1, strongly acidic."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Both HCl and H2SO4 show the same red at equimolar concentrations — universal indicator cannot tell them apart."
+    },
+
+    {
+      "id": "rxn_3_11",
+      "reactants": [3, 11],
+      "name": "H2SO4 + Litmus -> Red",
+      "formula": "H2SO4 (acid) -> Litmus turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#FF3333",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_red"],
+        "observation": "Litmus turns red — confirming an acidic solution."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "All acids turn litmus red. Litmus confirms acidity but not acid strength."
+    },
+
+    {
+      "id": "rxn_3_12",
+      "reactants": [3, 12],
+      "name": "Two Acids Mixed",
+      "formula": "H2SO4 + C6H8O7 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus and sharp acid",
+        "animations": [],
+        "observation": "No reaction. Both are acids."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Acids do not react with each other."
+    },
+
+    {
+      "id": "rxn_4_5",
+      "reactants": [4, 5],
+      "name": "Acetic Acid + Sodium Carbonate",
+      "formula": "2CH3COOH + Na2CO3 -> 2CH3COONa + H2O + CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": ["bubbles_rising", "moderate_fizz"],
+        "observation": "Moderate fizzing with CO2 bubbles. Vinegar smell present. Less vigorous than with strong acids."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Weak acids react with carbonates more slowly than strong acids. CO2 limewater test still works."
+    },
+
+    {
+      "id": "rxn_4_6",
+      "reactants": [4, 6],
+      "name": "Acetic Acid + Baking Soda — Classic Volcano!",
+      "formula": "CH3COOH + NaHCO3 -> CH3COONa + H2O + CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": ["large_foam_bubbles", "overflow_fizz"],
+        "observation": "Vigorous foam and fizzing — the classic volcano reaction! Large bubbles and overflow if the container is small."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "The most famous safe acid-base reaction! Used in school volcanoes and science fairs worldwide."
+    },
+
+    {
+      "id": "rxn_4_7",
+      "reactants": [4, 7],
+      "name": "Acetic Acid + Calcium Hydroxide",
+      "formula": "2CH3COOH + Ca(OH)2 -> Ca(CH3COO)2 + 2H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F3EEFF",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "faint vinegar smell",
+        "animations": ["heat_shimmer", "color_fade_to_clear"],
+        "observation": "Cloudy limewater becomes clear as it is neutralised. Mild heat released. Vinegar smell fades."
+      },
+      "apparatus_needed": [1, 4, 6, 7, 12],
+      "educational_note": "Calcium acetate (product) is soluble — no precipitate forms. Solution clears as neutralisation occurs."
+    },
+
+    {
+      "id": "rxn_4_8",
+      "reactants": [4, 8],
+      "name": "Acetic Acid + Ammonia",
+      "formula": "CH3COOH + NH3 -> CH3COONH4",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "mixed vinegar and ammonia, both fade",
+        "animations": [],
+        "observation": "Both vinegar and ammonia smells cancel out as neutralisation occurs. No gas or colour change."
+      },
+      "apparatus_needed": [2, 3, 4, 7],
+      "educational_note": "Weak acid + weak base = ammonium acetate. The solution is almost perfectly neutral (pH ~7). A rare balanced neutralisation."
+    },
+
+    {
+      "id": "rxn_4_9",
+      "reactants": [4, 9],
+      "name": "Acetic Acid + Phenolphthalein",
+      "formula": "CH3COOH (acid) -> Phenolphthalein stays COLOURLESS",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFF0F7",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": ["color_fade_to_clear"],
+        "observation": "Phenolphthalein stays colourless — confirming an acidic solution even though it is a weak acid."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Even weak acids keep phenolphthalein colourless as long as pH stays below 8.2."
+    },
+
+    {
+      "id": "rxn_4_10",
+      "reactants": [4, 10],
+      "name": "Acetic Acid + Universal Indicator -> Orange",
+      "formula": "CH3COOH (pH 3) -> Universal Indicator turns ORANGE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#FF8800",
+        "result_pH": 3,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": ["color_shift_to_orange"],
+        "observation": "Solution turns orange — weak acid at pH 3. Noticeably lighter than the red of HCl or H2SO4."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Orange (pH 3) vs Red (pH 1): universal indicator CAN distinguish weak acids from strong acids — litmus cannot!"
+    },
+
+    {
+      "id": "rxn_4_11",
+      "reactants": [4, 11],
+      "name": "Acetic Acid + Litmus -> Red",
+      "formula": "CH3COOH (weak acid) -> Litmus turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#FF6666",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "vinegar smell",
+        "animations": ["color_shift_purple_to_red"],
+        "observation": "Litmus turns red — confirming the solution is acidic. Vinegar smell present."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Litmus turns red for ALL acids, weak or strong. It cannot distinguish between them."
+    },
+
+    {
+      "id": "rxn_4_12",
+      "reactants": [4, 12],
+      "name": "Two Weak Acids Mixed",
+      "formula": "CH3COOH + C6H8O7 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "mixed vinegar and citrus smell",
+        "animations": [],
+        "observation": "No reaction. Both are weak acids. Smells like salad dressing!"
+      },
+      "apparatus_needed": [],
+      "educational_note": "Even two different acids do not react with each other."
+    },
+
+    {
+      "id": "rxn_5_6",
+      "reactants": [5, 6],
+      "name": "Two Base Salts Mixed",
+      "formula": "Na2CO3 + NaHCO3 -> no significant reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No visible reaction. Both chemicals are basic sodium salts."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Both are alkaline sodium salts and do not react with each other."
+    },
+
+    {
+      "id": "rxn_5_7",
+      "reactants": [5, 7],
+      "name": "Na2CO3 + Calcium Hydroxide -> White Precipitate",
+      "formula": "Na2CO3 + Ca(OH)2 -> CaCO3 (precipitate) + 2NaOH",
+      "type": "precipitate",
+      "output": {
+        "color_change": true,
+        "initial_color": "#E0F7FF",
+        "result_color": "#E8E8E8",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate (Chalk)",
+        "precipitate_color": "#FFFFFF",
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "White milky precipitate of calcium carbonate (chalk) forms instantly. Solution turns cloudy white and settles over time."
+      },
+      "apparatus_needed": [2, 3, 4, 7],
+      "educational_note": "Double displacement reaction. CaCO3 (limestone/chalk) is insoluble and precipitates. NaOH stays in solution."
+    },
+
+    {
+      "id": "rxn_5_8",
+      "reactants": [5, 8],
+      "name": "Two Bases Mixed",
+      "formula": "Na2CO3 + NH3 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": [],
+        "observation": "No reaction. Both are basic."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Bases cannot react in a neutralization without an acid present."
+    },
+
+    {
+      "id": "rxn_5_9",
+      "reactants": [5, 9],
+      "name": "Na2CO3 + Phenolphthalein -> Pink",
+      "formula": "Na2CO3 (pH 11) -> Phenolphthalein turns PINK",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFFFF",
+        "result_color": "#FF69B4",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_bloom_pink", "color_shift_clear_to_pink"],
+        "observation": "Turns pink — confirming that sodium carbonate solution is basic (alkaline)."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Na2CO3 is a base salt — its solution is alkaline due to hydrolysis. Phenolphthalein confirms this."
+    },
+
+    {
+      "id": "rxn_5_10",
+      "reactants": [5, 10],
+      "name": "Na2CO3 + Universal Indicator -> Blue",
+      "formula": "Na2CO3 (pH 11) -> Universal Indicator turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#0000FF",
+        "result_pH": 11,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_blue"],
+        "observation": "Solution turns blue — moderately strong base at pH 11."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "pH 11 = blue. Compare to NaOH (violet, pH 14) — you can see Na2CO3 is a weaker base."
+    },
+
+    {
+      "id": "rxn_5_11",
+      "reactants": [5, 11],
+      "name": "Na2CO3 + Litmus -> Blue",
+      "formula": "Na2CO3 (base) -> Litmus turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#3355FF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_blue"],
+        "observation": "Litmus turns blue — confirming sodium carbonate solution is basic."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Even base salts like Na2CO3 turn litmus blue — their solutions are alkaline."
+    },
+
+    {
+      "id": "rxn_5_12",
+      "reactants": [5, 12],
+      "name": "Citric Acid + Sodium Carbonate",
+      "formula": "3Na2CO3 + 2C6H8O7 -> 2Na3C6H5O7 + 3H2O + 3CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus",
+        "animations": ["bubbles_rising", "moderate_fizz"],
+        "observation": "Steady fizzing with CO2 bubbles. Citrus smell present. Moderate intensity."
+      },
+      "apparatus_needed": [2, 3, 4, 8],
+      "educational_note": "Same reaction used in bath bombs and effervescent drinks. Citric acid + carbonate = CO2 fizz."
+    },
+
+    {
+      "id": "rxn_6_7",
+      "reactants": [6, 7],
+      "name": "NaHCO3 + Calcium Hydroxide -> White Precipitate",
+      "formula": "NaHCO3 + Ca(OH)2 -> CaCO3 (precipitate) + NaOH + H2O",
+      "type": "precipitate",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F3EEFF",
+        "result_color": "#E8E8E8",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": true,
+        "precipitate_name": "Calcium Carbonate",
+        "precipitate_color": "#FFFFFF",
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "White precipitate of CaCO3 forms. Solution becomes cloudy/milky white."
+      },
+      "apparatus_needed": [2, 3, 4, 7],
+      "educational_note": "Bicarbonate reacts with Ca(OH)2 to form insoluble CaCO3 — same principle used in water softening."
+    },
+
+    {
+      "id": "rxn_6_8",
+      "reactants": [6, 8],
+      "name": "Two Bases Mixed",
+      "formula": "NaHCO3 + NH3 -> no significant reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": [],
+        "observation": "No reaction. Both are weak bases."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Two bases will not neutralise each other."
+    },
+
+    {
+      "id": "rxn_6_9",
+      "reactants": [6, 9],
+      "name": "NaHCO3 + Phenolphthalein -> Very Faint Pink",
+      "formula": "NaHCO3 (pH 8.3) -> Phenolphthalein turns VERY FAINT PINK",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFFFF",
+        "result_color": "#FFD6E8",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_clear_to_faint_pink"],
+        "observation": "A barely visible faint pink — NaHCO3 is only mildly basic (pH 8.3), just above the indicator threshold of 8.2."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Faint pink distinguishes NaHCO3 from stronger bases like NaOH (deep pink). Great for comparing base strengths."
+    },
+
+    {
+      "id": "rxn_6_10",
+      "reactants": [6, 10],
+      "name": "NaHCO3 + Universal Indicator -> Teal",
+      "formula": "NaHCO3 (pH 8) -> Universal Indicator turns TEAL",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#00CCCC",
+        "result_pH": 8,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_teal"],
+        "observation": "Solution turns teal/blue-green — mildly basic at pH 8. Much lighter than NaOH (violet) or Na2CO3 (blue)."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "NaHCO3 is the mildest base in this set — perfect for comparing base strengths visually across all 4 bases."
+    },
+
+    {
+      "id": "rxn_6_11",
+      "reactants": [6, 11],
+      "name": "NaHCO3 + Litmus -> Faint Blue",
+      "formula": "NaHCO3 (weak base) -> Litmus turns FAINT BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#7799FF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_faint_blue"],
+        "observation": "Litmus turns to a faint light blue — NaHCO3 is mildly basic."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Faint blue vs deep blue of NaOH shows baking soda is a very weak base — a great visual comparison."
+    },
+
+    {
+      "id": "rxn_6_12",
+      "reactants": [6, 12],
+      "name": "Citric Acid + Baking Soda — Effervescent Tablet!",
+      "formula": "C6H8O7 + 3NaHCO3 -> Na3C6H5O7 + 3H2O + 3CO2 (gas)",
+      "type": "gas_evolution",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": true,
+        "gas_name": "Carbon Dioxide",
+        "gas_formula": "CO2",
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus",
+        "animations": ["bubbles_rising", "gentle_fizz"],
+        "observation": "Gentle sustained fizzing with citrus smell — exactly like an Alka-Seltzer tablet dissolving in water."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "This is the exact reaction in effervescent tablets (Alka-Seltzer, vitamin C tablets). CO2 bubbles create the fizz."
+    },
+
+    {
+      "id": "rxn_7_8",
+      "reactants": [7, 8],
+      "name": "Two Bases Mixed",
+      "formula": "Ca(OH)2 + NH3 -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": [],
+        "observation": "No reaction. Both are bases."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Two bases cannot neutralise each other."
+    },
+
+    {
+      "id": "rxn_7_9",
+      "reactants": [7, 9],
+      "name": "Ca(OH)2 + Phenolphthalein -> Pink",
+      "formula": "Ca(OH)2 (pH 12) -> Phenolphthalein turns PINK",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFFFF",
+        "result_color": "#FF85C1",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_bloom_pink"],
+        "observation": "Pink colour forms — Ca(OH)2 is basic. Slightly less vivid than NaOH as it is a weaker base."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "Ca(OH)2 is moderately strong base. Its pink is less vivid than NaOH — demonstrates base strength differences."
+    },
+
+    {
+      "id": "rxn_7_10",
+      "reactants": [7, 10],
+      "name": "Ca(OH)2 + Universal Indicator -> Blue",
+      "formula": "Ca(OH)2 (pH 12) -> Universal Indicator turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#0033CC",
+        "result_pH": 12,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_to_blue"],
+        "observation": "Solution turns blue — pH 12. Darker than Na2CO3 (pH 11) but lighter than NaOH (pH 14)."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Comparing Ca(OH)2, Na2CO3, and NaOH side by side shows a clear blue to violet progression."
+    },
+
+    {
+      "id": "rxn_7_11",
+      "reactants": [7, 11],
+      "name": "Ca(OH)2 + Litmus -> Blue",
+      "formula": "Ca(OH)2 (base) -> Litmus turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#3355FF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": ["color_shift_purple_to_blue"],
+        "observation": "Litmus turns blue — confirming limewater is basic/alkaline."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Limewater turning litmus blue is a classic school test."
+    },
+
+    {
+      "id": "rxn_7_12",
+      "reactants": [7, 12],
+      "name": "Citric Acid + Calcium Hydroxide",
+      "formula": "2C6H8O7 + 3Ca(OH)2 -> Ca3(C6H5O7)2 + 6H2O",
+      "type": "neutralization",
+      "output": {
+        "color_change": true,
+        "initial_color": "#F3EEFF",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": true,
+        "odor": "faint citrus",
+        "animations": ["heat_shimmer", "color_fade_to_clear"],
+        "observation": "Cloudy limewater becomes clear as it is neutralised. Mild heat produced. Citrus smell fades."
+      },
+      "apparatus_needed": [1, 4, 6, 7, 12],
+      "educational_note": "Calcium citrate is the product — used as a calcium dietary supplement and food additive."
+    },
+
+    {
+      "id": "rxn_8_9",
+      "reactants": [8, 9],
+      "name": "NH3 + Phenolphthalein -> Pink",
+      "formula": "NH3 (pH 11) -> Phenolphthalein turns PINK",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFFFFF",
+        "result_color": "#FF85C1",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": ["color_bloom_pink"],
+        "observation": "Turns pink — confirming NH3 solution is basic. Ammonia smell present."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "NH3 is a weak base but pH is high enough to activate phenolphthalein. Compare its shade with NaOH."
+    },
+
+    {
+      "id": "rxn_8_10",
+      "reactants": [8, 10],
+      "name": "NH3 + Universal Indicator -> Blue",
+      "formula": "NH3 (pH 11) -> Universal Indicator turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#0000FF",
+        "result_pH": 11,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": ["color_shift_to_blue"],
+        "observation": "Solution turns blue at pH 11. Same shade as Na2CO3 — both are moderate bases at similar pH."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "NH3 and Na2CO3 both show pH ~11. Universal indicator cannot distinguish them by colour alone."
+    },
+
+    {
+      "id": "rxn_8_11",
+      "reactants": [8, 11],
+      "name": "NH3 + Litmus -> Blue",
+      "formula": "NH3 (base) -> Litmus turns BLUE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#3355FF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "ammonia smell",
+        "animations": ["color_shift_purple_to_blue"],
+        "observation": "Litmus turns blue — confirming ammonia solution is a base."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Even a weak base like NH3 turns litmus blue. Litmus confirms alkalinity but not strength."
+    },
+
+    {
+      "id": "rxn_8_12",
+      "reactants": [8, 12],
+      "name": "Citric Acid + Ammonia Neutralisation",
+      "formula": "C6H8O7 + 3NH3 -> (NH4)3C6H5O7",
+      "type": "neutralization",
+      "output": {
+        "color_change": false,
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "mixed citrus and ammonia, both fading",
+        "animations": [],
+        "observation": "Both citrus and ammonia smells gradually fade as they neutralise each other. No gas or colour change."
+      },
+      "apparatus_needed": [2, 3, 4, 7],
+      "educational_note": "Ammonium citrate is produced — a weak acid + weak base salt. Used in food industry as an emulsifier."
+    },
+
+    {
+      "id": "rxn_9_10",
+      "reactants": [9, 10],
+      "name": "Two Indicators Mixed",
+      "formula": "Phenolphthalein + Universal Indicator -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No chemical reaction. Indicators are dyes — they only respond to acids or bases, not to each other."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Indicators react with H+ or OH- ions, not with each other."
+    },
+
+    {
+      "id": "rxn_9_11",
+      "reactants": [9, 11],
+      "name": "Two Indicators Mixed",
+      "formula": "Phenolphthalein + Litmus -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction between two indicators."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Indicators only respond to pH changes — not to other indicators."
+    },
+
+    {
+      "id": "rxn_9_12",
+      "reactants": [9, 12],
+      "name": "Citric Acid + Phenolphthalein",
+      "formula": "C6H8O7 (acid) -> Phenolphthalein stays COLOURLESS",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FFF0F7",
+        "result_color": "#FFFFFF",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus",
+        "animations": ["color_fade_to_clear"],
+        "observation": "Phenolphthalein stays colourless — confirming citric acid is acidic."
+      },
+      "apparatus_needed": [2, 3, 4],
+      "educational_note": "All acids keep phenolphthalein colourless. This test alone confirms something is an acid."
+    },
+
+    {
+      "id": "rxn_10_11",
+      "reactants": [10, 11],
+      "name": "Two Indicators Mixed",
+      "formula": "Universal Indicator + Litmus -> no reaction",
+      "type": "no_reaction",
+      "output": {
+        "color_change": false,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "odorless",
+        "animations": [],
+        "observation": "No reaction between two indicators."
+      },
+      "apparatus_needed": [],
+      "educational_note": "Indicators need acids or bases to show their colours — not other indicators."
+    },
+
+    {
+      "id": "rxn_10_12",
+      "reactants": [10, 12],
+      "name": "Citric Acid + Universal Indicator -> Red-Orange",
+      "formula": "C6H8O7 (pH 2) -> Universal Indicator turns RED-ORANGE",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#DFFFDF",
+        "result_color": "#FF4400",
+        "result_pH": 2,
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus",
+        "animations": ["color_shift_to_red_orange"],
+        "observation": "Solution turns red-orange — pH 2. Stronger than acetic acid (orange) but weaker than HCl (red)."
+      },
+      "apparatus_needed": [2, 3, 4, 12],
+      "educational_note": "Citric acid at pH 2 sits between strong acids (pH 1) and acetic acid (pH 3). Universal indicator shows this beautifully."
+    },
+
+    {
+      "id": "rxn_11_12",
+      "reactants": [11, 12],
+      "name": "Citric Acid + Litmus -> Red",
+      "formula": "C6H8O7 (acid) -> Litmus turns RED",
+      "type": "indicator_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#9B59B6",
+        "result_color": "#FF6666",
+        "gas_produced": false,
+        "fumes": false,
+        "precipitate": false,
+        "heat_released": false,
+        "odor": "faint citrus",
+        "animations": ["color_shift_purple_to_red"],
+        "observation": "Litmus turns red — confirming citric acid is an acid. Citrus smell present."
+      },
+      "apparatus_needed": [2, 3, 4, 9],
+      "educational_note": "Litmus confirms acidity of citric acid — same red as HCl and H2SO4. Cannot distinguish acid strength."
+    }
+
+  ],
+
+  "animations": {
+    "heat_shimmer":                    { "description": "Wavy heat distortion rising from liquid",        "color": "#FFD580" },
+    "glow_warm_orange":                { "description": "Warm orange glow pulse for high exotherm",        "color": "#FFA500" },
+    "bubbles_rising":                  { "description": "Small bubbles rising through liquid",             "color": "#FFFFFF" },
+    "vigorous_fizz":                   { "description": "Rapid bubbles with splashing",                    "color": "#FFFFFF" },
+    "moderate_fizz":                   { "description": "Steady moderate bubbling",                        "color": "#FFFFFF" },
+    "gentle_fizz":                     { "description": "Slow gentle bubble formation",                    "color": "#FFFFFF" },
+    "large_foam_bubbles":              { "description": "Large foam and overflow — volcano effect",        "color": "#FFFFFF" },
+    "overflow_fizz":                   { "description": "Foam overflows the container rim",                "color": "#FFFFFF" },
+    "white_smoke_puff":                { "description": "Dense white smoke/fumes puffing outward",        "color": "#F5F5F5" },
+    "white_fumes_drifting":            { "description": "White fumes drifting between two sources",       "color": "#EEEEEE" },
+    "faint_mist":                      { "description": "Very light mist near liquid surface",             "color": "#F8F8F8" },
+    "milky_cloud_diffusion":           { "description": "White cloud spreading through clear liquid",     "color": "#F0F0F0" },
+    "white_precipitate_settling":      { "description": "White particles slowly settling to bottom",      "color": "#FFFFFF" },
+    "color_fade_to_clear":             { "description": "Colour fades to colourless",                     "from": "any",     "to": "#FFFFFF" },
+    "color_bloom_pink":                { "description": "Pink blooms outward from drop point",            "to": "#FF69B4"    },
+    "color_shift_clear_to_pink":       { "description": "Clear liquid transitions to pink",               "from": "#FFFFFF",  "to": "#FF69B4" },
+    "color_shift_clear_to_faint_pink": { "description": "Clear to barely-visible faint pink",            "from": "#FFFFFF",  "to": "#FFD6E8" },
+    "color_shift_purple_to_red":       { "description": "Purple to red — litmus in acid",                 "from": "#9B59B6",  "to": "#FF3333" },
+    "color_shift_purple_to_blue":      { "description": "Purple to blue — litmus in base",                "from": "#9B59B6",  "to": "#3355FF" },
+    "color_shift_purple_to_faint_blue":{ "description": "Purple to faint blue — litmus in weak base",    "from": "#9B59B6",  "to": "#7799FF" },
+    "color_shift_to_red":              { "description": "To bright red — strong acid pH 1",               "to": "#FF0000"    },
+    "color_shift_to_red_orange":       { "description": "To red-orange — pH 2",                           "to": "#FF4400"    },
+    "color_shift_to_orange":           { "description": "To orange — weak acid pH 3",                     "to": "#FF8800"    },
+    "color_shift_to_teal":             { "description": "To teal — mild base pH 8",                       "to": "#00CCCC"    },
+    "color_shift_to_blue":             { "description": "To blue — moderate base pH 11-12",               "to": "#0000FF"    },
+    "color_shift_to_violet":           { "description": "To violet — strong base pH 14",                  "to": "#8B00FF"    }
+  },
+
+  "ui_config": {
+    "selection_mode": "max_2_chemicals",
+    "lookup_note": "Always sort selected chemical IDs ascending before lookup. e.g. user picks bottles 9 and 2 -> look up reactants [2, 9]",
+    "no_reaction_message": "These two chemicals do not react with each other. Try a different pair!",
+    "reaction_found_message": "Reaction found! Highlighting apparatus and starting experiment...",
+    "apparatus_highlight_style": "pulse_glow_cyan",
+    "chemical_highlight_style": "pulse_glow_yellow",
+    "reaction_type_badges": {
+      "neutralization":  { "color": "#4CAF50", "label": "Neutralisation"  },
+      "gas_evolution":   { "color": "#2196F3", "label": "Gas Evolution"   },
+      "precipitate":     { "color": "#9C27B0", "label": "Precipitate"     },
+      "fume_reaction":   { "color": "#FF5722", "label": "Fume Reaction"   },
+      "indicator_test":  { "color": "#FF9800", "label": "Indicator Test"  },
+      "no_reaction":     { "color": "#9E9E9E", "label": "No Reaction"     }
+    }
+  }
+}
