@@ -1355,6 +1355,7 @@ export default function App() {
   const tooltipRef = useRef(null);
   const reactantARef = useRef('');
   const reactantBRef = useRef('');
+  const guideBubbleTimerRef = useRef(null);
 
   const [phase, setPhase] = useState('entry');
   const [activeBench, setActiveBench] = useState(null);
@@ -1365,6 +1366,7 @@ export default function App() {
   const [reactantB, setReactantB] = useState('');
   const [reactionError, setReactionError] = useState('');
   const [experimentState, setExperimentState] = useState(null);
+  const [guideGreeting, setGuideGreeting] = useState('');
 
   useEffect(() => {
     reactantARef.current = reactantA;
@@ -1397,6 +1399,17 @@ export default function App() {
     });
     const offPeriodicOpen = labState.on('periodic:opened', () => setPeriodicOpen(true));
     const offPeriodicClose = labState.on('periodic:closed', () => setPeriodicOpen(false));
+    const offGuideWelcome = labState.on('guide:welcome', ({ message }) => {
+      window.clearTimeout(guideBubbleTimerRef.current);
+      setGuideGreeting('');
+      guideBubbleTimerRef.current = window.setTimeout(() => {
+        setGuideGreeting(message ?? 'Hey, welcome to Lab Zero');
+      }, 520);
+    });
+    const offGuideHidden = labState.on('guide:hidden', () => {
+      window.clearTimeout(guideBubbleTimerRef.current);
+      setGuideGreeting('');
+    });
     const offReactantSelected = labState.on('bench:reactantSelected', ({ benchId, reactant }) => {
       setActiveBench((currentBench) => {
         if (!currentBench || currentBench.id !== benchId) return currentBench;
@@ -1424,7 +1437,10 @@ export default function App() {
       offBenchExit();
       offPeriodicOpen();
       offPeriodicClose();
+      offGuideWelcome();
+      offGuideHidden();
       offReactantSelected();
+      window.clearTimeout(guideBubbleTimerRef.current);
       engine.dispose();
     };
   }, []);
@@ -1519,6 +1535,8 @@ export default function App() {
   function reopenReactionPrompt() {
     setExperimentState(null);
     setReactionError('');
+    setReactantA('');
+    setReactantB('');
     setReactionPromptOpen(true);
   }
 
@@ -1533,6 +1551,70 @@ export default function App() {
       />
 
       {phase === 'entry' && <EntryScreen onEntered={handleGateOpened} />}
+
+      {phase !== 'entry' && !activeBench && guideGreeting && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 'clamp(54px, 10vh, 112px)',
+            right: 'clamp(18px, 3.5vw, 42px)',
+            width: 'min(20.5rem, 27vw)',
+            minWidth: '220px',
+            maxWidth: 'calc(100vw - 48px)',
+            pointerEvents: 'none',
+            zIndex: 18,
+            animation: 'guideCloudIn 0.52s cubic-bezier(0.22, 1, 0.36, 1) both',
+          }}
+        >
+          <div style={{ position: 'relative', width: '100%', minHeight: 138 }}>
+            <svg
+              viewBox="0 0 280 150"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              style={{
+                position: 'absolute',
+                inset: 0,
+                width: '100%',
+                height: '100%',
+                filter: 'drop-shadow(0 14px 24px rgba(8, 12, 24, 0.16))',
+              }}
+            >
+              <path
+                d="M60 122c-25 0-44-16-44-38 0-18 13-33 31-37 4-24 24-42 50-42 17 0 32 8 42 20 8-6 18-10 30-10 27 0 49 18 53 43 18 4 32 19 32 37 0 24-22 41-51 41H60z"
+                fill="rgba(255,255,255,0.97)"
+                stroke="rgba(199,214,230,0.96)"
+                strokeWidth="2.2"
+              />
+              <path
+                d="M72 118c-4 14-14 24-31 29 8-11 9-20 6-31"
+                fill="rgba(255,255,255,0.97)"
+                stroke="rgba(199,214,230,0.96)"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div style={{
+              position: 'relative',
+              color: '#243243',
+              minHeight: 138,
+              padding: '20px 26px 30px 34px',
+              fontFamily: UI_FONT,
+              fontSize: '0.92rem',
+              lineHeight: 1.3,
+              fontWeight: 600,
+              maxWidth: '18rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              margin: '0 auto',
+            }}>
+              {guideGreeting}
+            </div>
+          </div>
+        </div>
+      )}
 
       {phase === 'focused' && activeBench && (
         <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 20 }}>
@@ -1823,6 +1905,10 @@ export default function App() {
           0% { opacity: 0; transform: scaleY(0.4); transform-origin: top; }
           40% { opacity: 0.9; }
           100% { opacity: 0; transform: translateY(30px) scaleY(1.1); transform-origin: top; }
+        }
+        @keyframes guideCloudIn {
+          0% { opacity: 0; transform: translate3d(18px, 12px, 0) scale(0.9); }
+          100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
         }
       `}</style>
     </>

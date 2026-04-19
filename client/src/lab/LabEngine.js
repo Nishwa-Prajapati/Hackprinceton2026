@@ -9,6 +9,7 @@ import { getDeskApparatus, getDeskChemicals } from '../data/desks/index.js';
 import periodicTableFrame from '../assets/periodic-table-frame.png';
 import rightWallPoster from '../assets/right-wall-poster.png';
 import rightWallCoats from '../assets/right-wall-coats.png';
+import welcomeTechnician from '../assets/welcome-technician.png';
 
 RectAreaLightUniformsLib.init();
 
@@ -77,6 +78,13 @@ export class LabEngine {
     this._raycaster        = new THREE.Raycaster();
     this._mouse            = new THREE.Vector2();
     this._tooltipEl        = null;
+    this._welcomeGuide     = null;
+    this._welcomeTriggered = false;
+    this._welcomeActivated = false;
+    this._welcomeDismissed = false;
+    this._welcomeAnchor = new THREE.Vector3();
+    this._guideKeydownHandler = null;
+    this._welcomeDismissTimer = null;
   }
 
   // ─── INIT ────────────────────────────────────────────────────────────────────
@@ -106,11 +114,20 @@ export class LabEngine {
     this._buildCabinets();
     this._buildOverheadLightHousings();
     this._buildPeripheralProps();
+    this._buildWelcomeGuide();
 
     this.controls = new LabControls(this.camera);
     this.controls.attach(canvas);
 
     this._setupRaycasting(canvas);
+
+    this._guideKeydownHandler = (e) => {
+      if (!this._welcomeGuide?.userData?.isPresent || !this._welcomeGuide?.userData?.canDismiss) return;
+      if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) {
+        this._hideWelcomeGuide();
+      }
+    };
+    window.addEventListener('keydown', this._guideKeydownHandler);
 
     this._resizeHandler = () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
@@ -835,6 +852,125 @@ export class LabEngine {
     });
   }
 
+  _buildWelcomeGuide() {
+    const guideTexture = new THREE.TextureLoader().load(welcomeTechnician);
+    guideTexture.colorSpace = THREE.SRGBColorSpace;
+    guideTexture.anisotropy = this.renderer.capabilities.getMaxAnisotropy();
+
+    const guide = new THREE.Group();
+    guide.position.set(10.8, 0, 9.1);
+    guide.rotation.y = -1.08;
+    guide.scale.setScalar(0.98);
+
+    const plate = new THREE.Mesh(
+      new THREE.PlaneGeometry(2.45, 3.55),
+      new THREE.MeshStandardMaterial({
+        map: guideTexture,
+        transparent: true,
+        alphaTest: 0.08,
+        side: THREE.DoubleSide,
+        roughness: 0.84,
+        metalness: 0.01,
+      })
+    );
+    plate.position.set(0, 1.68, 0);
+    guide.add(plate);
+
+    const baseShadow = new THREE.Mesh(
+      new THREE.CircleGeometry(0.44, 28),
+      new THREE.MeshBasicMaterial({
+        color: '#10151d',
+        transparent: true,
+        opacity: 0.12,
+      })
+    );
+    baseShadow.rotation.x = -Math.PI / 2;
+    baseShadow.position.set(0.06, 0.03, 0.06);
+    guide.add(baseShadow);
+
+    guide.userData.imagePlate = plate;
+    guide.userData.floatBaseY = guide.position.y;
+    guide.userData.isPresent = false;
+    guide.userData.canDismiss = false;
+    guide.visible = false;
+    this.scene.add(guide);
+    this._welcomeGuide = guide;
+  }
+
+  _triggerWelcomeGuide() {
+    if (!this._welcomeGuide || this._welcomeTriggered) return;
+    this._welcomeTriggered = true;
+    this._welcomeGuide.visible = true;
+    this._welcomeGuide.userData.isPresent = true;
+    this._welcomeGuide.userData.canDismiss = false;
+    this._welcomeGuide.position.set(10.8, 0, 9.1);
+    this._welcomeGuide.scale.setScalar(0.9);
+    this._welcomeGuide.rotation.y = -1.08;
+    this._welcomeGuide.userData.floatBaseY = 0;
+    this._welcomeAnchor.copy(this.camera.position);
+
+    gsap.to(this._welcomeGuide.position, {
+      x: 2.8,
+      duration: 1.2,
+      ease: 'power3.out',
+    });
+    gsap.to(this._welcomeGuide.scale, {
+      x: 1,
+      y: 1,
+      z: 1,
+      duration: 1.2,
+      ease: 'power2.out',
+    });
+    gsap.to(this._welcomeGuide.rotation, {
+      y: -1.02,
+      duration: 1.1,
+      ease: 'power2.out',
+    });
+
+    labState.emit('guide:welcome', {
+      message: 'Hey, welcome to Lab Zero',
+    });
+
+    window.clearTimeout(this._welcomeDismissTimer);
+    this._welcomeDismissTimer = window.setTimeout(() => {
+      if (this._welcomeGuide) {
+        this._welcomeGuide.userData.canDismiss = true;
+        this._welcomeAnchor.copy(this.camera.position);
+      }
+    }, 1500);
+  }
+
+  _hideWelcomeGuide() {
+    if (!this._welcomeGuide?.userData?.isPresent || this._welcomeDismissed) return;
+    this._welcomeDismissed = true;
+    this._welcomeGuide.userData.isPresent = false;
+    this._welcomeGuide.userData.canDismiss = false;
+    window.clearTimeout(this._welcomeDismissTimer);
+
+    gsap.to(this._welcomeGuide.position, {
+      x: 9.8,
+      duration: 0.68,
+      ease: 'power2.in',
+    });
+    gsap.to(this._welcomeGuide.scale, {
+      x: 0.9,
+      y: 0.9,
+      z: 0.9,
+      duration: 0.62,
+      ease: 'power2.in',
+      onComplete: () => {
+        if (this._welcomeGuide) this._welcomeGuide.visible = false;
+      },
+    });
+    gsap.to(this._welcomeGuide.rotation, {
+      y: -0.96,
+      duration: 0.62,
+      ease: 'power2.in',
+    });
+
+    labState.emit('guide:hidden', {});
+  }
+
   // ─── RAYCASTING ──────────────────────────────────────────────────────────────
 
   _setupRaycasting(canvas) {
@@ -1013,12 +1149,44 @@ export class LabEngine {
       });
     }
 
+    if (!this._welcomeActivated && this.camera.position.z < 8.75) {
+      this._welcomeActivated = true;
+    }
+
+    if (
+      this._welcomeActivated
+      && !this._welcomeTriggered
+      && !this._activeBenchId
+      && this.camera.position.z > 9.55
+      && this.camera.position.z < 12.7
+      && this.camera.position.x > -2.8
+      && this.camera.position.x < 3.6
+    ) {
+      this._triggerWelcomeGuide();
+    }
+
+    if (this._welcomeGuide?.visible) {
+      this._welcomeGuide.position.y = this._welcomeGuide.userData.floatBaseY + Math.sin(elapsed * 1.8) * 0.035;
+      if (this._welcomeGuide.userData.imagePlate) {
+        this._welcomeGuide.userData.imagePlate.rotation.y = Math.sin(elapsed * 1.6) * 0.03;
+      }
+      if (
+        this._welcomeGuide.userData.isPresent
+        && this._welcomeGuide.userData.canDismiss
+        && this.camera.position.distanceToSquared(this._welcomeAnchor) > 0.045
+      ) {
+        this._hideWelcomeGuide();
+      }
+    }
+
     this.renderer.render(this.scene, this.camera);
   }
 
   dispose() {
     if (this._animFrameId)   cancelAnimationFrame(this._animFrameId);
     if (this._resizeHandler) window.removeEventListener('resize', this._resizeHandler);
+    if (this._guideKeydownHandler) window.removeEventListener('keydown', this._guideKeydownHandler);
+    window.clearTimeout(this._welcomeDismissTimer);
     const canvas = this.renderer?.domElement;
     if (canvas) {
       if (this._clickHandler)     canvas.removeEventListener('click',     this._clickHandler);

@@ -39,9 +39,48 @@ function normalizeToolKey(value) {
     .replace(/[^a-z0-9]+/g, '');
 }
 
-function normalizeReagents(chemicals = []) {
+function getHazardStyle(hazard, deskKey) {
+  const token = String(hazard ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '_');
+  if (!token) return null;
+
+  if (token.includes('safe') || token.includes('low_hazard') || token.includes('inert')) {
+    return { color: 0x22c55e, label: 'Safe', glow: 1.05 };
+  }
+  if (
+    token.includes('highly_corrosive')
+    || token.includes('toxic')
+    || token.includes('choking')
+    || token.includes('burns_bright_white')
+    || token.includes('burns_intensely')
+    || token.includes('highly_reactive')
+    || token.includes('fire_risk')
+  ) {
+    return { color: 0xff3b30, label: 'Highly Harmful', glow: 1.32 };
+  }
+  if (
+    token.includes('corrosive')
+    || token.includes('pungent')
+    || token.includes('oxidising')
+    || token.includes('oxidizer')
+    || token.includes('flammable')
+    || token.includes('reacts_with_moisture')
+    || token.includes('sparks')
+    || token.includes('ventilation')
+    || token.includes('burns')
+  ) {
+    return { color: 0xff8a00, label: 'Moderately Harmful', glow: 1.18 };
+  }
+  if (token.includes('mild')) {
+    return { color: 0xffd400, label: 'Mild', glow: 1.08 };
+  }
+
+  return { color: 0xffd400, label: 'Mild', glow: 1.08 };
+}
+
+function normalizeReagents(chemicals = [], deskKey = null) {
   const source = chemicals.length ? chemicals.slice(0, 12) : DEFAULT_REAGENTS;
   return source.map((chemical, index) => ({
+    hazard: chemical.hazard ?? '',
     id: chemical.id ?? index + 1,
     name: chemical.name ?? chemical.formula ?? `Reagent ${index + 1}`,
     formula: chemical.formula ?? chemical.label ?? `R${index + 1}`,
@@ -56,6 +95,7 @@ function normalizeReagents(chemicals = []) {
         ?? chemical.bottle_color,
       LIQUID_COLORS[index % LIQUID_COLORS.length]
     ),
+    hazardStyle: getHazardStyle(chemical.hazard, deskKey),
   }));
 }
 
@@ -117,6 +157,7 @@ function registerHoverTarget(targets, controllers, key, name, hitObject, scaleTa
       if ('emissiveIntensity' in material)
         material.emissiveIntensity = baseEI + (hovered ? emissiveBoost : 0);
     });
+    opts.onHoverChange?.(hovered);
   });
 }
 
@@ -264,7 +305,7 @@ function createTubeRack(x, z, hoverTargets, hoverControllers) {
   return g;
 }
 
-function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTargets, hoverControllers) {
+function createBottle({ id, name, label, displayName, color, hazardStyle = null, x, y, z }, hoverTargets, hoverControllers) {
   const g = new THREE.Group();
 
   const glassMat = new THREE.MeshPhysicalMaterial({
@@ -277,6 +318,15 @@ function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTar
   const capMat = new THREE.MeshStandardMaterial({
     color: 0x2a3040, roughness: 0.45, metalness: 0.3,
   });
+  const labelBorderMat = hazardStyle == null
+    ? null
+    : new THREE.MeshBasicMaterial({
+      color: hazardStyle.color,
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
 
   const bottleBody = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.1, 0.34, 20), glassMat);
   bottleBody.position.y = 0.17;
@@ -290,6 +340,41 @@ function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTar
   const bottleCap = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.06, 16), capMat);
   bottleCap.position.y = 0.48;
   g.add(bottleCap);
+
+  const hazardOutlineMat = hazardStyle == null
+    ? null
+    : new THREE.MeshBasicMaterial({
+      color: hazardStyle.color,
+      transparent: true,
+      opacity: 0,
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+  const hazardOutlineBody = hazardOutlineMat
+    ? new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.115, 0.37, 28), hazardOutlineMat)
+    : null;
+  if (hazardOutlineBody) {
+    hazardOutlineBody.position.y = 0.17;
+    hazardOutlineBody.scale.setScalar(1.02);
+    g.add(hazardOutlineBody);
+  }
+  const hazardOutlineNeck = hazardOutlineMat
+    ? new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.055, 0.125, 20), hazardOutlineMat)
+    : null;
+  if (hazardOutlineNeck) {
+    hazardOutlineNeck.position.y = 0.395;
+    g.add(hazardOutlineNeck);
+  }
+  const hazardOutlineCap = hazardOutlineMat
+    ? new THREE.Mesh(new THREE.TorusGeometry(0.058, 0.009, 8, 24), hazardOutlineMat)
+    : null;
+  if (hazardOutlineCap) {
+    hazardOutlineCap.rotation.x = Math.PI / 2;
+    hazardOutlineCap.position.y = 0.51;
+    g.add(hazardOutlineCap);
+  }
+
   const sticker = new THREE.Mesh(
     new THREE.PlaneGeometry(0.14, 0.075),
     new THREE.MeshBasicMaterial({
@@ -300,6 +385,13 @@ function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTar
   );
   sticker.position.set(0, 0.21, 0.102);
   g.add(sticker);
+  const hazardLabelBorder = labelBorderMat
+    ? new THREE.Mesh(new THREE.PlaneGeometry(0.162, 0.097), labelBorderMat)
+    : null;
+  if (hazardLabelBorder) {
+    hazardLabelBorder.position.set(0, 0.21, 0.101);
+    g.add(hazardLabelBorder);
+  }
 
   const hb = createHoverHitbox(0.13, 0.58);
   hb.position.y = 0.24;
@@ -309,13 +401,29 @@ function createBottle({ id, name, label, displayName, color, x, y, z }, hoverTar
   hb.userData.reactantDisplayName = displayName ?? label;
   g.add(hb);
   g.position.set(x, y, z);
-  registerHoverTarget(hoverTargets, hoverControllers, `bottle-${label}-${x}`, displayName ?? label, hb, g, [glassMat, liquidMat, capMat], { hoverScale: 1.05, emissiveBoost: 0.14 });
+  const hoverTitle = hazardStyle?.label
+    ? `${displayName ?? label} • ${hazardStyle.label}`
+    : displayName ?? label;
+  registerHoverTarget(hoverTargets, hoverControllers, `bottle-${label}-${x}`, hoverTitle, hb, g, [glassMat, liquidMat, capMat], {
+    hoverScale: 1.05,
+    emissiveBoost: 0.14,
+    onHoverChange: (hovered) => {
+      if (!hazardOutlineMat) return;
+      hazardOutlineMat.opacity = hovered ? 0.96 : 0;
+      if (labelBorderMat) labelBorderMat.opacity = hovered ? 0.92 : 0;
+      liquidMat.emissive.setHex(hovered ? hazardStyle.color : color);
+      liquidMat.color.setHex(color);
+      liquidMat.emissiveIntensity = hovered ? 0.42 * (hazardStyle?.glow ?? 1) : 0.16;
+      capMat.emissive.setHex(hovered ? hazardStyle.color : 0x000000);
+      capMat.emissiveIntensity = hovered ? 0.38 : 0;
+    },
+  });
   return g;
 }
 
-function createReagentRack(accentColor, hoverTargets, hoverControllers, chemicals) {
+function createReagentRack(accentColor, hoverTargets, hoverControllers, chemicals, deskKey = null) {
   const g = new THREE.Group();
-  const reagents = normalizeReagents(chemicals);
+  const reagents = normalizeReagents(chemicals, deskKey);
 
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 0.45, metalness: 0.6 });
   const shelfMat = new THREE.MeshStandardMaterial({ color: 0x1e2030, roughness: 0.4, metalness: 0.15 });
@@ -350,11 +458,11 @@ function createReagentRack(accentColor, hoverTargets, hoverControllers, chemical
 
   // 12 reagent bottles
   const spacing = 0.34;
-  reagents.forEach(({ id, name, formula, displayName, color }, i) => {
+  reagents.forEach(({ id, name, formula, displayName, color, hazardStyle }, i) => {
     const row = i < 6 ? 0 : 1;
     const col = i % 6;
     g.add(createBottle({
-      id, name, label: formula, displayName, color,
+      id, name, label: formula, displayName, color, hazardStyle,
       x: -0.85 + col * spacing,
       y: row === 0 ? 1.18 : 1.54,
       z: row === 0 ? -0.28 : -0.48,
@@ -1188,7 +1296,7 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0, ch
   group.add(strip);
 
   // Reagent rack + apparatus
-  group.add(createReagentRack(accent, itemHoverTargets, hoverControllers, chemicals));
+  group.add(createReagentRack(accent, itemHoverTargets, hoverControllers, chemicals, deskKey));
   group.add(createBeaker(-0.84, 0.18, accent, itemHoverTargets, hoverControllers));
   group.add(createFlask(-0.18, -0.02, accent, itemHoverTargets, hoverControllers));
   group.add(createTubeRack(0.38, 0.26, itemHoverTargets, hoverControllers));
