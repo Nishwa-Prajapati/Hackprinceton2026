@@ -1,14 +1,6 @@
-import acidBaseDesk from './acid-base.json';
-import combustionDesk from './combustion.json';
-import synthesisDesk from './synthesis.json';
-import electrochemistryDesk from './electrochemistry.json';
+import deskData from './desks.json';
 
-export const DESK_DATA = {
-  acidBase: acidBaseDesk,
-  combustion: combustionDesk,
-  synthesis: synthesisDesk,
-  electrochemistry: electrochemistryDesk,
-};
+export const DESK_DATA = deskData;
 
 export function getDeskChemicals(deskKey) {
   return DESK_DATA[deskKey]?.chemicals ?? [];
