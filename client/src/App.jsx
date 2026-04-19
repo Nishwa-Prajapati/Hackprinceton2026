@@ -3,6 +3,23 @@ import { LabEngine } from './lab/LabEngine';
 import { labState } from './lab/LabState';
 import useAIAssistant from './ai/AIAssistant';
 import EntryScreen from './components/EntryScreen';
+import QuizPanel from './components/QuizPanel';
+
+const BADGE_NAMES = {
+  acidBase: 'Acid-Base Master',
+  combustion: 'Combustion Expert',
+  synthesis: 'Synthesis Specialist',
+  electrochemistry: 'Electrochemistry Pro',
+};
+
+function loadBadges() {
+  try { return JSON.parse(localStorage.getItem('labzero_badges') ?? '{}'); } catch { return {}; }
+}
+function saveBadge(deskKey, name, reactionName) {
+  const badges = loadBadges();
+  badges[deskKey] = { name, reactionName, earnedAt: new Date().toISOString() };
+  localStorage.setItem('labzero_badges', JSON.stringify(badges));
+}
 import periodicTablePopup from './assets/periodic-table-popup.png';
 import { DESK_DATA, findDeskReaction, getDeskApparatus, getDeskData } from './data/desks/index';
 
@@ -1115,11 +1132,40 @@ function ReactionPrompt({
   );
 }
 
-function ExperimentOverlay({ experiment, onBackToDesk, onTryAnother }) {
+function ExperimentOverlay({ experiment, onBackToDesk, onTryAnother, speakText }) {
   const { deskKey, deskName, reaction, chemicals, apparatusUsed } = experiment;
   const output = reaction.output ?? {};
   const theme = getDeskTheme(deskKey);
   const outputTags = getOutputTags(output);
+
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [earnedBadge, setEarnedBadge] = useState(() => loadBadges()[deskKey] ?? null);
+  const [showReExplain, setShowReExplain] = useState(false);
+
+  const badgeName = BADGE_NAMES[deskKey] ?? `${deskName} Expert`;
+
+  const quizContext = {
+    desk: deskName,
+    reaction: reaction.name,
+    formula: reaction.formula ?? reaction.equation ?? '',
+    chemicals: chemicals.map((c) => c?.formula ?? c?.name).filter(Boolean),
+    output: reaction.output?.primary_product_name ?? reaction.output?.product_name ?? reaction.name,
+  };
+
+  function handleScoreResult(score) {
+    if (score === 5) {
+      saveBadge(deskKey, badgeName, reaction.name);
+      setEarnedBadge({ name: badgeName, reactionName: reaction.name, earnedAt: new Date().toISOString() });
+      speakText?.(`Outstanding! You've earned the ${badgeName} Badge! You've mastered this reaction. Keep it up!`);
+    } else if (score >= 3) {
+      speakText?.(`Great effort! You scored ${score} out of 5. Review the questions you missed and try again to earn your badge!`);
+    } else {
+      setShowReExplain(true);
+      speakText?.(`Don't worry — chemistry takes practice! Let's go over the key ideas again before you retry the quiz.`);
+    }
+  }
+
+  const processWidth = quizOpen ? '58%' : '100%';
 
   return (
     <div style={{
@@ -1134,180 +1180,198 @@ function ExperimentOverlay({ experiment, onBackToDesk, onTryAnother }) {
       padding: 'min(4vw, 28px)',
     }}>
       <div style={{
-        width: 'min(96vw, 1180px)',
+        width: 'min(96vw, 1280px)',
         maxHeight: '92vh',
-        overflow: 'auto',
-        background: 'linear-gradient(180deg, rgba(16, 21, 31, 0.98) 0%, rgba(10, 14, 22, 0.98) 100%)',
-        border: `1px solid ${theme.accent}33`,
-        borderRadius: '28px',
-        boxShadow: '0 22px 90px rgba(0,0,0,0.52), 0 0 34px rgba(0,212,255,0.08)',
-        padding: 'clamp(18px, 3vw, 28px)',
-        display: 'grid',
-        gap: '18px',
+        display: 'flex',
+        gap: '16px',
+        alignItems: 'stretch',
+        transition: 'all 0.35s ease',
       }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
-          <div>
-            <div style={{
-              fontFamily: MONO_FONT,
-              fontSize: '0.82rem',
-              letterSpacing: '0.14em',
-              color: theme.accent,
-              textTransform: 'uppercase',
-            }}>
-              {deskName} Experiment
+        {/* ── Process Panel ── */}
+        <div style={{
+          flex: `0 0 ${processWidth}`,
+          minWidth: 0,
+          overflow: 'auto',
+          background: 'linear-gradient(180deg, rgba(16, 21, 31, 0.98) 0%, rgba(10, 14, 22, 0.98) 100%)',
+          border: `1px solid ${theme.accent}33`,
+          borderRadius: '28px',
+          boxShadow: '0 22px 90px rgba(0,0,0,0.52), 0 0 34px rgba(0,212,255,0.08)',
+          padding: 'clamp(18px, 3vw, 28px)',
+          display: 'grid',
+          gap: '18px',
+          alignContent: 'start',
+          transition: 'flex 0.35s ease',
+        }}>
+          {/* Header row */}
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', flexWrap: 'wrap' }}>
+            <div>
+              <div style={{
+                fontFamily: MONO_FONT,
+                fontSize: '0.82rem',
+                letterSpacing: '0.14em',
+                color: theme.accent,
+                textTransform: 'uppercase',
+              }}>
+                {deskName} Experiment
+              </div>
+              <div style={{
+                marginTop: '8px',
+                color: '#f0f6ff',
+                fontFamily: UI_FONT,
+                fontSize: '1.08rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+              }}>
+                {reaction.name}
+                {earnedBadge && (
+                  <span title={earnedBadge.name} style={{ fontSize: '1.2rem' }}>🏅</span>
+                )}
+              </div>
+              <div style={{
+                marginTop: '10px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
+                padding: '9px 13px',
+                borderRadius: '999px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.04)',
+                color: '#ffe0b5',
+                fontFamily: MONO_FONT,
+                fontSize: '0.78rem',
+              }}>
+                {chemicals[0].formula} + {chemicals[1].formula} → {reaction.formula}
+              </div>
             </div>
-            <div style={{
-              marginTop: '8px',
-              color: '#f0f6ff',
-              fontFamily: UI_FONT,
-              fontSize: '1.08rem',
-              fontWeight: 600,
-            }}>
-              {reaction.name}
+
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+              {/* Earn a Badge button */}
+              {!quizOpen && (
+                <button
+                  onClick={() => { setQuizOpen(true); setShowReExplain(false); }}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(255,176,0,0.22), rgba(255,120,0,0.18))',
+                    border: '1.5px solid rgba(255,176,0,0.55)',
+                    color: '#ffe28a',
+                    borderRadius: '14px',
+                    padding: '10px 16px',
+                    fontFamily: MONO_FONT,
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    fontWeight: 700,
+                    letterSpacing: '0.04em',
+                    boxShadow: '0 0 18px rgba(255,160,0,0.25)',
+                  }}
+                >
+                  {earnedBadge ? '🏅 Badge Earned — Retry Quiz' : '🏅 Earn a Badge'}
+                </button>
+              )}
+              {quizOpen && (
+                <button
+                  onClick={() => setQuizOpen(false)}
+                  style={{
+                    background: 'rgba(255,255,255,0.06)',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    color: '#aac4dd',
+                    borderRadius: '14px',
+                    padding: '10px 14px',
+                    fontFamily: MONO_FONT,
+                    fontSize: '0.76rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Hide Quiz
+                </button>
+              )}
+              <button
+                onClick={onTryAnother}
+                style={{
+                  background: `${theme.accent}22`,
+                  border: `1px solid ${theme.accent}44`,
+                  color: '#dff7ff',
+                  borderRadius: '14px',
+                  padding: '10px 14px',
+                  fontFamily: MONO_FONT,
+                  fontSize: '0.76rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Try Another
+              </button>
+              <button
+                onClick={onBackToDesk}
+                style={{
+                  background: 'rgba(255,140,0,0.12)',
+                  border: '1px solid rgba(255,140,0,0.3)',
+                  color: '#ffcb8c',
+                  borderRadius: '14px',
+                  padding: '10px 14px',
+                  fontFamily: MONO_FONT,
+                  fontSize: '0.76rem',
+                  cursor: 'pointer',
+                }}
+              >
+                ← Back to Desk
+              </button>
             </div>
+          </div>
+
+          {/* Re-explain offer */}
+          {showReExplain && (
             <div style={{
-              marginTop: '10px',
-              display: 'inline-flex',
+              padding: '14px 18px',
+              borderRadius: '16px',
+              background: 'rgba(255,100,80,0.1)',
+              border: '1px solid rgba(255,100,80,0.3)',
+              display: 'flex',
               alignItems: 'center',
-              gap: '10px',
-              padding: '9px 13px',
-              borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.04)',
-              color: '#ffe0b5',
-              fontFamily: MONO_FONT,
-              fontSize: '0.78rem',
+              gap: '14px',
+              flexWrap: 'wrap',
             }}>
-              {chemicals[0].formula} + {chemicals[1].formula} → {reaction.formula}
+              <span style={{ color: '#ffb5aa', fontFamily: UI_FONT, fontSize: '0.9rem', flex: 1 }}>
+                Let's review the concepts before you retry.
+              </span>
+              <button
+                onClick={() => { setShowReExplain(false); setQuizOpen(true); }}
+                style={{
+                  background: 'rgba(255,140,0,0.18)',
+                  border: '1px solid rgba(255,140,0,0.4)',
+                  color: '#ffd49e',
+                  borderRadius: '12px',
+                  padding: '8px 14px',
+                  fontFamily: MONO_FONT,
+                  fontSize: '0.76rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Retry Quiz
+              </button>
+              <button
+                onClick={() => setShowReExplain(false)}
+                style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: '#9db8cc',
+                  borderRadius: '12px',
+                  padding: '8px 14px',
+                  fontFamily: MONO_FONT,
+                  fontSize: '0.76rem',
+                  cursor: 'pointer',
+                }}
+              >
+                Dismiss
+              </button>
             </div>
-          </div>
+          )}
 
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            <button
-              onClick={onTryAnother}
-              style={{
-                background: `${theme.accent}22`,
-                border: `1px solid ${theme.accent}44`,
-                color: '#dff7ff',
-                borderRadius: '14px',
-                padding: '10px 14px',
-                fontFamily: MONO_FONT,
-                fontSize: '0.76rem',
-                cursor: 'pointer',
-              }}
-            >
-              Try Another
-            </button>
-            <button
-              onClick={onBackToDesk}
-              style={{
-                background: 'rgba(255,140,0,0.12)',
-                border: '1px solid rgba(255,140,0,0.3)',
-                color: '#ffcb8c',
-                borderRadius: '14px',
-                padding: '10px 14px',
-                fontFamily: MONO_FONT,
-                fontSize: '0.76rem',
-                cursor: 'pointer',
-              }}
-            >
-              ← Back to Desk
-            </button>
-          </div>
-        </div>
-
-        <div style={{ display: 'grid', gap: '18px', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(320px, 0.92fr)' }}>
-          <div style={{
-            padding: '18px',
-            borderRadius: '24px',
-            border: '1px solid rgba(255,255,255,0.08)',
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
-          }}>
-            <div style={{
-              fontFamily: MONO_FONT,
-              color: theme.accent,
-              fontSize: '0.76rem',
-              letterSpacing: '0.1em',
-              textTransform: 'uppercase',
-              marginBottom: '10px',
-            }}>
-              Reaction Performance
-            </div>
-            <GenericReactionScene experiment={experiment} />
-          </div>
-
-          <div style={{ display: 'grid', gap: '18px' }}>
+          <div style={{ display: 'grid', gap: '18px', gridTemplateColumns: 'minmax(0, 1.2fr) minmax(240px, 0.92fr)' }}>
             <div style={{
               padding: '18px',
               borderRadius: '24px',
               border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.03)',
-            }}>
-              <div style={{
-                fontFamily: MONO_FONT,
-                color: theme.accent,
-                fontSize: '0.76rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                marginBottom: '14px',
-              }}>
-                Apparatus Used
-              </div>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))',
-                gap: '12px',
-              }}>
-                {apparatusUsed.map((tool) => (
-                  <ApparatusMiniCard key={`${tool.id}-${tool.name}`} tool={tool} accent={theme.accent} />
-                ))}
-              </div>
-            </div>
-
-            <div style={{
-              padding: '18px',
-              borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.03)',
-            }}>
-              <div style={{
-                fontFamily: MONO_FONT,
-                color: theme.accent,
-                fontSize: '0.76rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                marginBottom: '12px',
-              }}>
-                Output Highlights
-              </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                {outputTags.map((tag) => (
-                  <span
-                    key={tag}
-                    style={{
-                      padding: '8px 12px',
-                      borderRadius: '999px',
-                      background: 'rgba(255,140,0,0.12)',
-                      border: '1px solid rgba(255,140,0,0.22)',
-                      color: '#ffe2bf',
-                      fontFamily: UI_FONT,
-                      fontSize: '0.88rem',
-                    }}
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div style={{
-              padding: '18px',
-              borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.08)',
-              background: 'rgba(255,255,255,0.03)',
-              color: 'rgba(233,244,255,0.82)',
-              lineHeight: 1.74,
-              fontFamily: UI_FONT,
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))',
             }}>
               <div style={{
                 fontFamily: MONO_FONT,
@@ -1317,34 +1381,147 @@ function ExperimentOverlay({ experiment, onBackToDesk, onTryAnother }) {
                 textTransform: 'uppercase',
                 marginBottom: '10px',
               }}>
-                Observation
+                Reaction Performance
               </div>
-              {output.observation}
+              <GenericReactionScene experiment={experiment} />
             </div>
+
+            <div style={{ display: 'grid', gap: '18px' }}>
+              <div style={{
+                padding: '18px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.03)',
+              }}>
+                <div style={{
+                  fontFamily: MONO_FONT,
+                  color: theme.accent,
+                  fontSize: '0.76rem',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: '14px',
+                }}>
+                  Apparatus Used
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))',
+                  gap: '12px',
+                }}>
+                  {apparatusUsed.map((tool) => (
+                    <ApparatusMiniCard key={`${tool.id}-${tool.name}`} tool={tool} accent={theme.accent} />
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                padding: '18px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.03)',
+              }}>
+                <div style={{
+                  fontFamily: MONO_FONT,
+                  color: theme.accent,
+                  fontSize: '0.76rem',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: '12px',
+                }}>
+                  Output Highlights
+                </div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {outputTags.map((tag) => (
+                    <span
+                      key={tag}
+                      style={{
+                        padding: '8px 12px',
+                        borderRadius: '999px',
+                        background: 'rgba(255,140,0,0.12)',
+                        border: '1px solid rgba(255,140,0,0.22)',
+                        color: '#ffe2bf',
+                        fontFamily: UI_FONT,
+                        fontSize: '0.88rem',
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{
+                padding: '18px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.03)',
+                color: 'rgba(233,244,255,0.82)',
+                lineHeight: 1.74,
+                fontFamily: UI_FONT,
+              }}>
+                <div style={{
+                  fontFamily: MONO_FONT,
+                  color: theme.accent,
+                  fontSize: '0.76rem',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  marginBottom: '10px',
+                }}>
+                  Observation
+                </div>
+                {output.observation}
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            padding: '18px',
+            borderRadius: '24px',
+            border: '1px solid rgba(255,255,255,0.08)',
+            background: 'linear-gradient(90deg, rgba(0,212,255,0.06), rgba(255,140,0,0.08))',
+            color: '#edf7ff',
+            lineHeight: 1.74,
+            fontFamily: UI_FONT,
+          }}>
+            <div style={{
+              fontFamily: MONO_FONT,
+              color: theme.accent,
+              fontSize: '0.76rem',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              marginBottom: '10px',
+            }}>
+              Educational Note
+            </div>
+            {reaction.educational_note}
           </div>
         </div>
 
-        <div style={{
-          padding: '18px',
-          borderRadius: '24px',
-          border: '1px solid rgba(255,255,255,0.08)',
-          background: 'linear-gradient(90deg, rgba(0,212,255,0.06), rgba(255,140,0,0.08))',
-          color: '#edf7ff',
-          lineHeight: 1.74,
-          fontFamily: UI_FONT,
-        }}>
+        {/* ── Quiz Panel (slides in from right) ── */}
+        {quizOpen && (
           <div style={{
-            fontFamily: MONO_FONT,
-            color: theme.accent,
-            fontSize: '0.76rem',
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            marginBottom: '10px',
+            flex: '0 0 42%',
+            minWidth: 0,
+            overflow: 'auto',
+            borderRadius: '28px',
+            border: '1.5px solid rgba(255,176,0,0.25)',
+            boxShadow: '0 16px 60px rgba(0,0,0,0.45), 0 0 28px rgba(255,160,0,0.1)',
+            animation: 'quizSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both',
           }}>
-            Educational Note
+            <style>{`
+              @keyframes quizSlideIn {
+                from { opacity: 0; transform: translateX(32px); }
+                to   { opacity: 1; transform: translateX(0); }
+              }
+            `}</style>
+            <QuizPanel
+              context={quizContext}
+              badgeName={badgeName}
+              onClose={() => setQuizOpen(false)}
+              onScoreResult={handleScoreResult}
+            />
           </div>
-          {reaction.educational_note}
-        </div>
+        )}
       </div>
     </div>
   );
@@ -1779,6 +1956,7 @@ export default function App() {
           experiment={experimentState}
           onBackToDesk={closeExperimentToDesk}
           onTryAnother={reopenReactionPrompt}
+          speakText={assistant.speakText}
         />
       )}
 
@@ -1954,6 +2132,13 @@ export default function App() {
             </svg>
           </button>
         </div>
+      )}
+
+      {assistant.quizContext && (
+        <QuizPanel
+          context={assistant.quizContext}
+          onClose={assistant.clearQuiz}
+        />
       )}
 
       <style>{`

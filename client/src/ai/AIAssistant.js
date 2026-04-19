@@ -146,7 +146,7 @@ export function useAIAssistant() {
     return ok;
   }
 
-  // After every answer, keep listening for follow-up questions
+  // After every answer, keep the mic open for follow-up questions.
   function beginContinuousQA(context) {
     if (!supportsSpeechInput) return;
 
@@ -172,7 +172,7 @@ export function useAIAssistant() {
     const context    = buildAssistantContext(payload);
     currentContextRef.current = context;
 
-    // No mic — auto-explain immediately
+    // No mic — auto-explain then open Q&A
     if (!supportsSpeechInput) {
       askAssistant(
         `Explain what the ${context.reaction} reaction produces and give 2 real-world uses of ${outputName}.`,
