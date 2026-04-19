@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
+import gsap from 'gsap';
 import { LabControls } from './LabControls.js';
 import { labState } from './LabState.js';
 import { createBench } from './BenchBuilder.js';
 import { intersectObjects } from '../utils/raycaster.js';
+import { getDeskApparatus, getDeskChemicals } from '../data/desks/index.js';
 import periodicTableFrame from '../assets/periodic-table-frame.png';
 import rightWallPoster from '../assets/right-wall-poster.png';
 import rightWallCoats from '../assets/right-wall-coats.png';
@@ -12,10 +14,10 @@ RectAreaLightUniformsLib.init();
 
 // ─── Bench definitions — positions from main branch, accent colors = ours ─────
 const BENCH_DEFS = [
-  { id: 'zone1', title: 'Acid-Base',       accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0,  7.2),   cameraOffsetX:  0.55 },
-  { id: 'zone2', title: 'Combustion',       accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0,  1.35),  cameraOffsetX: -0.55 },
-  { id: 'zone3', title: 'Synthesis',        accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0, -4.7),   cameraOffsetX:  0.55 },
-  { id: 'zone4', title: 'Electrochemistry', accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0, -10.75), cameraOffsetX: -0.55 },
+  { id: 'zone1', title: 'Acid-Base',       deskKey: 'acidBase',         accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0,  7.2),   cameraOffsetX:  0.55 },
+  { id: 'zone2', title: 'Combustion',      deskKey: 'combustion',       accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0,  1.35),  cameraOffsetX: -0.55 },
+  { id: 'zone3', title: 'Synthesis',       deskKey: 'synthesis',        accent: 0x00D4FF, position: new THREE.Vector3(-3.15, 0, -4.7),   cameraOffsetX:  0.55 },
+  { id: 'zone4', title: 'Electrochemistry',deskKey: 'electrochemistry', accent: 0xFF8C00, position: new THREE.Vector3( 3.15, 0, -10.75), cameraOffsetX: -0.55 },
 ];
 
 // ─── Cabinet placeholder item colors ──────────────────────────────────────────
@@ -60,8 +62,10 @@ export class LabEngine {
     this._benchMap           = new Map();
     this._benchClickTargets  = [];
     this._benchItemTargets   = [];
+    this._dustbinHoverTargets = [];
     this._hoveredBenchId     = null;
     this._hoveredItemObj     = null;
+    this._hoveredDustbinObj  = null;
     this._activeBenchId      = null;
 
     this._animFrameId      = null;
@@ -98,6 +102,7 @@ export class LabEngine {
     this._buildLighting();
     this._buildRoom();
     this._buildBenches();
+    this._buildDeskDustbins();
     this._buildCabinets();
     this._buildOverheadLightHousings();
     this._buildPeripheralProps();
@@ -245,7 +250,11 @@ export class LabEngine {
 
   _buildBenches() {
     BENCH_DEFS.forEach(def => {
-      const bench = createBench(def);
+      const bench = createBench({
+        ...def,
+        chemicals: getDeskChemicals(def.deskKey),
+        apparatus: getDeskApparatus(def.deskKey),
+      });
       this.scene.add(bench.group);
       this._benchMap.set(def.id, bench);
 
@@ -265,14 +274,88 @@ export class LabEngine {
     });
   }
 
+  _buildDeskDustbins() {
+    const bodyMat = new THREE.MeshStandardMaterial({ color: '#8f959f', roughness: 0.56, metalness: 0.28 });
+    const lidMat = new THREE.MeshStandardMaterial({ color: '#747b86', roughness: 0.44, metalness: 0.34 });
+    const trimMat = new THREE.MeshStandardMaterial({ color: '#b7bec8', roughness: 0.28, metalness: 0.72 });
+    const pedalMat = new THREE.MeshStandardMaterial({ color: '#656b74', roughness: 0.52, metalness: 0.38 });
+    const linerMat = new THREE.MeshStandardMaterial({ color: '#5d646d', roughness: 0.72, metalness: 0.12 });
+
+    BENCH_DEFS.forEach((def, index) => {
+      const side = def.position.x < 0 ? -1 : 1;
+      const dustbin = new THREE.Group();
+      dustbin.position.set(def.position.x + side * 2.08, 0, def.position.z + (index % 2 === 0 ? 0.42 : 0.28));
+      dustbin.rotation.y = side < 0 ? 0.22 : -0.22;
+
+      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.2, 0.58, 26), bodyMat);
+      body.position.y = 0.29;
+      body.castShadow = true;
+      body.receiveShadow = true;
+      dustbin.add(body);
+
+      const innerLiner = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.17, 0.5, 22, 1, true), linerMat);
+      innerLiner.position.y = 0.31;
+      dustbin.add(innerLiner);
+
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.228, 0.014, 10, 24), trimMat);
+      rim.rotation.x = Math.PI / 2;
+      rim.position.y = 0.57;
+      dustbin.add(rim);
+
+      const lidPivot = new THREE.Group();
+      lidPivot.position.set(0, 0.585, -0.19);
+      dustbin.add(lidPivot);
+
+      const lid = new THREE.Group();
+      lid.position.z = 0.19;
+      lidPivot.add(lid);
+
+      const lidTop = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.235, 0.05, 26), lidMat);
+      lidTop.castShadow = true;
+      lid.add(lidTop);
+
+      const lidHandle = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.028, 0.025), trimMat);
+      lidHandle.position.set(0, 0.04, 0);
+      lid.add(lidHandle);
+
+      const pedal = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.028, 0.07), pedalMat);
+      pedal.position.set(0, 0.03, 0.23);
+      dustbin.add(pedal);
+
+      const hinge = new THREE.Mesh(new THREE.BoxGeometry(0.13, 0.024, 0.035), trimMat);
+      hinge.position.set(0, 0.585, -0.19);
+      dustbin.add(hinge);
+
+      const hoverHitbox = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.28, 0.24, 0.7, 16),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+      );
+      hoverHitbox.position.y = 0.35;
+      hoverHitbox.userData.hoverName = 'Open Dustbin Lid';
+      hoverHitbox.userData.onHoverChange = (hovered) => {
+        gsap.to(lidPivot.rotation, {
+          x: hovered ? -1.02 : 0,
+          duration: hovered ? 0.24 : 0.28,
+          ease: 'power2.out',
+          overwrite: true,
+        });
+        hoverHitbox.userData.hoverName = hovered ? 'Close Dustbin Lid' : 'Open Dustbin Lid';
+      };
+      dustbin.add(hoverHitbox);
+      this._dustbinHoverTargets.push(hoverHitbox);
+
+      this.scene.add(dustbin);
+    });
+  }
+
   // ─── CABINETS ─────────────────────────────────────────────────────────────────
 
   _buildCabinets() {
     const defs = [
       { id: 'A', pos: [-9.6, 2, 2],     rotY: Math.PI / 2 },
       { id: 'B', pos: [-9.6, 2, -3],    rotY: Math.PI / 2 },
-      { id: 'C', pos: [-3,   2, -13.6], rotY: 0           },
-      { id: 'D', pos: [3,    2, -13.6], rotY: 0           },
+      { id: 'C', pos: [-4.4, 2, -13.6], rotY: 0           },
+      { id: 'D', pos: [4.4,  2, -13.6], rotY: 0           },
     ];
     defs.forEach(def => {
       this._buildSingleCabinet(def);
@@ -514,6 +597,7 @@ export class LabEngine {
       const group = new THREE.Group();
       group.position.copy(position);
       group.rotation.y = rotationY;
+      const baseGroundOffset = 0.11;
 
       const coatStandMat = new THREE.MeshStandardMaterial({
         map: texture,
@@ -524,25 +608,11 @@ export class LabEngine {
         metalness: 0.02,
       });
 
-      const floorShadow = new THREE.Mesh(
-        new THREE.CircleGeometry(0.36, 32),
-        new THREE.MeshBasicMaterial({
-          color: '#000000',
-          transparent: true,
-          opacity: 0.16,
-          depthWrite: false,
-        })
-      );
-      floorShadow.rotation.x = -Math.PI / 2;
-      floorShadow.position.set(0.04, 0.003, 0.08);
-      floorShadow.scale.set(1.08, 0.64, 1);
-      group.add(floorShadow);
-
       const coatStand = new THREE.Mesh(
         new THREE.PlaneGeometry(width, height),
         coatStandMat
       );
-      coatStand.position.set(0, height * 0.5, 0);
+      coatStand.position.set(0, height * 0.5 - baseGroundOffset, 0);
       group.add(coatStand);
 
       this.scene.add(group);
@@ -765,13 +835,19 @@ export class LabEngine {
       }
 
       const benchHit = intersectObjects(e, canvas, this.camera, this._benchClickTargets);
+      if (benchHit?.object?.userData?.benchAction === 'toggle-compartment') {
+        this._benchMap.get(benchHit.object.userData.storageBenchId)?.handleAction?.('toggle-compartment');
+        return;
+      }
       if (benchHit?.object?.userData?.benchId) {
         this.focusBench(benchHit.object.userData.benchId);
         return;
       }
 
       const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
-      if (itemHit?.object?.userData?.benchId) this.focusBench(itemHit.object.userData.benchId);
+      if (itemHit?.object?.userData?.benchId && !itemHit.object.userData.preventBenchFocus) {
+        this.focusBench(itemHit.object.userData.benchId);
+      }
     };
     canvas.addEventListener('click', this._clickHandler);
 
@@ -785,6 +861,10 @@ export class LabEngine {
           this._benchMap.get(this._hoveredItemObj.userData.benchId)?.setHoveredObject(null);
           this._hoveredItemObj = null;
         }
+        if (this._hoveredDustbinObj) {
+          this._hoveredDustbinObj.userData.onHoverChange?.(false);
+          this._hoveredDustbinObj = null;
+        }
         canvas.style.cursor = 'grabbing';
         if (this._tooltipEl) {
           this._tooltipEl.style.opacity = '0';
@@ -795,6 +875,9 @@ export class LabEngine {
 
       const itemHit  = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
       const benchHit = itemHit ? null : intersectObjects(e, canvas, this.camera, this._benchClickTargets);
+      const dustbinHit = itemHit || benchHit
+        ? null
+        : intersectObjects(e, canvas, this.camera, this._dustbinHoverTargets);
       const periodicHit = itemHit || benchHit || !this._periodicTarget
         ? null
         : intersectObjects(e, canvas, this.camera, [this._periodicTarget]);
@@ -807,7 +890,6 @@ export class LabEngine {
         if (this._hoveredBenchId) this._benchMap.get(this._hoveredBenchId)?.setHovered(false);
         this._hoveredBenchId = hoveredBenchId;
         if (this._hoveredBenchId) this._benchMap.get(this._hoveredBenchId)?.setHovered(true);
-        canvas.style.cursor = hoveredBenchId ? 'pointer' : 'default';
       }
 
       const itemObj = itemHit?.object ?? null;
@@ -821,9 +903,20 @@ export class LabEngine {
         }
       }
 
+      const dustbinObj = dustbinHit?.object ?? null;
+      if (dustbinObj !== this._hoveredDustbinObj) {
+        if (this._hoveredDustbinObj) this._hoveredDustbinObj.userData.onHoverChange?.(false);
+        this._hoveredDustbinObj = dustbinObj;
+        if (this._hoveredDustbinObj) this._hoveredDustbinObj.userData.onHoverChange?.(true);
+      }
+
       // Tooltip
       if (this._tooltipEl) {
-        const hoverName = itemHit?.object?.userData?.hoverName ?? benchHit?.object?.userData?.hoverName ?? null;
+        const hoverName = itemHit?.object?.userData?.hoverName
+          ?? benchHit?.object?.userData?.hoverName
+          ?? dustbinHit?.object?.userData?.hoverName
+          ?? null;
+        canvas.style.cursor = hoverName || periodicHit ? 'pointer' : 'default';
         if (hoverName) {
           const r = canvas.getBoundingClientRect();
           this._tooltipEl.textContent      = hoverName;

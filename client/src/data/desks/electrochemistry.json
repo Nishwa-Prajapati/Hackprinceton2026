@@ -1,0 +1,1087 @@
+{
+  "desk": {
+    "id": "desk_3",
+    "name": "Electrochemistry — Electrolysis & Electrolytes",
+    "description": "Select any 2 solutions/substances to explore electrochemistry — conductivity tests, electrolysis products at cathode and anode, colour changes, gas evolution, metal deposition, and electroplating.",
+    "grade": ["9", "10"],
+    "max_selection": 2,
+    "mode_note": "In this desk, one chemical acts as the ELECTROLYTE (solution in the cell) and the second acts as the ELECTRODE MATERIAL or REAGENT. The experiment always uses a DC power supply connected to two electrodes dipped into the electrolyte."
+  },
+
+  "chemicals": [
+    {
+      "id": 1,
+      "name": "Copper Sulfate Solution",
+      "formula": "CuSO4 (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["Cu2+", "SO4 2-"],
+      "bottle_color": "#1565C0",
+      "liquid_color": "#64B5F6",
+      "hazard": "mild_irritant — toxic to aquatic life"
+    },
+    {
+      "id": 2,
+      "name": "Sodium Chloride Solution (Brine)",
+      "formula": "NaCl (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["Na+", "Cl-"],
+      "bottle_color": "#E3F2FD",
+      "liquid_color": "#F5FBFF",
+      "hazard": "safe"
+    },
+    {
+      "id": 3,
+      "name": "Dilute Sulfuric Acid",
+      "formula": "H2SO4 (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "very_high",
+      "ion_pairs": ["H+", "SO4 2-"],
+      "bottle_color": "#FFD6A5",
+      "liquid_color": "#FFF5E6",
+      "hazard": "corrosive — handle with care"
+    },
+    {
+      "id": 4,
+      "name": "Dilute Hydrochloric Acid",
+      "formula": "HCl (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["H+", "Cl-"],
+      "bottle_color": "#FFEB99",
+      "liquid_color": "#FFFBE6",
+      "hazard": "corrosive"
+    },
+    {
+      "id": 5,
+      "name": "Sodium Hydroxide Solution",
+      "formula": "NaOH (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["Na+", "OH-"],
+      "bottle_color": "#B5EAD7",
+      "liquid_color": "#D4F5E9",
+      "hazard": "corrosive"
+    },
+    {
+      "id": 6,
+      "name": "Glucose Solution (Sugar Water)",
+      "formula": "C6H12O6 (aq)",
+      "type": "non_electrolyte",
+      "conductivity": "none",
+      "ion_pairs": [],
+      "bottle_color": "#FFF9C4",
+      "liquid_color": "#FAFACD",
+      "hazard": "safe"
+    },
+    {
+      "id": 7,
+      "name": "Distilled Water",
+      "formula": "H2O",
+      "type": "non_electrolyte",
+      "conductivity": "negligible",
+      "ion_pairs": ["H+ (trace)", "OH- (trace)"],
+      "bottle_color": "#E1F5FE",
+      "liquid_color": "#F5FBFF",
+      "hazard": "safe"
+    },
+    {
+      "id": 8,
+      "name": "Copper Chloride Solution",
+      "formula": "CuCl2 (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["Cu2+", "Cl-"],
+      "bottle_color": "#006064",
+      "liquid_color": "#4DB6AC",
+      "hazard": "mild_irritant"
+    },
+    {
+      "id": 9,
+      "name": "Graphite (Carbon) Electrode",
+      "formula": "C (graphite)",
+      "type": "inert_electrode",
+      "conductivity": "conductor",
+      "bottle_color": "#424242",
+      "solid_color": "#212121",
+      "hazard": "safe — inert, does not dissolve"
+    },
+    {
+      "id": 10,
+      "name": "Copper Electrode",
+      "formula": "Cu",
+      "type": "active_electrode",
+      "conductivity": "conductor",
+      "bottle_color": "#B87333",
+      "solid_color": "#B87333",
+      "hazard": "safe — active, dissolves at anode"
+    },
+    {
+      "id": 11,
+      "name": "Zinc Electrode",
+      "formula": "Zn",
+      "type": "active_electrode",
+      "conductivity": "conductor",
+      "bottle_color": "#B0BEC5",
+      "solid_color": "#90A4AE",
+      "hazard": "safe — active, dissolves at anode"
+    },
+    {
+      "id": 12,
+      "name": "Silver Nitrate Solution",
+      "formula": "AgNO3 (aq)",
+      "type": "strong_electrolyte",
+      "conductivity": "high",
+      "ion_pairs": ["Ag+", "NO3-"],
+      "bottle_color": "#ECEFF1",
+      "liquid_color": "#F5F7F8",
+      "hazard": "oxidising — stains skin black; avoid contact"
+    }
+  ],
+
+  "apparatus": [
+    { "id": 1,  "name": "Electrolysis Cell / Beaker",     "icon": "electrolysis_cell"    },
+    { "id": 2,  "name": "DC Power Supply (Battery)",      "icon": "dc_power_supply"      },
+    { "id": 3,  "name": "Connecting Wires & Crocodile Clips", "icon": "wires_clips"      },
+    { "id": 4,  "name": "Ammeter",                        "icon": "ammeter"              },
+    { "id": 5,  "name": "Voltmeter",                      "icon": "voltmeter"            },
+    { "id": 6,  "name": "Graphite / Inert Electrodes",    "icon": "graphite_electrodes"  },
+    { "id": 7,  "name": "Inverted Test Tubes (gas collection)", "icon": "inverted_tubes" },
+    { "id": 8,  "name": "Glowing Splint (O2 test)",       "icon": "glowing_splint"       },
+    { "id": 9,  "name": "Burning Splint (H2 test)",       "icon": "burning_splint"       },
+    { "id": 10, "name": "Moist Litmus Paper (Cl2 test)",  "icon": "litmus_paper"         },
+    { "id": 11, "name": "Conductivity Tester / Bulb Circuit", "icon": "bulb_circuit"     },
+    { "id": 12, "name": "Measuring Cylinder & Weighing Balance", "icon": "cylinder_balance" }
+  ],
+
+  "reactions": [
+
+    {
+      "id": "rxn_1_9",
+      "reactants": [1, 9],
+      "name": "Electrolysis of Copper Sulfate — Inert (Graphite) Electrodes",
+      "formula": "Cathode: Cu2+ + 2e- -> Cu | Anode: 4OH- -> O2 + 2H2O + 4e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "copper metal (pink-brown deposit)",
+        "cathode_color_change": true,
+        "cathode_initial_color": "#9E9E9E",
+        "cathode_result_color": "#B87333",
+        "anode_product": "oxygen gas",
+        "anode_gas_test": "relights glowing splint",
+        "bubbles_at_anode": true,
+        "bubbles_at_cathode": false,
+        "solution_color_change": true,
+        "solution_initial_color": "#64B5F6",
+        "solution_result_color": "#E3F2FD",
+        "color_fade_note": "Blue colour fades as Cu2+ ions are removed from solution",
+        "precipitate": false,
+        "animations": ["copper_deposit_growing", "bubbles_at_anode", "solution_fading_blue_to_clear"],
+        "observation": "Pink-brown copper metal deposits on the cathode (negative electrode). Colourless oxygen gas bubbles form at the anode. The blue colour of the solution slowly fades as Cu2+ ions are used up."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 8, 12],
+      "educational_note": "Cu2+ ions are reduced at the cathode: Cu2+ + 2e- → Cu. OH- ions are oxidised at the anode releasing O2. This is reduction at cathode and oxidation at anode — a redox process. The fading blue colour confirms Cu2+ ions are being removed."
+    },
+
+    {
+      "id": "rxn_1_10",
+      "reactants": [1, 10],
+      "name": "Electrolysis of Copper Sulfate — Active Copper Electrodes (Copper Purification)",
+      "formula": "Cathode: Cu2+ + 2e- -> Cu | Anode: Cu -> Cu2+ + 2e-",
+      "type": "electrolysis_active_electroplating",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "copper metal (grows thicker)",
+        "cathode_color_change": true,
+        "cathode_initial_color": "#B87333",
+        "cathode_result_color": "#E8A87C",
+        "anode_product": "anode dissolves (copper lost)",
+        "anode_color_change": true,
+        "anode_result_note": "anode becomes thinner and lighter",
+        "bubbles_at_anode": false,
+        "bubbles_at_cathode": false,
+        "solution_color_change": false,
+        "solution_color": "#64B5F6",
+        "color_change_note": "Blue colour stays constant — Cu2+ replenished as fast as it is used",
+        "precipitate": false,
+        "animations": ["copper_deposit_growing", "anode_dissolving", "solution_stays_blue"],
+        "observation": "Copper deposits on the cathode — it grows heavier. The anode slowly dissolves — it grows lighter. The blue colour of the solution stays constant throughout!"
+      },
+      "apparatus_needed": [1, 2, 3, 4, 5, 12],
+      "educational_note": "With copper electrodes, the anode dissolves (Cu → Cu2+ + 2e-) and copper deposits at cathode (Cu2+ + 2e- → Cu). The Cu2+ concentration stays constant — so the blue colour does NOT fade. This principle is used industrially to purify copper."
+    },
+
+    {
+      "id": "rxn_1_11",
+      "reactants": [1, 11],
+      "name": "Copper Sulfate Solution + Zinc Electrode — Displacement (No Electrolysis)",
+      "formula": "Zn + CuSO4 -> ZnSO4 + Cu (spontaneous displacement)",
+      "type": "displacement_no_electrolysis",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none",
+        "cathode_product": null,
+        "anode_product": null,
+        "color_change": true,
+        "initial_color": "#64B5F6",
+        "result_color": "#E3F2FD",
+        "spontaneous": true,
+        "precipitate": true,
+        "precipitate_name": "Copper metal (reddish-brown coating on zinc)",
+        "precipitate_color": "#B87333",
+        "animations": ["copper_deposit_growing", "solution_fading_blue_to_clear"],
+        "observation": "Without any electricity — just by placing zinc into copper sulfate — a reddish-brown copper coating appears on the zinc. The blue colour fades. This is a spontaneous displacement, not electrolysis!"
+      },
+      "apparatus_needed": [1, 12],
+      "educational_note": "Zinc is higher than copper in the reactivity series, so it displaces copper spontaneously: Zn + CuSO4 → ZnSO4 + Cu. No electricity needed! The blue colour fades as Cu2+ is removed. This contrasts beautifully with electrolysis — same result, different method."
+    },
+
+    {
+      "id": "rxn_1_12",
+      "reactants": [1, 12],
+      "name": "Copper Sulfate + Silver Nitrate — Two Electrolytes Mixed",
+      "formula": "CuSO4 (aq) + AgNO3 (aq) -> Cu(NO3)2 + Ag2SO4 (possible precipitate)",
+      "type": "precipitate_reaction",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "color_change": true,
+        "initial_color": "#64B5F6",
+        "result_color": "#4FC3F7",
+        "precipitate": true,
+        "precipitate_name": "Silver Sulfate (Ag2SO4) — white precipitate",
+        "precipitate_color": "#EEEEEE",
+        "gas_produced": false,
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "When mixed, a faint white precipitate of silver sulfate may form. Both are electrolytes, so the mixture still conducts well. No electrolysis reaction occurs without a power supply."
+      },
+      "apparatus_needed": [1, 11],
+      "educational_note": "Both CuSO4 and AgNO3 are strong electrolytes. When mixed without power, SO42- and Ag+ can form a slight white precipitate of Ag2SO4. To electrolyse this mixture, a DC power supply would be needed."
+    },
+
+    {
+      "id": "rxn_2_9",
+      "reactants": [2, 9],
+      "name": "Electrolysis of Brine (NaCl) — Graphite Electrodes",
+      "formula": "Cathode: 2H+ + 2e- -> H2 | Anode: 2Cl- -> Cl2 + 2e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas",
+        "cathode_gas_test": "squeaky pop with burning splint",
+        "bubbles_at_cathode": true,
+        "anode_product": "chlorine gas",
+        "anode_gas_test": "bleaches moist litmus paper — turns white",
+        "bubbles_at_anode": true,
+        "solution_color_change": false,
+        "solution_color": "#F5FBFF",
+        "residual_solution": "Sodium hydroxide solution (NaOH) remains",
+        "animations": ["hydrogen_bubbles_cathode", "chlorine_bubbles_anode", "yellow_green_gas_anode"],
+        "observation": "Colourless hydrogen gas (squeaky pop) bubbles at the cathode. Yellow-green chlorine gas (bleaches litmus) bubbles at the anode. The remaining solution becomes alkaline (NaOH)."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 10],
+      "educational_note": "The electrolysis of brine is industrially vital — it produces three useful products: H2 (fuel), Cl2 (disinfectant/bleach), and NaOH (used in soap making). At the cathode, H+ ions are discharged in preference to Na+ (Na is too reactive). At the anode, Cl- ions are discharged in preference to OH- when concentration is high."
+    },
+
+    {
+      "id": "rxn_2_10",
+      "reactants": [2, 10],
+      "name": "NaCl Solution + Copper Electrode — Copper Dissolves, No NaCl Electrolysis",
+      "formula": "Anode: Cu -> Cu2+ + 2e- | Cathode: 2H+ + 2e- -> H2 (or Na+ stays)",
+      "type": "electrolysis_active_mixed",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas (squeaky pop)",
+        "bubbles_at_cathode": true,
+        "anode_product": "copper electrode dissolves — Cu2+ ions enter solution",
+        "anode_color_change": true,
+        "solution_color_change": true,
+        "solution_initial_color": "#F5FBFF",
+        "solution_result_color": "#90CAF9",
+        "color_change_note": "Solution gradually turns light blue as Cu2+ ions dissolve from copper anode",
+        "animations": ["hydrogen_bubbles_cathode", "anode_dissolving", "solution_turn_light_blue"],
+        "observation": "Hydrogen gas bubbles at the cathode with a squeaky pop. The copper anode slowly dissolves, turning the colourless salt solution light blue as Cu2+ ions enter it."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9],
+      "educational_note": "When a copper electrode is used as the anode, it dissolves preferentially — even in NaCl solution. Active anodes are oxidised instead of the solution's anions. The solution turns blue, showing Cu2+ is entering it."
+    },
+
+    {
+      "id": "rxn_2_11",
+      "reactants": [2, 11],
+      "name": "NaCl Solution + Zinc Electrode — Zinc Anode Dissolves",
+      "formula": "Anode: Zn -> Zn2+ + 2e- | Cathode: 2H+ + 2e- -> H2",
+      "type": "electrolysis_active",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas (squeaky pop)",
+        "bubbles_at_cathode": true,
+        "anode_product": "zinc electrode slowly dissolves",
+        "anode_color_change": true,
+        "solution_color_change": false,
+        "solution_color": "#F5FBFF",
+        "animations": ["hydrogen_bubbles_cathode", "anode_dissolving"],
+        "observation": "Hydrogen gas (squeaky pop) forms at the cathode. The zinc anode slowly corrodes and becomes lighter. The solution remains colourless as Zn2+ is colourless."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 12],
+      "educational_note": "Active electrodes (zinc here) dissolve at the anode during electrolysis. Zn → Zn2+ + 2e-. At cathode, H+ from water is reduced to H2 since Na+ is too reactive. This is similar in principle to the zinc-copper galvanic cell."
+    },
+
+    {
+      "id": "rxn_2_12",
+      "reactants": [2, 12],
+      "name": "Brine + Silver Nitrate — AgCl White Precipitate Forms",
+      "formula": "NaCl + AgNO3 -> AgCl (white precipitate) + NaNO3",
+      "type": "precipitate_reaction",
+      "output": {
+        "conducts_electricity": true,
+        "color_change": true,
+        "initial_color": "#F5FBFF",
+        "result_color": "#F0F0F0",
+        "precipitate": true,
+        "precipitate_name": "Silver Chloride (AgCl) — curdy white precipitate",
+        "precipitate_color": "#FFFFFF",
+        "gas_produced": false,
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "A curdy white precipitate of silver chloride instantly forms when silver nitrate is added to brine. This is the classic halide ion test — confirms chloride ions are present in the solution."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "AgNO3 + NaCl → AgCl↓ + NaNO3. The white precipitate of AgCl is the standard test for Cl- ions (halide test). AgCl is insoluble — even though both reactants dissolved easily. This is not an electrolysis reaction — it is an ionic precipitation."
+    },
+
+    {
+      "id": "rxn_3_9",
+      "reactants": [3, 9],
+      "name": "Electrolysis of Dilute H2SO4 — Acidified Water",
+      "formula": "Cathode: 4H+ + 4e- -> 2H2 | Anode: 4OH- -> O2 + 2H2O + 4e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "very_bright",
+        "cathode_product": "hydrogen gas (2x volume)",
+        "cathode_gas_test": "squeaky pop with burning splint",
+        "bubbles_at_cathode": true,
+        "anode_product": "oxygen gas (1x volume)",
+        "anode_gas_test": "relights glowing splint",
+        "bubbles_at_anode": true,
+        "volume_ratio": "H2:O2 = 2:1",
+        "solution_color_change": false,
+        "solution_color": "#FFF5E6",
+        "animations": ["vigorous_hydrogen_bubbles_cathode", "oxygen_bubbles_anode", "gas_collection_tubes"],
+        "observation": "Vigorous bubbling at both electrodes. Hydrogen (2 volumes) at cathode — squeaky pop. Oxygen (1 volume) at anode — relights glowing splint. Volume ratio 2:1 confirms water composition (H2O)."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 8, 9, 12],
+      "educational_note": "Electrolysis of acidified water decomposes water into H2 and O2. The ratio 2:1 (H2:O2) matches the formula H2O — 2 hydrogens to 1 oxygen. H2SO4 is only a conductor — it is not decomposed. This is how water's composition was first proved experimentally."
+    },
+
+    {
+      "id": "rxn_3_10",
+      "reactants": [3, 10],
+      "name": "H2SO4 + Copper Electrode — Copper Anode Dissolves",
+      "formula": "Anode: Cu -> Cu2+ + 2e- | Cathode: 2H+ + 2e- -> H2",
+      "type": "electrolysis_active",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas (squeaky pop)",
+        "bubbles_at_cathode": true,
+        "anode_product": "copper electrode dissolves into solution",
+        "solution_color_change": true,
+        "solution_initial_color": "#FFF5E6",
+        "solution_result_color": "#90CAF9",
+        "color_change_note": "Solution turns blue as Cu2+ ions dissolve from copper anode",
+        "animations": ["hydrogen_bubbles_cathode", "anode_dissolving", "solution_turn_light_blue"],
+        "observation": "Hydrogen bubbles at the cathode. The copper anode dissolves slowly, turning the colourless acid solution blue as Cu2+ ions are released. The solution gains a noticeable blue tint over time."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 12],
+      "educational_note": "Active copper anode dissolves in preference to SO42- or OH- oxidation. Cu → Cu2+ + 2e- at anode; 2H+ + 2e- → H2 at cathode. The solution turning blue is a clear visual indicator of Cu2+ production."
+    },
+
+    {
+      "id": "rxn_3_11",
+      "reactants": [3, 11],
+      "name": "H2SO4 + Zinc Electrode — Zinc Dissolves, H2 Produced (Without Electricity)",
+      "formula": "Zn + H2SO4 -> ZnSO4 + H2 (spontaneous acid-metal reaction)",
+      "type": "spontaneous_no_electrolysis",
+      "output": {
+        "conducts_electricity": true,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "cathode_product": null,
+        "gas_produced": true,
+        "gas_name": "Hydrogen",
+        "gas_formula": "H2",
+        "gas_test": "squeaky pop with burning splint",
+        "bubbles": true,
+        "solution_color_change": false,
+        "animations": ["vigorous_hydrogen_bubbles_cathode", "zinc_dissolving"],
+        "observation": "No power supply needed! Zinc reacts spontaneously with sulfuric acid — vigorous fizzing with colourless hydrogen gas (squeaky pop). The zinc metal gradually dissolves. This is a metal-acid reaction, NOT electrolysis."
+      },
+      "apparatus_needed": [1, 9, 12],
+      "educational_note": "Zn + H2SO4 → ZnSO4 + H2↑. Zinc reacts with dilute acid without any electricity — it is a simple displacement reaction. This contrasts with electrolysis where an external power supply forces the decomposition. Hydrogen test: burning splint produces a squeaky pop."
+    },
+
+    {
+      "id": "rxn_3_12",
+      "reactants": [3, 12],
+      "name": "H2SO4 + Silver Nitrate — No Precipitate (Both Ionic, Compatible)",
+      "formula": "H2SO4 + AgNO3 -> Ag2SO4 (slight white precipitate) + HNO3",
+      "type": "precipitate_reaction",
+      "output": {
+        "conducts_electricity": true,
+        "color_change": false,
+        "precipitate": true,
+        "precipitate_name": "Silver Sulfate (Ag2SO4) — white, slightly insoluble",
+        "precipitate_color": "#F5F5F5",
+        "gas_produced": false,
+        "animations": ["faint_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "A faint white precipitate of silver sulfate forms when silver nitrate is added to sulfuric acid. Both solutions are highly conductive electrolytes. No gas produced without a power supply."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "H2SO4 + 2AgNO3 → Ag2SO4↓ + 2HNO3. Silver sulfate is sparingly soluble — giving a faint precipitate. This shows that electrolyte solutions can still react chemically even without electricity — through ionic precipitation."
+    },
+
+    {
+      "id": "rxn_4_9",
+      "reactants": [4, 9],
+      "name": "Electrolysis of Dilute HCl — H2 at Cathode, Cl2 at Anode",
+      "formula": "Cathode: 2H+ + 2e- -> H2 | Anode: 2Cl- -> Cl2 + 2e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas",
+        "cathode_gas_test": "squeaky pop with burning splint",
+        "bubbles_at_cathode": true,
+        "anode_product": "chlorine gas (pale yellow-green)",
+        "anode_gas_test": "bleaches moist litmus paper — turns white",
+        "bubbles_at_anode": true,
+        "solution_color_change": false,
+        "solution_color": "#FFFBE6",
+        "animations": ["hydrogen_bubbles_cathode", "chlorine_bubbles_anode", "yellow_green_gas_anode"],
+        "observation": "Hydrogen (squeaky pop) bubbles at the cathode. Pale yellow-green chlorine gas (bleaches moist litmus) forms at the anode. Same products as brine but solution is acidic throughout."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 10],
+      "educational_note": "HCl fully dissociates: HCl → H+ + Cl-. At cathode: H+ reduced to H2. At anode: Cl- oxidised to Cl2. Unlike NaCl (brine), no NaOH byproduct forms. The chlorine gas test — moist litmus bleached white — is a key school test."
+    },
+
+    {
+      "id": "rxn_4_10",
+      "reactants": [4, 10],
+      "name": "HCl + Copper Electrode — Copper Dissolves, H2 at Cathode",
+      "formula": "Anode: Cu -> Cu2+ + 2e- | Cathode: 2H+ + 2e- -> H2",
+      "type": "electrolysis_active",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas (squeaky pop)",
+        "bubbles_at_cathode": true,
+        "anode_product": "copper electrode dissolves",
+        "solution_color_change": true,
+        "solution_initial_color": "#FFFBE6",
+        "solution_result_color": "#90CAF9",
+        "color_change_note": "Solution turns blue-green as Cu2+ ions enter from dissolving copper anode",
+        "animations": ["hydrogen_bubbles_cathode", "anode_dissolving", "solution_turn_blue_green"],
+        "observation": "Hydrogen gas (squeaky pop) at cathode. The copper anode dissolves, and the colourless acid gradually turns blue-green (Cu2+ ions in solution). Two dramatic changes — gas AND colour!"
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 12],
+      "educational_note": "Copper anode dissolves preferentially over Cl- oxidation: Cu → Cu2+ + 2e-. Cu2+ in solution gives the characteristic blue-green colour. The H+ at cathode is reduced to H2. This is a visually rich electrolysis experiment."
+    },
+
+    {
+      "id": "rxn_4_11",
+      "reactants": [4, 11],
+      "name": "HCl + Zinc — Spontaneous Reaction (Acid + Metal, No Electricity)",
+      "formula": "Zn + 2HCl -> ZnCl2 + H2 (spontaneous)",
+      "type": "spontaneous_no_electrolysis",
+      "output": {
+        "conducts_electricity": true,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "gas_produced": true,
+        "gas_name": "Hydrogen",
+        "gas_formula": "H2",
+        "gas_test": "squeaky pop with burning splint",
+        "bubbles": true,
+        "zinc_dissolves": true,
+        "solution_color_change": false,
+        "animations": ["vigorous_hydrogen_bubbles_cathode", "zinc_dissolving"],
+        "observation": "Vigorous fizzing immediately — no electricity needed! Zinc dissolves as it reacts with hydrochloric acid. Colourless hydrogen gas with a squeaky pop is produced. This is a straightforward metal + acid reaction."
+      },
+      "apparatus_needed": [1, 9, 12],
+      "educational_note": "Zn + 2HCl → ZnCl2 + H2↑. Zinc is above hydrogen in the reactivity series, so it displaces hydrogen from acid spontaneously. No power supply needed. Students should learn to distinguish spontaneous chemical reactions from forced electrolysis."
+    },
+
+    {
+      "id": "rxn_4_12",
+      "reactants": [4, 12],
+      "name": "HCl + Silver Nitrate — White Precipitate of AgCl (Halide Test)",
+      "formula": "HCl + AgNO3 -> AgCl (white precipitate) + HNO3",
+      "type": "precipitate_reaction",
+      "output": {
+        "conducts_electricity": true,
+        "color_change": false,
+        "precipitate": true,
+        "precipitate_name": "Silver Chloride (AgCl) — curdy white precipitate",
+        "precipitate_color": "#FFFFFF",
+        "precipitate_solubility_test": "insoluble in HNO3 — confirms Cl- ion",
+        "gas_produced": false,
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "An immediate curdy white precipitate of AgCl forms. This is the classic test for chloride ions. The precipitate is insoluble in dilute nitric acid — this confirms it is AgCl (not AgBr or AgI)."
+      },
+      "apparatus_needed": [1, 4, 11],
+      "educational_note": "AgNO3 + HCl → AgCl↓ + HNO3. AgCl is a curdy white precipitate — insoluble in dilute HNO3. This is the standard school test for Cl- (halide ion test). AgBr gives pale cream; AgI gives yellow. Insolubility in HNO3 confirms chloride."
+    },
+
+    {
+      "id": "rxn_5_9",
+      "reactants": [5, 9],
+      "name": "Electrolysis of NaOH Solution — Water Decomposed to H2 + O2",
+      "formula": "Cathode: 4H2O + 4e- -> 2H2 + 4OH- | Anode: 4OH- -> O2 + 2H2O + 4e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "very_bright",
+        "cathode_product": "hydrogen gas (2x volume) — squeaky pop",
+        "bubbles_at_cathode": true,
+        "anode_product": "oxygen gas (1x volume) — relights splint",
+        "bubbles_at_anode": true,
+        "volume_ratio": "H2:O2 = 2:1",
+        "solution_color_change": false,
+        "solution_color": "#D4F5E9",
+        "animations": ["vigorous_hydrogen_bubbles_cathode", "oxygen_bubbles_anode", "gas_collection_tubes"],
+        "observation": "Vigorous gas at both electrodes. Twice as much hydrogen (cathode) as oxygen (anode). Hydrogen: squeaky pop. Oxygen: relights glowing splint. NaOH acts as conductor, not decomposed."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 8, 9, 12],
+      "educational_note": "NaOH provides ions (Na+, OH-) making the solution a good conductor, but water is electrolysed — not NaOH. Na+ is too reactive to be discharged at cathode — H2O is reduced instead. The 2:1 ratio of H2:O2 is the key result proving H2O composition."
+    },
+
+    {
+      "id": "rxn_5_10",
+      "reactants": [5, 10],
+      "name": "NaOH Solution + Copper Electrode — Copper Anode Dissolves",
+      "formula": "Anode: Cu -> Cu2+ + 2e- | Cu2+ + 2OH- -> Cu(OH)2 (blue precipitate)",
+      "type": "electrolysis_active",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "hydrogen gas",
+        "bubbles_at_cathode": true,
+        "anode_product": "copper electrode dissolves; Cu(OH)2 blue precipitate forms",
+        "precipitate": true,
+        "precipitate_name": "Copper Hydroxide Cu(OH)2 — pale blue gelatinous precipitate",
+        "precipitate_color": "#90CAF9",
+        "solution_color_change": true,
+        "solution_initial_color": "#D4F5E9",
+        "solution_result_color": "#90CAF9",
+        "animations": ["hydrogen_bubbles_cathode", "anode_dissolving", "blue_precipitate_forming"],
+        "observation": "Hydrogen gas at cathode. Copper anode dissolves releasing Cu2+ ions. These immediately react with OH- in NaOH solution to form pale blue copper hydroxide precipitate. A dramatic double change — gas AND precipitate!"
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 9, 12],
+      "educational_note": "Cu2+ from the dissolving anode reacts with OH- in NaOH: Cu2+ + 2OH- → Cu(OH)2 (blue precipitate). This is a double observation — active electrode behaviour + precipitation. Shows the interaction between electrode material and electrolyte."
+    },
+
+    {
+      "id": "rxn_5_11",
+      "reactants": [5, 11],
+      "name": "NaOH Solution + Zinc Electrode — Zinc Dissolves in Alkali",
+      "formula": "Zn + 2NaOH -> Na2ZnO2 + H2 (spontaneous — zinc is amphoteric)",
+      "type": "spontaneous_no_electrolysis",
+      "output": {
+        "conducts_electricity": true,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "gas_produced": true,
+        "gas_name": "Hydrogen",
+        "gas_formula": "H2",
+        "gas_test": "squeaky pop with burning splint",
+        "bubbles": true,
+        "zinc_dissolves": true,
+        "solution_color_change": false,
+        "animations": ["gentle_hydrogen_bubbles", "zinc_dissolving"],
+        "observation": "Zinc slowly dissolves in NaOH solution producing hydrogen gas — even without electricity! This is unusual because zinc reacts with both acids AND alkalis. Gentle bubbling, squeaky pop confirms H2."
+      },
+      "apparatus_needed": [1, 9, 12],
+      "educational_note": "Zinc is amphoteric — it reacts with both acids and alkalis. Zn + 2NaOH → Na2ZnO2 + H2↑ (sodium zincate). This spontaneous reaction demonstrates amphoteric behaviour — an important Grade 10 concept."
+    },
+
+    {
+      "id": "rxn_5_12",
+      "reactants": [5, 12],
+      "name": "NaOH + Silver Nitrate — Brown/Black Silver Oxide Precipitate",
+      "formula": "2AgNO3 + 2NaOH -> Ag2O (brown) + 2NaNO3 + H2O",
+      "type": "precipitate_reaction",
+      "output": {
+        "color_change": true,
+        "initial_color": "#D4F5E9",
+        "result_color": "#8D6E63",
+        "precipitate": true,
+        "precipitate_name": "Silver Oxide (Ag2O) — dark brown/black precipitate",
+        "precipitate_color": "#5D4037",
+        "gas_produced": false,
+        "animations": ["dark_precipitate_forming", "brown_cloud_diffusion"],
+        "observation": "A dark brown/black precipitate of silver oxide instantly forms. The mixture turns muddy brown. Silver nitrate + alkali is a dramatic reaction — the precipitate is very dark and insoluble."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "2AgNO3 + 2NaOH → Ag2O↓ + 2NaNO3 + H2O. Silver oxide is the dark brown/black precipitate. This reaction is used in qualitative analysis to confirm Ag+ ions. Contrasts with AgCl (white) from Cl- test."
+    },
+
+    {
+      "id": "rxn_6_9",
+      "reactants": [6, 9],
+      "name": "Glucose Solution — Non-Electrolyte, No Conduction",
+      "formula": "C6H12O6 (aq) — no ions, no conductivity",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none",
+        "cathode_product": "nothing",
+        "anode_product": "nothing",
+        "bubbles_at_cathode": false,
+        "bubbles_at_anode": false,
+        "solution_color_change": false,
+        "solution_color": "#FAFACD",
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "The bulb does NOT light up. No bubbles at either electrode. Glucose dissolves in water but does NOT form ions — it is a non-electrolyte and cannot conduct electricity."
+      },
+      "apparatus_needed": [1, 2, 3, 6, 11],
+      "educational_note": "Glucose (C6H12O6) is a molecular (covalent) compound. It dissolves in water but does NOT dissociate into ions. No ions = no current = no electrolysis. This is the key difference between electrolytes (ionic) and non-electrolytes (molecular)."
+    },
+
+    {
+      "id": "rxn_6_10",
+      "reactants": [6, 10],
+      "name": "Glucose Solution + Copper Electrode — No Reaction",
+      "formula": "C6H12O6 (aq) + Cu — no conduction, no electrolysis",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none",
+        "cathode_product": "nothing",
+        "anode_product": "nothing",
+        "bubbles_at_cathode": false,
+        "bubbles_at_anode": false,
+        "solution_color_change": false,
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "The bulb stays off. No reaction at copper electrodes. Glucose is a non-electrolyte — no ions means no current, no electrolysis, and no electrode reactions."
+      },
+      "apparatus_needed": [1, 2, 3, 11],
+      "educational_note": "Even with a reactive metal electrode, if the solution is a non-electrolyte, no current can flow and no electrolysis occurs. Both an ionic electrolyte AND a complete circuit are required."
+    },
+
+    {
+      "id": "rxn_6_11",
+      "reactants": [6, 11],
+      "name": "Glucose Solution + Zinc — No Reaction",
+      "formula": "C6H12O6 (aq) + Zn — no ionic reaction",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none",
+        "gas_produced": false,
+        "solution_color_change": false,
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "No reaction at all. Zinc does not react with glucose solution (unlike with acids or alkalis). No gas, no colour change, no current flow — glucose is a non-electrolyte."
+      },
+      "apparatus_needed": [1, 11],
+      "educational_note": "Zinc reacts with acids (H+) and alkalis (OH-) but not with neutral non-electrolytes like glucose. No ions means no driving force for a chemical or electrochemical reaction."
+    },
+
+    {
+      "id": "rxn_6_12",
+      "reactants": [6, 12],
+      "name": "Glucose + Silver Nitrate — Tollens'-like Silver Mirror Reaction",
+      "formula": "C6H12O6 + 2Ag+ -> C6H12O7 + 2Ag (silver mirror — with ammonia and heat)",
+      "type": "redox_test",
+      "output": {
+        "color_change": true,
+        "initial_color": "#FAFACD",
+        "result_color": "#C0C0C0",
+        "precipitate": true,
+        "precipitate_name": "Silver metal — shiny mirror on glass wall",
+        "precipitate_color": "#C0C0C0",
+        "gas_produced": false,
+        "heat_needed": true,
+        "animations": ["silver_mirror_forming", "silver_shimmer_wall"],
+        "observation": "When heated gently with silver nitrate (and ammonia), glucose acts as a reducing agent — silver ions are reduced to shiny silver metal forming a mirror on the glass wall. This shows glucose is a reducing sugar."
+      },
+      "apparatus_needed": [1, 4, 12],
+      "educational_note": "Glucose is a reducing sugar — it donates electrons to Ag+ reducing it to Ag metal (the silver mirror test / Tollens' test). This shows glucose can participate in redox reactions even though it is a non-electrolyte. It does NOT conduct electricity, but it CAN reduce metal ions chemically."
+    },
+
+    {
+      "id": "rxn_7_9",
+      "reactants": [7, 9],
+      "name": "Distilled Water — Very Poor Conductor, Almost No Electrolysis",
+      "formula": "H2O ⇌ H+ + OH- (only trace ionisation)",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none_or_very_faint",
+        "cathode_product": "trace H2 (negligible)",
+        "anode_product": "trace O2 (negligible)",
+        "bubbles_at_cathode": false,
+        "bubbles_at_anode": false,
+        "solution_color_change": false,
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "The bulb does NOT light up — or shows only the faintest glow. No visible gas at electrodes. Pure water is an extremely poor conductor because it has almost no free ions."
+      },
+      "apparatus_needed": [1, 2, 3, 6, 11],
+      "educational_note": "Pure water has an extremely low ion concentration (Kw = 10-14). It is effectively a non-conductor. This is why tap water conducts (dissolved minerals) but distilled water does not. Adding an electrolyte like H2SO4 dramatically increases conductivity."
+    },
+
+    {
+      "id": "rxn_7_10",
+      "reactants": [7, 10],
+      "name": "Distilled Water + Copper Electrode — No Electrolysis",
+      "formula": "H2O + Cu electrode — negligible current, no useful electrolysis",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none",
+        "cathode_product": "nothing visible",
+        "anode_product": "nothing visible",
+        "solution_color_change": false,
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "No visible reaction. Distilled water has no ions, so even copper electrodes cannot drive any useful electrolysis. The bulb stays off completely."
+      },
+      "apparatus_needed": [1, 2, 3, 11],
+      "educational_note": "Even a reactive active electrode cannot compensate for the absence of charge carriers (ions). Distilled water + copper electrodes = no circuit completion, no electrolysis."
+    },
+
+    {
+      "id": "rxn_7_11",
+      "reactants": [7, 11],
+      "name": "Distilled Water + Zinc — No Reaction",
+      "formula": "Zn + H2O -> no reaction at room temperature",
+      "type": "non_electrolyte_test",
+      "output": {
+        "conducts_electricity": false,
+        "gas_produced": false,
+        "solution_color_change": false,
+        "animations": ["bulb_stays_off", "no_reaction"],
+        "observation": "No reaction. Zinc does not react with distilled water at room temperature. No bubbles, no colour change. Zinc only reacts with steam at high temperatures."
+      },
+      "apparatus_needed": [1, 12],
+      "educational_note": "Zinc + water → no reaction at room temperature (unlike very reactive metals such as sodium or potassium). Zinc needs steam (very high temperature) or an acid/alkali to react. This is a useful reminder of the reactivity series."
+    },
+
+    {
+      "id": "rxn_7_12",
+      "reactants": [7, 12],
+      "name": "Distilled Water + Silver Nitrate — AgNO3 Dissolves Easily",
+      "formula": "AgNO3 (s) + H2O -> Ag+ (aq) + NO3- (aq)",
+      "type": "dissolution_electrolyte_formation",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright_after_dissolving",
+        "color_change": false,
+        "solution_color": "#F5F7F8",
+        "precipitate": false,
+        "gas_produced": false,
+        "animations": ["ions_dispersing", "bulb_turns_on"],
+        "observation": "Silver nitrate dissolves completely and instantly in distilled water to give a clear, colourless solution. The solution now conducts electricity — the bulb lights up. AgNO3 is a strong electrolyte."
+      },
+      "apparatus_needed": [1, 2, 3, 11],
+      "educational_note": "AgNO3 is an ionic compound — it fully dissociates: AgNO3 → Ag+ + NO3-. These free ions carry the current. This experiment beautifully contrasts distilled water (no conduction) with AgNO3 solution (bright bulb) — showing that ions are essential for conductivity."
+    },
+
+    {
+      "id": "rxn_8_9",
+      "reactants": [8, 9],
+      "name": "Electrolysis of Copper Chloride — Cu Deposit + Cl2 Gas",
+      "formula": "Cathode: Cu2+ + 2e- -> Cu | Anode: 2Cl- -> Cl2 + 2e-",
+      "type": "electrolysis_inert",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "copper metal (pink-brown deposit)",
+        "cathode_color_change": true,
+        "cathode_initial_color": "#9E9E9E",
+        "cathode_result_color": "#B87333",
+        "anode_product": "chlorine gas (pale yellow-green)",
+        "anode_gas_test": "bleaches moist litmus paper white",
+        "bubbles_at_anode": true,
+        "solution_color_change": true,
+        "solution_initial_color": "#4DB6AC",
+        "solution_result_color": "#80CBC4",
+        "color_fade_note": "Blue-green colour fades as Cu2+ and Cl- ions are removed",
+        "animations": ["copper_deposit_growing", "chlorine_bubbles_anode", "yellow_green_gas_anode", "solution_fading_teal_to_clear"],
+        "observation": "Pink-brown copper deposits on the cathode. Pale yellow-green chlorine gas (bleaches moist litmus) bubbles at the anode. The blue-green solution gradually fades as BOTH Cu2+ and Cl- ions are removed."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 7, 10, 12],
+      "educational_note": "CuCl2 → Cu2+ + 2Cl-. At cathode: Cu2+ + 2e- → Cu (pink deposit). At anode: 2Cl- → Cl2 + 2e- (yellow-green gas bleaches litmus). The solution fades as BOTH ions are removed — unlike CuSO4 where only Cu2+ is removed."
+    },
+
+    {
+      "id": "rxn_8_10",
+      "reactants": [8, 10],
+      "name": "CuCl2 + Copper Electrodes — Copper Transfer (Electroplating)",
+      "formula": "Cathode: Cu2+ + 2e- -> Cu | Anode: Cu -> Cu2+ + 2e-",
+      "type": "electrolysis_active_electroplating",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright",
+        "cathode_product": "copper deposits (grows thicker)",
+        "anode_product": "copper anode dissolves",
+        "solution_color_change": false,
+        "solution_color": "#4DB6AC",
+        "color_change_note": "Colour stays constant — Cu2+ consumed and replenished equally",
+        "animations": ["copper_deposit_growing", "anode_dissolving", "solution_stays_teal"],
+        "observation": "Copper deposits on cathode; copper anode slowly dissolves. The blue-green colour stays constant — confirming Cu2+ is continuously replenished. This is the electroplating principle: coating objects with copper."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 5, 12],
+      "educational_note": "With active copper electrodes in CuCl2: the cathode gains copper; the anode loses copper. [Cu2+] stays constant. This is the basis of electroplating — useful for coating jewellery, circuit boards, and industrial parts with a layer of copper."
+    },
+
+    {
+      "id": "rxn_8_11",
+      "reactants": [8, 11],
+      "name": "CuCl2 + Zinc Electrode — Displacement Without Electricity",
+      "formula": "Zn + CuCl2 -> ZnCl2 + Cu (spontaneous displacement)",
+      "type": "displacement_no_electrolysis",
+      "output": {
+        "conducts_electricity": false,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "color_change": true,
+        "initial_color": "#4DB6AC",
+        "result_color": "#E0F2F1",
+        "precipitate": true,
+        "precipitate_name": "Copper metal (reddish-brown coating on zinc)",
+        "precipitate_color": "#B87333",
+        "animations": ["copper_deposit_growing", "solution_fading_teal_to_clear"],
+        "observation": "No electricity needed! Zinc placed into copper chloride solution immediately gets coated in reddish-brown copper. The blue-green colour fades. Zinc is more reactive than copper — it spontaneously displaces it."
+      },
+      "apparatus_needed": [1, 12],
+      "educational_note": "Zn + CuCl2 → ZnCl2 + Cu. Zinc displaces copper spontaneously — no power supply needed. The reactivity series predicts this: Zn > Cu. This is a galvanic (spontaneous) reaction, contrasted with forced electrolysis."
+    },
+
+    {
+      "id": "rxn_8_12",
+      "reactants": [8, 12],
+      "name": "CuCl2 + Silver Nitrate — White AgCl AND Blue Cu2+ Persist",
+      "formula": "CuCl2 + 2AgNO3 -> 2AgCl (white ppt) + Cu(NO3)2",
+      "type": "precipitate_reaction",
+      "output": {
+        "color_change": false,
+        "precipitate": true,
+        "precipitate_name": "Silver Chloride (AgCl) — curdy white precipitate in blue-green solution",
+        "precipitate_color": "#FFFFFF",
+        "solution_color": "#4DB6AC",
+        "solution_remains_coloured": true,
+        "gas_produced": false,
+        "animations": ["milky_cloud_diffusion", "white_precipitate_settling"],
+        "observation": "A white precipitate of AgCl forms instantly. But the solution remains blue-green — because Cu2+ ions do NOT precipitate with NO3-. You can see white flakes in a blue-green liquid — a striking contrast."
+      },
+      "apparatus_needed": [1, 4],
+      "educational_note": "AgNO3 precipitates Cl- as AgCl (white). But Cu(NO3)2 stays in solution — blue-green. This elegant result shows selective precipitation: Cl- is removed but Cu2+ stays. Confirms Cl- presence (halide test) even in a blue-green electrolyte."
+    },
+
+    {
+      "id": "rxn_9_10",
+      "reactants": [9, 10],
+      "name": "Graphite Electrode + Copper Electrode — Galvanic Cell Setup",
+      "formula": "Graphite (cathode) + Cu (anode) in electrolyte -> small voltage generated",
+      "type": "galvanic_cell_concept",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none — needs electrolyte to complete circuit",
+        "voltage_generated": false,
+        "solution_color_change": false,
+        "animations": ["no_reaction"],
+        "observation": "Two solid electrodes placed together without a solution produce no reaction and no voltage. An electrolyte solution is needed to complete the circuit. This setup alone is incomplete."
+      },
+      "apparatus_needed": [2, 3, 5],
+      "educational_note": "Electrodes alone do nothing — a complete electrochemical circuit requires: two electrodes + an electrolyte solution + connecting wires + a DC source (for electrolysis) OR a spontaneous redox driving force (for galvanic cells). No electrolyte = open circuit."
+    },
+
+    {
+      "id": "rxn_9_11",
+      "reactants": [9, 11],
+      "name": "Graphite + Zinc — Zinc-Carbon Galvanic Cell (Dry Cell Concept)",
+      "formula": "Anode: Zn -> Zn2+ + 2e- | Cathode: (reduction at graphite) — needs electrolyte",
+      "type": "galvanic_cell_concept",
+      "output": {
+        "conducts_electricity": false,
+        "bulb_brightness": "none — needs electrolyte",
+        "voltage_generated": false,
+        "solution_color_change": false,
+        "animations": ["no_reaction"],
+        "observation": "Graphite and zinc electrodes alone do nothing. But this is the exact same combination as an everyday dry cell (AA battery)! In a battery, the electrolyte (ammonium chloride paste) connects them. Without it — no current."
+      },
+      "apparatus_needed": [2, 3, 5],
+      "educational_note": "A zinc-carbon dry cell (AA battery) uses graphite (positive/cathode) and zinc (negative/anode) with ammonium chloride paste as electrolyte. Without the electrolyte, no circuit is complete and no current flows. This pair shows the importance of the electrolyte in any cell."
+    },
+
+    {
+      "id": "rxn_9_12",
+      "reactants": [9, 12],
+      "name": "Graphite Electrode + Silver Nitrate — Electroplating with Silver",
+      "formula": "Cathode (graphite): Ag+ + e- -> Ag | Anode: needs silver or inert anode",
+      "type": "electroplating_concept",
+      "output": {
+        "conducts_electricity": true,
+        "bulb_brightness": "bright_when_powered",
+        "cathode_product": "shiny silver metal deposits on graphite cathode",
+        "cathode_color_change": true,
+        "cathode_initial_color": "#212121",
+        "cathode_result_color": "#C0C0C0",
+        "anode_product": "O2 gas if inert anode used",
+        "solution_color_change": false,
+        "animations": ["silver_deposit_growing", "silver_shimmer_cathode"],
+        "observation": "With DC power, shiny silver metal deposits on the graphite cathode — it turns silvery! Ag+ ions from the silver nitrate solution are reduced to Ag metal. This is the principle of silver electroplating."
+      },
+      "apparatus_needed": [1, 2, 3, 4, 6, 12],
+      "educational_note": "Silver electroplating: Ag+ + e- → Ag at cathode. The graphite acts as the object to be plated. Industrially, jewellery and cutlery are silver-plated this way using AgNO3 as electrolyte and a silver anode. This demonstrates a real-world electrochemistry application."
+    },
+
+    {
+      "id": "rxn_10_11",
+      "reactants": [10, 11],
+      "name": "Copper + Zinc Electrodes — Galvanic Cell (Simple Battery)",
+      "formula": "Anode: Zn -> Zn2+ + 2e- | Cathode: Cu2+ + 2e- -> Cu | EMF ~1.1V",
+      "type": "galvanic_cell",
+      "output": {
+        "conducts_electricity": true,
+        "voltage_generated": true,
+        "voltage_approximate": "~1.1 V",
+        "spontaneous": true,
+        "no_power_needed": true,
+        "bulb_can_light": true,
+        "solution_color_change": false,
+        "animations": ["galvanic_cell_electron_flow", "voltmeter_deflects"],
+        "observation": "When connected in an electrolyte, the voltmeter deflects — a voltage is produced! Zinc is the negative terminal (anode); copper is the positive terminal (cathode). This is a simple galvanic cell — a battery! No power supply needed."
+      },
+      "apparatus_needed": [1, 2, 3, 5, 11],
+      "educational_note": "Zn-Cu in electrolyte = a galvanic (voltaic) cell. Zn loses electrons (oxidised at anode); Cu2+ gains electrons (reduced at cathode). EMF ≈ 1.1V. This is the Daniell cell — the first practical battery. Shows spontaneous redox reactions produce electricity."
+    },
+
+    {
+      "id": "rxn_10_12",
+      "reactants": [10, 12],
+      "name": "Copper + Silver Nitrate — Copper Displaces Silver (No Electricity)",
+      "formula": "Cu + 2AgNO3 -> Cu(NO3)2 + 2Ag",
+      "type": "displacement_no_electrolysis",
+      "output": {
+        "conducts_electricity": false,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "color_change": true,
+        "initial_color": "#F5F7F8",
+        "result_color": "#90CAF9",
+        "precipitate": true,
+        "precipitate_name": "Silver metal — feathery/spiky silver crystals on copper surface",
+        "precipitate_color": "#C0C0C0",
+        "animations": ["silver_crystals_growing", "solution_turn_light_blue"],
+        "observation": "No electricity needed! Feathery silver crystals grow on the copper surface. The colourless solution slowly turns blue as Cu2+ ions enter. Copper is displacing silver — stunning to observe!"
+      },
+      "apparatus_needed": [1, 12],
+      "educational_note": "Cu + 2Ag+ → Cu2+ + 2Ag. Copper is above silver in the reactivity series — it displaces silver spontaneously. The beautiful dendritic silver crystals and the blue Cu2+ colour change make this a visually dramatic experiment. No electricity needed — it is a galvanic/spontaneous redox reaction."
+    },
+
+    {
+      "id": "rxn_11_12",
+      "reactants": [11, 12],
+      "name": "Zinc + Silver Nitrate — Zinc Displaces Silver",
+      "formula": "Zn + 2AgNO3 -> Zn(NO3)2 + 2Ag",
+      "type": "displacement_no_electrolysis",
+      "output": {
+        "conducts_electricity": false,
+        "spontaneous": true,
+        "no_power_needed": true,
+        "color_change": false,
+        "initial_color": "#F5F7F8",
+        "result_color": "#F0F0F0",
+        "precipitate": true,
+        "precipitate_name": "Silver metal — grey metallic precipitate on zinc",
+        "precipitate_color": "#C0C0C0",
+        "animations": ["silver_crystals_growing", "zinc_dissolving"],
+        "observation": "Silver metal deposits on the zinc surface — no electricity needed! Zinc is higher than silver in the reactivity series, so it displaces silver rapidly. Grey metallic sheen appears on the zinc. Faster than Cu + AgNO3."
+      },
+      "apparatus_needed": [1, 12],
+      "educational_note": "Zn + 2AgNO3 → Zn(NO3)2 + 2Ag. Zinc is more reactive than silver — displaces it spontaneously. No power needed. Zn(NO3)2 is colourless, so no colour change in the solution (unlike Cu + AgNO3 which turns blue). Reactivity series: Zn > Cu > Ag."
+    }
+
+  ],
+
+  "animations": {
+    "bulb_turns_on":                 { "description": "Light bulb glows brightly — circuit conducting",                "color": "#FFD700" },
+    "bulb_stays_off":                { "description": "Light bulb stays dark — no ionic conduction",                   "color": "#9E9E9E" },
+    "no_reaction":                   { "description": "No observable change at electrodes or in solution",              "color": "#EEEEEE" },
+    "copper_deposit_growing":        { "description": "Pink-brown copper layer grows on cathode electrode",             "color": "#B87333" },
+    "silver_deposit_growing":        { "description": "Shiny silver layer builds up on cathode electrode",              "color": "#C0C0C0" },
+    "silver_shimmer_cathode":        { "description": "Silvery metallic shimmer grows on cathode surface",             "color": "#D0D0D0" },
+    "silver_crystals_growing":       { "description": "Feathery/dendritic silver crystals grow on metal surface",      "color": "#C0C0C0" },
+    "silver_mirror_forming":         { "description": "Shiny silver mirror coats inner glass wall",                    "color": "#C0C0C0" },
+    "silver_shimmer_wall":           { "description": "Metallic silver shimmer spreading on glass",                    "color": "#BDBDBD" },
+    "anode_dissolving":              { "description": "Active electrode (anode) grows thinner — metal dissolving",     "color": "#9E9E9E" },
+    "zinc_dissolving":               { "description": "Zinc electrode corrodes and shrinks visibly",                   "color": "#90A4AE" },
+    "bubbles_at_anode":              { "description": "Small gas bubbles rising from positive electrode (anode)",      "color": "#FFFFFF" },
+    "hydrogen_bubbles_cathode":      { "description": "Colourless H2 bubbles rising steadily from cathode",           "color": "#E3F2FD" },
+    "vigorous_hydrogen_bubbles_cathode": { "description": "Vigorous, fast H2 bubbling from cathode",                  "color": "#BBDEFB" },
+    "gentle_hydrogen_bubbles":       { "description": "Slow, gentle H2 bubbles — mild reaction",                      "color": "#E8F5E9" },
+    "oxygen_bubbles_anode":          { "description": "Colourless O2 bubbles at anode — 1/2 volume of H2",           "color": "#E3F2FD" },
+    "chlorine_bubbles_anode":        { "description": "Pale yellow-green Cl2 bubbles rising at anode",               "color": "#F9FBE7" },
+    "yellow_green_gas_anode":        { "description": "Visible yellow-green Cl2 gas above anode",                    "color": "#CDDC39" },
+    "gas_collection_tubes":          { "description": "Inverted test tubes filling with gas over electrodes",          "color": "#E3F2FD" },
+    "solution_fading_blue_to_clear": { "description": "Deep blue CuSO4 solution gradually loses colour",              "from": "#64B5F6", "to": "#F5FBFF" },
+    "solution_fading_teal_to_clear": { "description": "Teal CuCl2 solution gradually loses colour",                  "from": "#4DB6AC", "to": "#E0F2F1" },
+    "solution_stays_blue":           { "description": "Blue solution colour constant — Cu2+ continuously replenished", "color": "#64B5F6" },
+    "solution_stays_teal":           { "description": "Teal colour constant — Cu2+/Cl- replenished from anode",       "color": "#4DB6AC" },
+    "solution_turn_light_blue":      { "description": "Colourless solution turns light blue — Cu2+ ions entering",    "from": "#F5FBFF", "to": "#BBDEFB" },
+    "solution_turn_blue_green":      { "description": "Solution turns blue-green — Cu2+ from dissolving anode",       "from": "#FFFBE6", "to": "#80DEEA" },
+    "milky_cloud_diffusion":         { "description": "White cloud spreading through clear solution — precipitate",    "color": "#F0F0F0" },
+    "white_precipitate_settling":    { "description": "White particles slowly settling to bottom of vessel",           "color": "#FFFFFF" },
+    "faint_cloud_diffusion":         { "description": "Very faint white cloud — slightly insoluble precipitate",       "color": "#F8F8F8" },
+    "blue_precipitate_forming":      { "description": "Pale blue Cu(OH)2 gelatinous precipitate appears",             "color": "#90CAF9" },
+    "dark_precipitate_forming":      { "description": "Dark brown/black precipitate of Ag2O forming rapidly",         "color": "#5D4037" },
+    "brown_cloud_diffusion":         { "description": "Dark brown cloud spreading — silver oxide precipitate",         "color": "#8D6E63" },
+    "ions_dispersing":               { "description": "Ions spreading through solution — electrolyte dissolving",      "color": "#E3F2FD" },
+    "galvanic_cell_electron_flow":   { "description": "Electron flow shown from zinc (-) to copper (+) via wire",      "color": "#FFD700" },
+    "voltmeter_deflects":            { "description": "Voltmeter needle deflects showing voltage produced",             "color": "#4CAF50" }
+  },
+
+  "ui_config": {
+    "selection_mode": "max_2_chemicals",
+    "lookup_note": "Always sort selected chemical IDs ascending before lookup. e.g. user picks bottles 9 and 2 -> look up reactants [2, 9]",
+    "no_reaction_message": "These two substances do not produce a useful electrochemical reaction together. Try pairing an electrolyte solution with an electrode material or another electrolyte!",
+    "reaction_found_message": "Reaction found! Highlighting apparatus and starting experiment...",
+    "apparatus_highlight_style": "pulse_glow_cyan",
+    "chemical_highlight_style": "pulse_glow_yellow",
+    "reaction_type_badges": {
+      "electrolysis_inert":              { "color": "#1565C0", "label": "Electrolysis (Inert Electrodes)"   },
+      "electrolysis_active":             { "color": "#0277BD", "label": "Electrolysis (Active Electrode)"   },
+      "electrolysis_active_electroplating": { "color": "#00838F", "label": "Electroplating"                 },
+      "electrolysis_active_mixed":       { "color": "#006064", "label": "Electrolysis (Mixed)"              },
+      "displacement_no_electrolysis":    { "color": "#E65100", "label": "Spontaneous Displacement"          },
+      "spontaneous_no_electrolysis":     { "color": "#BF360C", "label": "Spontaneous (No Electricity)"      },
+      "galvanic_cell":                   { "color": "#558B2F", "label": "Galvanic Cell (Battery)"           },
+      "galvanic_cell_concept":           { "color": "#33691E", "label": "Galvanic Cell Concept"             },
+      "non_electrolyte_test":            { "color": "#9E9E9E", "label": "Non-Electrolyte"                   },
+      "precipitate_reaction":            { "color": "#6A1B9A", "label": "Ionic Precipitation"               },
+      "dissolution_electrolyte_formation":{ "color": "#4527A0", "label": "Electrolyte Formation"            },
+      "redox_test":                      { "color": "#AD1457", "label": "Redox Test"                        },
+      "electroplating_concept":          { "color": "#00695C", "label": "Electroplating Concept"            },
+      "reduction_combustion":            { "color": "#4527A0", "label": "Reduction"                         },
+      "no_reaction":                     { "color": "#757575", "label": "No Reaction"                       }
+    },
+    "key_concepts": [
+      "Electrolytes vs Non-Electrolytes",
+      "Electrolysis: Cathode = Reduction, Anode = Oxidation",
+      "Inert vs Active Electrodes",
+      "Spontaneous Displacement vs Forced Electrolysis",
+      "Galvanic Cells produce electricity; Electrolytic Cells use electricity",
+      "Gas Tests: H2 (squeaky pop), O2 (relights splint), Cl2 (bleaches litmus)",
+      "Electroplating for industrial coating"
+    ],
+    "safety_banner": "⚠️ Always use DC power supply only. Keep voltage low (3–6V). Handle silver nitrate carefully — stains skin black. Never taste or touch electrolyte solutions."
+  }
+}

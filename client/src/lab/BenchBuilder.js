@@ -3,34 +3,53 @@
  * the bright sci-fi lab aesthetic (#2a2a35 base, #ddd9d0 tops, #FF8C00 orange, #00D4FF cyan).
  */
 import * as THREE from 'three';
+import gsap from 'gsap';
 
 // ─── Reagent data (from main branch) ─────────────────────────────────────────
 
-export const REAGENT_LABELS = [
-  'HCl','NaOH','H2SO4','Ethanol','CuSO4','H2O',
-  'NH3','AgNO3','NaCl','KMnO4','Acetone','FeCl3',
+const DEFAULT_REAGENTS = [
+  { name: 'Hydrochloric Acid', formula: 'HCl', liquid_color: '#69c5ff' },
+  { name: 'Sodium Hydroxide', formula: 'NaOH', liquid_color: '#ffce6b' },
+  { name: 'Sulfuric Acid', formula: 'H2SO4', liquid_color: '#a980ff' },
+  { name: 'Ethanol', formula: 'C2H5OH', liquid_color: '#70d99e' },
+  { name: 'Copper Sulfate', formula: 'CuSO4', liquid_color: '#4f8dff' },
+  { name: 'Water', formula: 'H2O', liquid_color: '#b6e3ff' },
+  { name: 'Ammonia', formula: 'NH3', liquid_color: '#ff9c76' },
+  { name: 'Silver Nitrate', formula: 'AgNO3', liquid_color: '#f8d96b' },
+  { name: 'Sodium Chloride', formula: 'NaCl', liquid_color: '#97d4ff' },
+  { name: 'Potassium Permanganate', formula: 'KMnO4', liquid_color: '#bf79ff' },
+  { name: 'Acetone', formula: 'CH3COCH3', liquid_color: '#ffb97c' },
+  { name: 'Ferric Chloride', formula: 'FeCl3', liquid_color: '#dbc35e' },
 ];
-
-export const REAGENT_NAMES = {
-  HCl:     'Hydrochloric Acid (HCl)',
-  NaOH:    'Sodium Hydroxide (NaOH)',
-  H2SO4:   'Sulfuric Acid (H2SO4)',
-  Ethanol: 'Ethanol',
-  CuSO4:   'Copper Sulfate (CuSO4)',
-  H2O:     'Distilled Water (H2O)',
-  NH3:     'Ammonia (NH3)',
-  AgNO3:   'Silver Nitrate (AgNO3)',
-  NaCl:    'Sodium Chloride (NaCl)',
-  KMnO4:   'Potassium Permanganate (KMnO4)',
-  Acetone: 'Acetone',
-  FeCl3:   'Ferric Chloride (FeCl3)',
-};
 
 const LIQUID_COLORS = [
   0x69c5ff, 0xffce6b, 0xa980ff, 0x70d99e,
   0x4f8dff, 0xb6e3ff, 0xff9c76, 0xf8d96b,
   0x97d4ff, 0xbf79ff, 0xffb97c, 0xdbc35e,
 ];
+
+function parseColor(value, fallback) {
+  if (typeof value === 'string' && value.trim()) return new THREE.Color(value).getHex();
+  return fallback;
+}
+
+function normalizeReagents(chemicals = []) {
+  const source = chemicals.length ? chemicals.slice(0, 12) : DEFAULT_REAGENTS;
+  return source.map((chemical, index) => ({
+    formula: chemical.formula ?? chemical.label ?? `R${index + 1}`,
+    displayName: chemical.name
+      ? `${chemical.name}${chemical.formula ? ` (${chemical.formula})` : ''}`
+      : chemical.formula ?? `Reagent ${index + 1}`,
+    color: parseColor(
+      chemical.liquid_color
+        ?? chemical.gas_color
+        ?? chemical.solid_color
+        ?? chemical.particle_color
+        ?? chemical.bottle_color,
+      LIQUID_COLORS[index % LIQUID_COLORS.length]
+    ),
+  }));
+}
 
 function makeLabelTexture(text, {
   width = 256,
@@ -237,7 +256,7 @@ function createTubeRack(x, z, hoverTargets, hoverControllers) {
   return g;
 }
 
-function createBottle({ label, color, x, y, z }, hoverTargets, hoverControllers) {
+function createBottle({ label, displayName, color, x, y, z }, hoverTargets, hoverControllers) {
   const g = new THREE.Group();
 
   const glassMat = new THREE.MeshPhysicalMaterial({
@@ -278,12 +297,13 @@ function createBottle({ label, color, x, y, z }, hoverTargets, hoverControllers)
   hb.position.y = 0.24;
   g.add(hb);
   g.position.set(x, y, z);
-  registerHoverTarget(hoverTargets, hoverControllers, `bottle-${label}-${x}`, REAGENT_NAMES[label] ?? label, hb, g, [glassMat, liquidMat, capMat], { hoverScale: 1.05, emissiveBoost: 0.14 });
+  registerHoverTarget(hoverTargets, hoverControllers, `bottle-${label}-${x}`, displayName ?? label, hb, g, [glassMat, liquidMat, capMat], { hoverScale: 1.05, emissiveBoost: 0.14 });
   return g;
 }
 
-function createReagentRack(accentColor, hoverTargets, hoverControllers) {
+function createReagentRack(accentColor, hoverTargets, hoverControllers, chemicals) {
   const g = new THREE.Group();
+  const reagents = normalizeReagents(chemicals);
 
   const frameMat = new THREE.MeshStandardMaterial({ color: 0x2a3040, roughness: 0.45, metalness: 0.6 });
   const shelfMat = new THREE.MeshStandardMaterial({ color: 0x1e2030, roughness: 0.4, metalness: 0.15 });
@@ -318,11 +338,11 @@ function createReagentRack(accentColor, hoverTargets, hoverControllers) {
 
   // 12 reagent bottles
   const spacing = 0.34;
-  REAGENT_LABELS.forEach((label, i) => {
+  reagents.forEach(({ formula, displayName, color }, i) => {
     const row = i < 6 ? 0 : 1;
     const col = i % 6;
     g.add(createBottle({
-      label, color: LIQUID_COLORS[i % LIQUID_COLORS.length],
+      label: formula, displayName, color,
       x: -0.85 + col * spacing,
       y: row === 0 ? 1.18 : 1.54,
       z: row === 0 ? -0.28 : -0.48,
@@ -330,6 +350,742 @@ function createReagentRack(accentColor, hoverTargets, hoverControllers) {
   });
 
   return g;
+}
+
+function createDeskStorage(benchId, benchTitle, apparatus, hoverTargets, hoverControllers, accentHex, deskKey) {
+  const group = new THREE.Group();
+  const clickTargets = [];
+  const state = { open: false };
+
+  const frameMat = new THREE.MeshStandardMaterial({ color: 0x363b47, roughness: 0.48, metalness: 0.34 });
+  const shelfMat = new THREE.MeshStandardMaterial({ color: 0x505764, roughness: 0.42, metalness: 0.25 });
+  const trimMat = new THREE.MeshStandardMaterial({ color: accentHex, emissive: accentHex, emissiveIntensity: 0.35, roughness: 0.22 });
+  const glassMat = new THREE.MeshPhysicalMaterial({
+    color: 0xdff7ff,
+    transparent: true,
+    opacity: 0.26,
+    transmission: 0.78,
+    roughness: 0.08,
+    thickness: 0.12,
+  });
+  const glassEdgeMat = new THREE.MeshStandardMaterial({ color: 0x8fa6b6, roughness: 0.24, metalness: 0.72 });
+  const glasswareMat = new THREE.MeshPhysicalMaterial({
+    color: 0xeef8ff,
+    transparent: true,
+    opacity: 0.58,
+    transmission: 0.9,
+    roughness: 0.05,
+    thickness: 0.12,
+  });
+  const toolMat = new THREE.MeshStandardMaterial({ color: 0x768090, roughness: 0.34, metalness: 0.7 });
+  const accentMat = new THREE.MeshStandardMaterial({ color: 0x00d4ff, emissive: 0x00d4ff, emissiveIntensity: 0.14, roughness: 0.24 });
+  const stripPaperMat = new THREE.MeshStandardMaterial({ color: 0xf5f1da, roughness: 0.88 });
+  const meterBodyMat = new THREE.MeshStandardMaterial({ color: 0x2f3b4d, roughness: 0.4, metalness: 0.25 });
+  const meterScreenMat = new THREE.MeshStandardMaterial({ color: 0xaef5ff, emissive: 0x6beeff, emissiveIntensity: 0.4 });
+  const meterPanelMat = new THREE.MeshStandardMaterial({ color: 0x202734, roughness: 0.4, metalness: 0.3 });
+  const ceramicMat = new THREE.MeshStandardMaterial({ color: 0xf5f2eb, roughness: 0.78, metalness: 0.02 });
+  const rubberMat = new THREE.MeshStandardMaterial({ color: 0x202020, roughness: 0.84, metalness: 0.02 });
+  const blackMat = new THREE.MeshStandardMaterial({ color: 0x16181d, roughness: 0.52, metalness: 0.38 });
+  const copperMat = new THREE.MeshStandardMaterial({ color: 0xb87333, roughness: 0.3, metalness: 0.85 });
+  const steelMat = new THREE.MeshStandardMaterial({ color: 0xaab6c8, roughness: 0.28, metalness: 0.88 });
+  const woodMat = new THREE.MeshStandardMaterial({ color: 0xb88a53, roughness: 0.72, metalness: 0.02 });
+  const warningMat = new THREE.MeshStandardMaterial({ color: 0xffcc4d, emissive: 0xffb700, emissiveIntensity: 0.12, roughness: 0.44 });
+  const gaugeMat = new THREE.MeshStandardMaterial({ color: 0xf3f5f7, roughness: 0.32, metalness: 0.08 });
+
+  const leftSide = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.92, 1.32), frameMat);
+  leftSide.position.set(-1.28, 0.46, 0);
+  group.add(leftSide);
+  const rightSide = leftSide.clone();
+  rightSide.position.x = 1.28;
+  group.add(rightSide);
+
+  const backPanel = new THREE.Mesh(new THREE.BoxGeometry(2.46, 0.92, 0.08), frameMat);
+  backPanel.position.set(0, 0.46, -0.62);
+  group.add(backPanel);
+
+  const floor = new THREE.Mesh(new THREE.BoxGeometry(2.46, 0.08, 1.24), shelfMat);
+  floor.position.set(0, 0.04, 0);
+  floor.receiveShadow = true;
+  group.add(floor);
+
+  const midShelf = new THREE.Mesh(new THREE.BoxGeometry(2.22, 0.05, 1.05), shelfMat);
+  midShelf.position.set(0, 0.43, -0.02);
+  group.add(midShelf);
+
+  const topRail = new THREE.Mesh(new THREE.BoxGeometry(2.46, 0.12, 0.12), frameMat);
+  topRail.position.set(0, 0.84, 0.58);
+  group.add(topRail);
+
+  const bottomRail = new THREE.Mesh(new THREE.BoxGeometry(2.46, 0.11, 0.12), frameMat);
+  bottomRail.position.set(0, 0.08, 0.58);
+  group.add(bottomRail);
+
+  const accentStrip = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.03, 0.03), trimMat);
+  accentStrip.position.set(0, 0.81, 0.61);
+  group.add(accentStrip);
+
+  const innerLight = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.02, 0.02), accentMat);
+  innerLight.position.set(0, 0.77, -0.56);
+  group.add(innerLight);
+
+  const apparatusByIcon = new Map(apparatus.map((item, index) => [item.icon ?? `slot-${index}`, item]));
+
+  const getApparatusItem = (icon, fallbackName) => apparatusByIcon.get(icon) ?? { name: fallbackName, icon };
+
+  const registerStorageHover = (key, name, holder, hitboxSize, materials = [], opts = {}) => {
+    const hb = new THREE.Mesh(
+      new THREE.BoxGeometry(hitboxSize.x, hitboxSize.y, hitboxSize.z),
+      new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+    );
+    hb.userData.preventBenchFocus = true;
+    holder.add(hb);
+    registerHoverTarget(hoverTargets, hoverControllers, key, name, hb, holder, materials, {
+      hoverScale: opts.hoverScale ?? 1.04,
+      emissiveBoost: opts.emissiveBoost ?? 0.12,
+    });
+    return holder;
+  };
+
+  const makeBeaker = (item = getApparatusItem('beaker', 'Beaker')) => {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.085, 0.16, 24, 1, true), glasswareMat);
+    body.position.y = 0.08;
+    g.add(body);
+    const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.068, 0.068, 0.08, 20), new THREE.MeshStandardMaterial({ color: 0x9ce3ff, emissive: 0x66cfff, emissiveIntensity: 0.12 }));
+    liquid.position.y = 0.04;
+    g.add(liquid);
+    return registerStorageHover(`${benchId}-beaker`, item.name, g, { x: 0.2, y: 0.22, z: 0.18 }, [glasswareMat]);
+  };
+
+  const makeTestTube = (item = getApparatusItem('test_tube', 'Test Tube')) => {
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 0.22, 16), glasswareMat);
+    tube.position.y = 0.11;
+    g.add(tube);
+    const liquid = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, 0.09, 14), new THREE.MeshStandardMaterial({ color: 0xfed2a2, emissive: 0xffb46b, emissiveIntensity: 0.1 }));
+    liquid.position.y = 0.045;
+    g.add(liquid);
+    return registerStorageHover(`${benchId}-test-tube`, item.name, g, { x: 0.11, y: 0.25, z: 0.11 }, [glasswareMat]);
+  };
+
+  const makeTestTubeRack = (item = getApparatusItem('rack', 'Test Tube Rack')) => {
+    const g = new THREE.Group();
+    const rail1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.1), toolMat);
+    rail1.position.y = 0.03;
+    g.add(rail1);
+    const rail2 = rail1.clone();
+    rail2.position.y = 0.16;
+    g.add(rail2);
+    [-0.07, 0, 0.07].forEach((x) => {
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.16, 14), glasswareMat);
+      tube.position.set(x, 0.08, 0);
+      g.add(tube);
+    });
+    return registerStorageHover(`${benchId}-rack`, item.name, g, { x: 0.26, y: 0.22, z: 0.14 }, [toolMat, glasswareMat]);
+  };
+
+  const makeDropper = (item = getApparatusItem('dropper', 'Dropper / Pipette')) => {
+    const g = new THREE.Group();
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.035, 12, 12), new THREE.MeshStandardMaterial({ color: 0x4b5970, roughness: 0.5 }));
+    bulb.position.x = -0.14;
+    g.add(bulb);
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.28, 12), glasswareMat);
+    stem.rotation.z = Math.PI / 2;
+    g.add(stem);
+    return registerStorageHover(`${benchId}-dropper`, item.name, g, { x: 0.34, y: 0.08, z: 0.08 }, [glasswareMat]);
+  };
+
+  const makeBurette = (item = getApparatusItem('burette', 'Burette')) => {
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.52, 12), glasswareMat);
+    tube.rotation.z = Math.PI / 2;
+    g.add(tube);
+    const stopcock = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.025, 0.025), toolMat);
+    stopcock.position.set(0.09, -0.02, 0);
+    g.add(stopcock);
+    return registerStorageHover(`${benchId}-burette`, item.name, g, { x: 0.58, y: 0.08, z: 0.08 }, [glasswareMat, toolMat]);
+  };
+
+  const makeConicalFlask = (item = getApparatusItem('conical_flask', 'Conical Flask')) => {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.12, 0.2, 20), glasswareMat);
+    body.position.y = 0.08;
+    g.add(body);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.09, 16), glasswareMat);
+    neck.position.y = 0.22;
+    g.add(neck);
+    return registerStorageHover(`${benchId}-flask`, item.name, g, { x: 0.18, y: 0.32, z: 0.18 }, [glasswareMat]);
+  };
+
+  const makeStirringRod = (item = getApparatusItem('stirring_rod', 'Stirring Rod')) => {
+    const g = new THREE.Group();
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.34, 10), glasswareMat);
+    rod.rotation.z = Math.PI / 2;
+    g.add(rod);
+    return registerStorageHover(`${benchId}-stirring-rod`, item.name, g, { x: 0.38, y: 0.05, z: 0.05 }, [glasswareMat]);
+  };
+
+  const makeDeliveryTube = (item = getApparatusItem('delivery_tube', 'Delivery Tube'), withStopper = false) => {
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.12, 0.04, 0),
+      new THREE.Vector3(-0.02, 0.1, 0),
+      new THREE.Vector3(0.08, 0.08, 0),
+      new THREE.Vector3(0.14, -0.02, 0),
+    ]);
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.01, 10, false), glasswareMat);
+    g.add(tube);
+    if (withStopper) {
+      const stopper = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.018, 0.045, 12), rubberMat);
+      stopper.rotation.z = -0.34;
+      stopper.position.set(-0.12, 0.03, 0);
+      g.add(stopper);
+    }
+    return registerStorageHover(`${benchId}-delivery-tube`, item.name, g, { x: 0.34, y: 0.16, z: 0.06 }, [glasswareMat, rubberMat]);
+  };
+
+  const makeLitmusPack = (item = getApparatusItem('litmus_paper', 'Litmus Paper Strips')) => {
+    const g = new THREE.Group();
+    const pad = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.06, 0.08), stripPaperMat);
+    g.add(pad);
+    [-0.02, 0, 0.02].forEach((x, index) => {
+      const strip = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.09, 0.01), new THREE.MeshStandardMaterial({ color: index % 2 === 0 ? 0xc34db6 : 0x4d6fd8 }));
+      strip.position.set(x, 0.045, 0.025);
+      g.add(strip);
+    });
+    return registerStorageHover(`${benchId}-litmus-paper`, item.name, g, { x: 0.16, y: 0.16, z: 0.1 }, [stripPaperMat]);
+  };
+
+  const makeWatchGlass = (item = getApparatusItem('watch_glass', 'Watch Glass')) => {
+    const g = new THREE.Group();
+    const bowl = new THREE.Mesh(new THREE.SphereGeometry(0.09, 18, 18, 0, Math.PI * 2, 0, Math.PI / 2.6), glasswareMat);
+    bowl.scale.y = 0.22;
+    bowl.rotation.x = Math.PI;
+    g.add(bowl);
+    return registerStorageHover(`${benchId}-watch-glass`, item.name, g, { x: 0.18, y: 0.08, z: 0.18 }, [glasswareMat]);
+  };
+
+  const makeMeasuringCylinder = (item = getApparatusItem('measuring_cylinder', 'Measuring Cylinder')) => {
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.045, 0.28, 16), glasswareMat);
+    tube.position.y = 0.14;
+    g.add(tube);
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.07, 0.025, 18), toolMat);
+    base.position.y = 0.012;
+    g.add(base);
+    return registerStorageHover(`${benchId}-measuring-cylinder`, item.name, g, { x: 0.16, y: 0.34, z: 0.16 }, [glasswareMat, toolMat]);
+  };
+
+  const makePhMeter = (item = getApparatusItem('ph_meter', 'pH Meter')) => {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.32, 0.05), meterBodyMat);
+    body.position.y = 0.16;
+    g.add(body);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.09, 0.06), meterScreenMat);
+    screen.position.set(0, 0.23, 0.026);
+    g.add(screen);
+    const probe = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 0.14, 10), toolMat);
+    probe.position.y = -0.06;
+    g.add(probe);
+    return registerStorageHover(`${benchId}-ph-meter`, item.name, g, { x: 0.18, y: 0.42, z: 0.1 }, [meterBodyMat, meterScreenMat]);
+  };
+
+  const makeBunsenBurner = (item = getApparatusItem('bunsen_burner', 'Bunsen Burner')) => {
+    const g = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.085, 0.04, 20), toolMat);
+    base.position.y = 0.02;
+    g.add(base);
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.16, 14), steelMat);
+    stem.position.y = 0.12;
+    g.add(stem);
+    const nozzle = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.022, 0.045, 12), steelMat);
+    nozzle.position.y = 0.225;
+    g.add(nozzle);
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.085, 14), new THREE.MeshStandardMaterial({ color: 0xffaa44, emissive: 0xff7a00, emissiveIntensity: 0.6 }));
+    flame.position.y = 0.31;
+    g.add(flame);
+    return registerStorageHover(`${benchId}-bunsen-burner`, item.name, g, { x: 0.16, y: 0.38, z: 0.16 }, [toolMat, steelMat], { hoverScale: 1.03 });
+  };
+
+  const makeDeflagratingSpoon = (item = getApparatusItem('deflagrating_spoon', 'Deflagrating Spoon')) => {
+    const g = new THREE.Group();
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.34, 10), steelMat);
+    handle.rotation.z = Math.PI / 2;
+    g.add(handle);
+    const cup = new THREE.Mesh(new THREE.SphereGeometry(0.04, 14, 14, 0, Math.PI * 2, 0, Math.PI / 2), steelMat);
+    cup.rotation.z = Math.PI;
+    cup.position.x = 0.18;
+    g.add(cup);
+    return registerStorageHover(`${benchId}-deflagrating-spoon`, item.name, g, { x: 0.42, y: 0.09, z: 0.09 }, [steelMat]);
+  };
+
+  const makeGasJar = (item = getApparatusItem('gas_jar', 'Gas Jar / Bell Jar')) => {
+    const g = new THREE.Group();
+    const jar = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 0.22, 24, 1, true), glasswareMat);
+    jar.position.y = 0.11;
+    g.add(jar);
+    const rim = new THREE.Mesh(new THREE.TorusGeometry(0.09, 0.006, 8, 18), steelMat);
+    rim.rotation.x = Math.PI / 2;
+    rim.position.y = 0.22;
+    g.add(rim);
+    const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.095, 0.095, 0.02, 18), rubberMat);
+    lid.position.y = 0.235;
+    g.add(lid);
+    return registerStorageHover(`${benchId}-gas-jar`, item.name, g, { x: 0.22, y: 0.3, z: 0.22 }, [glasswareMat, steelMat, rubberMat]);
+  };
+
+  const makeCrucible = (item = getApparatusItem('crucible', 'Crucible with Lid')) => {
+    const g = new THREE.Group();
+    const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.085, 0.09, 18, 1, true), ceramicMat);
+    bowl.position.y = 0.045;
+    g.add(bowl);
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.02, 14), ceramicMat);
+    base.position.y = 0.01;
+    g.add(base);
+    const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.088, 0.07, 0.03, 18), ceramicMat);
+    lid.position.y = 0.11;
+    g.add(lid);
+    const knob = new THREE.Mesh(new THREE.SphereGeometry(0.015, 10, 10), ceramicMat);
+    knob.position.y = 0.135;
+    g.add(knob);
+    return registerStorageHover(`${benchId}-crucible`, item.name, g, { x: 0.2, y: 0.18, z: 0.2 }, [ceramicMat]);
+  };
+
+  const makeBoilingTube = (item = getApparatusItem('boiling_tube', 'Boiling Tube')) => {
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.28, 16), glasswareMat);
+    tube.rotation.z = Math.PI / 2;
+    g.add(tube);
+    return registerStorageHover(`${benchId}-boiling-tube`, item.name, g, { x: 0.34, y: 0.12, z: 0.12 }, [glasswareMat]);
+  };
+
+  const makeTongs = (item = getApparatusItem('crucible_tongs', 'Crucible Tongs')) => {
+    const g = new THREE.Group();
+    const left = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.32, 10), steelMat);
+    left.rotation.z = Math.PI / 2 + 0.18;
+    left.position.x = -0.01;
+    g.add(left);
+    const right = left.clone();
+    right.rotation.z = Math.PI / 2 - 0.18;
+    right.position.x = 0.01;
+    g.add(right);
+    const hinge = new THREE.Mesh(new THREE.SphereGeometry(0.014, 10, 10), steelMat);
+    g.add(hinge);
+    return registerStorageHover(`${benchId}-tongs-${item.icon}`, item.name, g, { x: 0.36, y: 0.12, z: 0.08 }, [steelMat]);
+  };
+
+  const makeHeatproofMat = (item = getApparatusItem('heatproof_mat', 'Heat-Proof Mat')) => {
+    const g = new THREE.Group();
+    const mat = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.02, 0.22), warningMat);
+    g.add(mat);
+    return registerStorageHover(`${benchId}-heatproof-mat`, item.name, g, { x: 0.28, y: 0.06, z: 0.24 }, [warningMat], { hoverScale: 1.02 });
+  };
+
+  const makeCombustionTube = (item = getApparatusItem('combustion_tube', 'Combustion Tube (Hard Glass)')) => {
+    const g = new THREE.Group();
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.022, 0.46, 16), glasswareMat);
+    tube.rotation.z = Math.PI / 2;
+    g.add(tube);
+    return registerStorageHover(`${benchId}-combustion-tube`, item.name, g, { x: 0.5, y: 0.08, z: 0.08 }, [glasswareMat]);
+  };
+
+  const makeTripodGauze = (item = getApparatusItem('tripod_gauze', 'Tripod & Gauze')) => {
+    const g = new THREE.Group();
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(0.08, 0.006, 6, 18), steelMat);
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.12;
+    g.add(ring);
+    [0, (Math.PI * 2) / 3, (Math.PI * 4) / 3].forEach((angle) => {
+      const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.18, 8), steelMat);
+      leg.position.set(Math.cos(angle) * 0.06, 0.04, Math.sin(angle) * 0.06);
+      leg.rotation.z = 0.14 * Math.cos(angle);
+      g.add(leg);
+    });
+    const gauze = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.01, 18), blackMat);
+    gauze.position.y = 0.125;
+    g.add(gauze);
+    return registerStorageHover(`${benchId}-tripod-gauze`, item.name, g, { x: 0.22, y: 0.26, z: 0.22 }, [steelMat, blackMat]);
+  };
+
+  const makeWoodenSplint = (item = getApparatusItem('wooden_splint', 'Wooden Splint'), lit = false) => {
+    const g = new THREE.Group();
+    const stick = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.012, 0.018), woodMat);
+    g.add(stick);
+    if (lit) {
+      const ember = new THREE.Mesh(new THREE.SphereGeometry(0.018, 10, 10), new THREE.MeshStandardMaterial({ color: 0xff7b2f, emissive: 0xff4a00, emissiveIntensity: 0.65 }));
+      ember.position.x = 0.145;
+      g.add(ember);
+    }
+    return registerStorageHover(`${benchId}-${lit ? 'burning' : 'wooden'}-splint`, item.name, g, { x: 0.32, y: 0.05, z: 0.06 }, [woodMat]);
+  };
+
+  const makeSafetyScreen = (item = getApparatusItem('safety_screen', 'Safety Goggles & Screen')) => {
+    const g = new THREE.Group();
+    const frame = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.18, 0.02), steelMat);
+    frame.position.y = 0.12;
+    g.add(frame);
+    const pane = new THREE.Mesh(new THREE.PlaneGeometry(0.21, 0.15), glassMat);
+    pane.position.set(0, 0.12, 0.013);
+    g.add(pane);
+    const feet = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.03, 0.08), blackMat);
+    feet.position.y = 0.015;
+    g.add(feet);
+    return registerStorageHover(`${benchId}-safety-screen`, item.name, g, { x: 0.28, y: 0.26, z: 0.12 }, [steelMat, glassMat, blackMat]);
+  };
+
+  const makeMagnet = (item = getApparatusItem('magnet', 'Magnet')) => {
+    const g = new THREE.Group();
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.09, -0.05, 0),
+      new THREE.Vector3(-0.09, 0.07, 0),
+      new THREE.Vector3(0.09, 0.07, 0),
+      new THREE.Vector3(0.09, -0.05, 0),
+    ]);
+    const body = new THREE.Mesh(new THREE.TubeGeometry(curve, 32, 0.028, 10, false), warningMat);
+    g.add(body);
+    const tipA = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.04, 0.06), new THREE.MeshStandardMaterial({ color: 0xd64545, roughness: 0.4 }));
+    tipA.position.set(-0.09, -0.05, 0);
+    g.add(tipA);
+    const tipB = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.04, 0.06), new THREE.MeshStandardMaterial({ color: 0x3a73d9, roughness: 0.4 }));
+    tipB.position.set(0.09, -0.05, 0);
+    g.add(tipB);
+    return registerStorageHover(`${benchId}-magnet`, item.name, g, { x: 0.28, y: 0.18, z: 0.08 }, [warningMat]);
+  };
+
+  const makeThermometer = (item = getApparatusItem('thermometer', 'Thermometer')) => {
+    const g = new THREE.Group();
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.28, 10), glasswareMat);
+    stem.position.y = 0.14;
+    g.add(stem);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.028, 10, 10), new THREE.MeshStandardMaterial({ color: 0xe04f4f, emissive: 0xb81f1f, emissiveIntensity: 0.12 }));
+    bulb.position.y = 0.01;
+    g.add(bulb);
+    const mercury = new THREE.Mesh(new THREE.CylinderGeometry(0.004, 0.004, 0.16, 8), new THREE.MeshStandardMaterial({ color: 0xe04f4f }));
+    mercury.position.y = 0.09;
+    g.add(mercury);
+    return registerStorageHover(`${benchId}-thermometer`, item.name, g, { x: 0.1, y: 0.34, z: 0.08 }, [glasswareMat]);
+  };
+
+  const makeElectrolysisCell = (item = getApparatusItem('electrolysis_cell', 'Electrolysis Cell / Beaker')) => {
+    const g = new THREE.Group();
+    const beaker = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.105, 0.18, 24, 1, true), glasswareMat);
+    beaker.position.y = 0.09;
+    g.add(beaker);
+    const solution = new THREE.Mesh(new THREE.CylinderGeometry(0.086, 0.086, 0.09, 20), new THREE.MeshStandardMaterial({ color: 0x64b5f6, emissive: 0x3a8ae8, emissiveIntensity: 0.1 }));
+    solution.position.y = 0.045;
+    g.add(solution);
+    [-0.038, 0.038].forEach((x) => {
+      const electrode = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.16, 0.012), blackMat);
+      electrode.position.set(x, 0.11, 0);
+      g.add(electrode);
+    });
+    return registerStorageHover(`${benchId}-electrolysis-cell`, item.name, g, { x: 0.24, y: 0.26, z: 0.2 }, [glasswareMat, blackMat]);
+  };
+
+  const makePowerSupply = (item = getApparatusItem('dc_power_supply', 'DC Power Supply (Battery)')) => {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.14, 0.16), meterPanelMat);
+    body.position.y = 0.07;
+    g.add(body);
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.1, 0.045), meterScreenMat);
+    screen.position.set(0, 0.1, 0.081);
+    g.add(screen);
+    const redPort = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.02, 10), new THREE.MeshStandardMaterial({ color: 0xd14b4b }));
+    redPort.rotation.x = Math.PI / 2;
+    redPort.position.set(0.055, 0.045, 0.085);
+    g.add(redPort);
+    const blackPort = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.014, 0.02, 10), blackMat);
+    blackPort.rotation.x = Math.PI / 2;
+    blackPort.position.set(-0.055, 0.045, 0.085);
+    g.add(blackPort);
+    return registerStorageHover(`${benchId}-power-supply`, item.name, g, { x: 0.28, y: 0.18, z: 0.2 }, [meterPanelMat, meterScreenMat, blackMat]);
+  };
+
+  const makeWiresClips = (item = getApparatusItem('wires_clips', 'Connecting Wires & Crocodile Clips')) => {
+    const g = new THREE.Group();
+    const redCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.12, 0, 0),
+      new THREE.Vector3(-0.05, 0.08, 0.01),
+      new THREE.Vector3(0.05, 0.06, -0.01),
+      new THREE.Vector3(0.12, 0.01, 0),
+    ]);
+    const blackCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.12, -0.03, 0),
+      new THREE.Vector3(-0.04, 0.03, 0.01),
+      new THREE.Vector3(0.03, 0.01, -0.01),
+      new THREE.Vector3(0.12, -0.04, 0),
+    ]);
+    const redWire = new THREE.Mesh(new THREE.TubeGeometry(redCurve, 24, 0.008, 8, false), new THREE.MeshStandardMaterial({ color: 0xd14b4b }));
+    const blackWire = new THREE.Mesh(new THREE.TubeGeometry(blackCurve, 24, 0.008, 8, false), blackMat);
+    g.add(redWire);
+    g.add(blackWire);
+    [-0.12, 0.12].forEach((x, index) => {
+      const clip = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.018, 0.02), index === 0 ? new THREE.MeshStandardMaterial({ color: 0xd14b4b }) : blackMat);
+      clip.position.set(x, index === 0 ? 0 : -0.03, 0);
+      g.add(clip);
+    });
+    return registerStorageHover(`${benchId}-wires-clips`, item.name, g, { x: 0.3, y: 0.16, z: 0.08 }, [blackMat]);
+  };
+
+  const makeMeter = (item, screenColor, keySuffix) => {
+    const g = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.18, 0.08), gaugeMat);
+    body.position.y = 0.09;
+    g.add(body);
+    const dial = new THREE.Mesh(new THREE.CylinderGeometry(0.048, 0.048, 0.02, 18), new THREE.MeshStandardMaterial({ color: screenColor, emissive: screenColor, emissiveIntensity: 0.18 }));
+    dial.rotation.x = Math.PI / 2;
+    dial.position.set(0, 0.11, 0.045);
+    g.add(dial);
+    const needle = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.006, 0.01), blackMat);
+    needle.position.set(0.012, 0.11, 0.055);
+    needle.rotation.z = -0.35;
+    g.add(needle);
+    return registerStorageHover(`${benchId}-${keySuffix}`, item.name, g, { x: 0.2, y: 0.22, z: 0.12 }, [gaugeMat, blackMat]);
+  };
+
+  const makeGraphiteElectrodes = (item = getApparatusItem('graphite_electrodes', 'Graphite / Inert Electrodes')) => {
+    const g = new THREE.Group();
+    [0, 0.06].forEach((x) => {
+      const rod = new THREE.Mesh(new THREE.BoxGeometry(0.016, 0.24, 0.016), blackMat);
+      rod.position.set(x, 0.12, 0);
+      g.add(rod);
+    });
+    const tray = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.03, 0.08), toolMat);
+    tray.position.set(0.03, 0.015, 0);
+    g.add(tray);
+    return registerStorageHover(`${benchId}-graphite-electrodes`, item.name, g, { x: 0.18, y: 0.3, z: 0.1 }, [blackMat, toolMat]);
+  };
+
+  const makeInvertedTubes = (item = getApparatusItem('inverted_tubes', 'Inverted Test Tubes (gas collection)')) => {
+    const g = new THREE.Group();
+    const trough = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.05, 0.14), glasswareMat);
+    trough.position.y = 0.025;
+    g.add(trough);
+    [-0.05, 0.05].forEach((x) => {
+      const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 0.18, 14), glasswareMat);
+      tube.position.set(x, 0.14, 0);
+      g.add(tube);
+    });
+    return registerStorageHover(`${benchId}-inverted-tubes`, item.name, g, { x: 0.28, y: 0.28, z: 0.16 }, [glasswareMat]);
+  };
+
+  const makeBulbCircuit = (item = getApparatusItem('bulb_circuit', 'Conductivity Tester / Bulb Circuit')) => {
+    const g = new THREE.Group();
+    const base = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.04, 0.14), meterPanelMat);
+    base.position.y = 0.02;
+    g.add(base);
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.04, 12, 12), new THREE.MeshStandardMaterial({ color: 0xfff3a0, emissive: 0xffe061, emissiveIntensity: 0.42 }));
+    bulb.position.y = 0.1;
+    g.add(bulb);
+    const leftPost = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.08, 8), steelMat);
+    leftPost.position.set(-0.05, 0.06, 0);
+    g.add(leftPost);
+    const rightPost = leftPost.clone();
+    rightPost.position.x = 0.05;
+    g.add(rightPost);
+    return registerStorageHover(`${benchId}-bulb-circuit`, item.name, g, { x: 0.28, y: 0.18, z: 0.16 }, [meterPanelMat, steelMat]);
+  };
+
+  const makeCylinderBalance = (item = getApparatusItem('cylinder_balance', 'Measuring Cylinder & Weighing Balance')) => {
+    const g = new THREE.Group();
+    const scale = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.04, 0.16), gaugeMat);
+    scale.position.set(-0.06, 0.02, 0);
+    g.add(scale);
+    const platform = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, 0.015, 14), steelMat);
+    platform.position.set(-0.06, 0.055, 0);
+    g.add(platform);
+    const cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.034, 0.2, 14), glasswareMat);
+    cylinder.position.set(0.08, 0.1, 0);
+    g.add(cylinder);
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.018, 12), toolMat);
+    base.position.set(0.08, 0.01, 0);
+    g.add(base);
+    return registerStorageHover(`${benchId}-cylinder-balance`, item.name, g, { x: 0.3, y: 0.26, z: 0.16 }, [gaugeMat, steelMat, glasswareMat, toolMat]);
+  };
+
+  const makeToolModel = (item) => {
+    switch (item.icon) {
+      case 'beaker': return makeBeaker(item);
+      case 'test_tube': return makeTestTube(item);
+      case 'rack': return makeTestTubeRack(item);
+      case 'dropper': return makeDropper(item);
+      case 'burette': return makeBurette(item);
+      case 'conical_flask': return makeConicalFlask(item);
+      case 'stirring_rod': return makeStirringRod(item);
+      case 'delivery_tube': return makeDeliveryTube(item, /stopper/i.test(item.name));
+      case 'litmus_paper': return makeLitmusPack(item);
+      case 'watch_glass': return makeWatchGlass(item);
+      case 'measuring_cylinder': return makeMeasuringCylinder(item);
+      case 'ph_meter': return makePhMeter(item);
+      case 'bunsen_burner': return makeBunsenBurner(item);
+      case 'deflagrating_spoon': return makeDeflagratingSpoon(item);
+      case 'gas_jar': return makeGasJar(item);
+      case 'crucible': return makeCrucible(item);
+      case 'boiling_tube': return makeBoilingTube(item);
+      case 'crucible_tongs':
+      case 'tongs': return makeTongs(item);
+      case 'heatproof_mat': return makeHeatproofMat(item);
+      case 'combustion_tube': return makeCombustionTube(item);
+      case 'tripod_gauze': return makeTripodGauze(item);
+      case 'wooden_splint': return makeWoodenSplint(item);
+      case 'safety_screen': return makeSafetyScreen(item);
+      case 'magnet': return makeMagnet(item);
+      case 'thermometer': return makeThermometer(item);
+      case 'electrolysis_cell': return makeElectrolysisCell(item);
+      case 'dc_power_supply': return makePowerSupply(item);
+      case 'wires_clips': return makeWiresClips(item);
+      case 'ammeter': return makeMeter(item, 0xa6e8ff, 'ammeter');
+      case 'voltmeter': return makeMeter(item, 0xffe79b, 'voltmeter');
+      case 'graphite_electrodes': return makeGraphiteElectrodes(item);
+      case 'inverted_tubes': return makeInvertedTubes(item);
+      case 'glowing_splint': return makeWoodenSplint(item);
+      case 'burning_splint': return makeWoodenSplint(item, true);
+      case 'bulb_circuit': return makeBulbCircuit(item);
+      case 'cylinder_balance': return makeCylinderBalance(item);
+      default: {
+        const g = new THREE.Group();
+        const box = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.12, 0.12), toolMat);
+        box.position.y = 0.06;
+        g.add(box);
+        return registerStorageHover(`${benchId}-${item.icon}`, item.name, g, { x: 0.2, y: 0.16, z: 0.16 }, [toolMat]);
+      }
+    }
+  };
+
+  const deskLayouts = {
+    acidBase: [
+      { pos: [-0.94, 0.13, 0.18], item: getApparatusItem('beaker', 'Beaker') },
+      { pos: [-0.54, 0.07, 0.23], item: getApparatusItem('test_tube', 'Test Tube') },
+      { pos: [-0.1, 0.08, 0.16], item: getApparatusItem('rack', 'Test Tube Rack') },
+      { pos: [0.34, 0.08, 0.2], item: getApparatusItem('litmus_paper', 'Litmus Paper Strips') },
+      { pos: [0.72, 0.08, 0.22], item: getApparatusItem('watch_glass', 'Watch Glass') },
+      { pos: [1.03, 0.03, 0.12], item: getApparatusItem('ph_meter', 'pH Meter') },
+      { pos: [-0.95, 0.52, 0.15], item: getApparatusItem('dropper', 'Dropper / Pipette'), rotZ: 0.06 },
+      { pos: [-0.32, 0.56, 0.17], item: getApparatusItem('burette', 'Burette') },
+      { pos: [0.25, 0.47, 0.12], item: getApparatusItem('conical_flask', 'Conical Flask') },
+      { pos: [0.72, 0.56, 0.22], item: getApparatusItem('stirring_rod', 'Stirring Rod'), rotZ: -0.12 },
+      { pos: [0.97, 0.52, 0.12], item: getApparatusItem('delivery_tube', 'Delivery Tube') },
+      { pos: [-1.15, 0.45, -0.18], item: getApparatusItem('measuring_cylinder', 'Measuring Cylinder') },
+    ],
+    combustion: [
+      { pos: [-0.95, 0.06, 0.19], item: getApparatusItem('heatproof_mat', 'Heat-Proof Mat') },
+      { pos: [-0.52, 0.03, 0.18], item: getApparatusItem('bunsen_burner', 'Bunsen Burner') },
+      { pos: [-0.12, 0.05, 0.16], item: getApparatusItem('crucible', 'Crucible with Lid') },
+      { pos: [0.32, 0.08, 0.17], item: getApparatusItem('wooden_splint', 'Wooden Splint'), rotZ: 0.16 },
+      { pos: [0.73, 0.06, 0.2], item: getApparatusItem('crucible_tongs', 'Crucible Tongs'), rotZ: -0.12 },
+      { pos: [1.04, 0.02, 0.12], item: getApparatusItem('safety_screen', 'Safety Goggles & Screen') },
+      { pos: [-0.98, 0.53, 0.16], item: getApparatusItem('deflagrating_spoon', 'Deflagrating Spoon'), rotZ: -0.08 },
+      { pos: [-0.42, 0.46, 0.1], item: getApparatusItem('gas_jar', 'Gas Jar / Bell Jar') },
+      { pos: [0.12, 0.52, 0.12], item: getApparatusItem('delivery_tube', 'Delivery Tube & Stopper') },
+      { pos: [0.52, 0.49, 0.15], item: getApparatusItem('boiling_tube', 'Boiling Tube'), rotZ: -0.08 },
+      { pos: [0.98, 0.54, 0.14], item: getApparatusItem('combustion_tube', 'Combustion Tube (Hard Glass)'), rotZ: 0.08 },
+      { pos: [-1.14, 0.43, -0.18], item: getApparatusItem('tripod_gauze', 'Tripod & Gauze') },
+    ],
+    synthesis: [
+      { pos: [-0.96, 0.08, 0.22], item: getApparatusItem('test_tube', 'Test Tube') },
+      { pos: [-0.55, 0.08, 0.16], item: getApparatusItem('rack', 'Test Tube Rack') },
+      { pos: [-0.06, 0.13, 0.19], item: getApparatusItem('beaker', 'Beaker') },
+      { pos: [0.34, 0.08, 0.16], item: getApparatusItem('dropper', 'Dropper / Pipette'), rotZ: 0.2 },
+      { pos: [0.71, 0.03, 0.17], item: getApparatusItem('magnet', 'Magnet') },
+      { pos: [1.05, 0.02, 0.1], item: getApparatusItem('thermometer', 'Thermometer') },
+      { pos: [-0.98, 0.5, 0.15], item: getApparatusItem('bunsen_burner', 'Bunsen Burner') },
+      { pos: [-0.4, 0.47, 0.13], item: getApparatusItem('crucible', 'Crucible with Lid') },
+      { pos: [0.02, 0.52, 0.16], item: getApparatusItem('tongs', 'Tongs / Crucible Tongs'), rotZ: -0.12 },
+      { pos: [0.46, 0.45, 0.13], item: getApparatusItem('heatproof_mat', 'Heat-proof Mat') },
+      { pos: [0.82, 0.52, 0.14], item: getApparatusItem('delivery_tube', 'Delivery Tube') },
+      { pos: [1.08, 0.46, -0.16], item: getApparatusItem('gas_jar', 'Gas Jar with Lid') },
+    ],
+    electrochemistry: [
+      { pos: [-0.96, 0.12, 0.16], item: getApparatusItem('electrolysis_cell', 'Electrolysis Cell / Beaker') },
+      { pos: [-0.55, 0.03, 0.16], item: getApparatusItem('dc_power_supply', 'DC Power Supply (Battery)') },
+      { pos: [-0.1, 0.08, 0.16], item: getApparatusItem('wires_clips', 'Connecting Wires & Crocodile Clips') },
+      { pos: [0.3, 0.03, 0.17], item: getApparatusItem('ammeter', 'Ammeter') },
+      { pos: [0.7, 0.03, 0.17], item: getApparatusItem('voltmeter', 'Voltmeter') },
+      { pos: [1.03, 0.03, 0.13], item: getApparatusItem('graphite_electrodes', 'Graphite / Inert Electrodes') },
+      { pos: [-0.98, 0.48, 0.14], item: getApparatusItem('inverted_tubes', 'Inverted Test Tubes (gas collection)') },
+      { pos: [-0.46, 0.54, 0.2], item: getApparatusItem('glowing_splint', 'Glowing Splint (O2 test)'), rotZ: -0.22 },
+      { pos: [-0.04, 0.54, 0.18], item: getApparatusItem('burning_splint', 'Burning Splint (H2 test)'), rotZ: 0.22 },
+      { pos: [0.35, 0.08, 0.21], item: getApparatusItem('litmus_paper', 'Moist Litmus Paper (Cl2 test)') },
+      { pos: [0.81, 0.04, 0.16], item: getApparatusItem('bulb_circuit', 'Conductivity Tester / Bulb Circuit') },
+      { pos: [1.09, 0.03, -0.16], item: getApparatusItem('cylinder_balance', 'Measuring Cylinder & Weighing Balance') },
+    ],
+  };
+
+  (deskLayouts[deskKey] ?? []).forEach(({ item, pos, rotZ = 0, scale = 1 }) => {
+    const model = makeToolModel(item);
+    model.position.set(...pos);
+    model.rotation.z = rotZ;
+    model.scale.setScalar(scale);
+    group.add(model);
+  });
+
+  const leftDoorPivot = new THREE.Group();
+  leftDoorPivot.position.set(-1.16, 0.46, 0.63);
+  const leftDoor = new THREE.Group();
+  const leftGlass = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.68, 0.02), glassMat);
+  leftGlass.position.set(0.525, 0, 0);
+  leftDoor.add(leftGlass);
+  const leftFrame = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.68, 0.025), glassEdgeMat);
+  leftFrame.position.set(0.525, 0, -0.008);
+  leftDoor.add(leftFrame);
+  const leftInset = new THREE.Mesh(new THREE.BoxGeometry(0.93, 0.56, 0.026), glassMat);
+  leftInset.position.set(0.525, 0, 0.005);
+  leftDoor.add(leftInset);
+  const leftHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.15, 8), glassEdgeMat);
+  leftHandle.rotation.z = Math.PI / 2;
+  leftHandle.position.set(0.94, -0.02, 0.03);
+  leftDoor.add(leftHandle);
+  leftDoorPivot.add(leftDoor);
+  group.add(leftDoorPivot);
+
+  const rightDoorPivot = new THREE.Group();
+  rightDoorPivot.position.set(1.16, 0.46, 0.63);
+  const rightDoor = new THREE.Group();
+  const rightGlass = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.68, 0.02), glassMat);
+  rightGlass.position.set(-0.525, 0, 0);
+  rightDoor.add(rightGlass);
+  const rightFrame = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.68, 0.025), glassEdgeMat);
+  rightFrame.position.set(-0.525, 0, -0.008);
+  rightDoor.add(rightFrame);
+  const rightInset = new THREE.Mesh(new THREE.BoxGeometry(0.93, 0.56, 0.026), glassMat);
+  rightInset.position.set(-0.525, 0, 0.005);
+  rightDoor.add(rightInset);
+  const rightHandle = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.012, 0.15, 8), glassEdgeMat);
+  rightHandle.rotation.z = Math.PI / 2;
+  rightHandle.position.set(-0.94, -0.02, 0.03);
+  rightDoor.add(rightHandle);
+  rightDoorPivot.add(rightDoor);
+  group.add(rightDoorPivot);
+
+  const doorHitbox = new THREE.Mesh(
+    new THREE.BoxGeometry(2.36, 0.78, 0.26),
+    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
+  );
+  doorHitbox.position.set(0, 0.46, 0.58);
+  doorHitbox.userData.storageBenchId = benchId;
+  doorHitbox.userData.benchAction = 'toggle-compartment';
+  doorHitbox.userData.hoverName = `Open ${benchTitle} Apparatus Cabinet`;
+  clickTargets.push(doorHitbox);
+  group.add(doorHitbox);
+
+  const toggle = () => {
+    state.open = !state.open;
+    gsap.to(leftDoorPivot.rotation, {
+      y: state.open ? -1.08 : 0,
+      duration: 0.56,
+      ease: 'power2.inOut',
+    });
+    gsap.to(rightDoorPivot.rotation, {
+      y: state.open ? 1.08 : 0,
+      duration: 0.56,
+      ease: 'power2.inOut',
+    });
+    doorHitbox.userData.hoverName = state.open
+      ? `Close ${benchTitle} Apparatus Cabinet`
+      : `Open ${benchTitle} Apparatus Cabinet`;
+  };
+
+  return { group, clickTargets, toggle };
 }
 
 // ─── Bench title canvas ───────────────────────────────────────────────────────
@@ -362,7 +1118,7 @@ function createTitleTexture(title, accentHex) {
 
 // ─── Main bench factory ───────────────────────────────────────────────────────
 
-export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) {
+export function createBench({ id, title, position, accent, cameraOffsetX = 0, chemicals = [], apparatus = [], deskKey = null }) {
   const group = new THREE.Group();
   group.name = `${id}-bench`;
   group.position.copy(position);
@@ -371,6 +1127,7 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) 
   const clickTargets     = [];
   const hoverControllers = new Map();
   let hoveredKey         = null;
+  let compartmentToggle  = null;
 
   // Materials — bright sci-fi palette
   const bodyMat = new THREE.MeshStandardMaterial({
@@ -388,10 +1145,10 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) 
     roughness: 0.22, metalness: 0.1,
   });
 
-  // Body
-  const base = new THREE.Mesh(new THREE.BoxGeometry(2.7, 0.92, 1.36), bodyMat);
-  base.position.y = 0.46; base.castShadow = base.receiveShadow = true;
-  group.add(base);
+  const storage = createDeskStorage(id, title, apparatus, itemHoverTargets, hoverControllers, accent, deskKey);
+  group.add(storage.group);
+  clickTargets.push(...storage.clickTargets);
+  compartmentToggle = storage.toggle;
 
   // Surface top
   const top = new THREE.Mesh(new THREE.BoxGeometry(2.86, 0.13, 1.5), topMat);
@@ -415,18 +1172,8 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) 
   strip.position.set(0, 0.83, 0.72);
   group.add(strip);
 
-  const tableHitbox = new THREE.Mesh(
-    new THREE.BoxGeometry(2.95, 0.32, 1.72),
-    new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })
-  );
-  tableHitbox.position.set(0, 1.02, 0);
-  tableHitbox.userData.benchId = id;
-  tableHitbox.userData.hoverName = `${title} Table`;
-  group.add(tableHitbox);
-  clickTargets.push(tableHitbox);
-
   // Reagent rack + apparatus
-  group.add(createReagentRack(accent, itemHoverTargets, hoverControllers));
+  group.add(createReagentRack(accent, itemHoverTargets, hoverControllers, chemicals));
   group.add(createBeaker(-0.84, 0.18, accent, itemHoverTargets, hoverControllers));
   group.add(createFlask(-0.18, -0.02, accent, itemHoverTargets, hoverControllers));
   group.add(createTubeRack(0.38, 0.26, itemHoverTargets, hoverControllers));
@@ -458,8 +1205,10 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) 
   );
   titleHitbox.position.set(0, 2.75, 0.09);
   titleHitbox.userData.benchId = id;
+  titleHitbox.userData.benchAction = 'focus';
   titleHitbox.userData.hoverName = `${title} Table`;
   group.add(titleHitbox);
+  clickTargets.push(titleHitbox);
 
   // State + highlight
   const state = { active: false, hovered: false };
@@ -488,6 +1237,11 @@ export function createBench({ id, title, position, accent, cameraOffsetX = 0 }) 
     itemHoverTargets,
     clickTargets,
     focusZone,
+    handleAction(action) {
+      if (action === 'toggle-compartment') {
+        compartmentToggle?.();
+      }
+    },
     setHovered(v)  { state.hovered = v; refresh(); },
     setActive(v)   { state.active  = v; refresh(); },
     setHoveredObject(nextKey) {
