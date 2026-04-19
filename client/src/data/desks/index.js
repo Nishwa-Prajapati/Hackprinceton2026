@@ -2,6 +2,10 @@ import deskData from './desks.json';
 
 export const DESK_DATA = deskData;
 
+export function getDeskData(deskKey) {
+  return DESK_DATA[deskKey] ?? null;
+}
+
 export function getDeskChemicals(deskKey) {
   return DESK_DATA[deskKey]?.chemicals ?? [];
 }

@@ -841,14 +841,6 @@ export class LabEngine {
     this._clickHandler = e => {
       if (this.controls?.shouldIgnoreClick?.()) return;
 
-      const periodicHit = this._periodicTarget
-        ? intersectObjects(e, canvas, this.camera, [this._periodicTarget])
-        : null;
-      if (periodicHit) {
-        labState.emit('periodic:opened', {});
-        return;
-      }
-
       const itemHit = intersectObjects(e, canvas, this.camera, this._benchItemTargets);
       if (
         itemHit?.object?.userData?.benchId
@@ -879,6 +871,14 @@ export class LabEngine {
 
       if (itemHit?.object?.userData?.benchId && !itemHit.object.userData.preventBenchFocus) {
         this.focusBench(itemHit.object.userData.benchId);
+        return;
+      }
+
+      const periodicHit = this._periodicTarget
+        ? intersectObjects(e, canvas, this.camera, [this._periodicTarget])
+        : null;
+      if (periodicHit) {
+        labState.emit('periodic:opened', {});
       }
     };
     canvas.addEventListener('click', this._clickHandler);
